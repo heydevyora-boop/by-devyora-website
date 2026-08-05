@@ -19,7 +19,7 @@ export function SearchInput({ placeholder = "Search…", paramKey = "q", debounc
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [value, setValue] = useState(searchParams.get(paramKey) ?? "");
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     setValue(searchParams.get(paramKey) ?? "");
