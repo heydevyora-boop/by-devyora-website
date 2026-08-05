@@ -1,0 +1,627 @@
+// ============================================================================
+// By Devyora — Prisma Schema
+// Materials (the 11 systems: GRC, FRP…) > Categories > Products (SKUs) >
+// Specifications / Variants / Images / Downloads. Plus Projects, Blog,
+// Contact/Enquiries, Manufacturing (steps/standards/infra/certs), Branches.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // No url/directUrl here — Prisma 7 requires connection URLs to live in
+  // prisma.config.ts (CLI operations) and be passed to an explicit driver
+  // adapter at runtime (lib/prisma.ts). See README-database.md.
+}
+
+// ----------------------------------------------------------------------------
+// ENUMS
+// ----------------------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum ProjectType {
+  RESIDENTIAL
+  COMMERCIAL
+  HOSPITALITY
+  LANDSCAPE
+}
+
+enum EnquiryType {
+  ARCHITECT
+  DEALER
+  GENERAL
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  WON
+  LOST
+}
+
+enum DownloadCategory {
+  CATALOGUE
+  TECHNICAL
+  BROCHURE
+  INSTALLATION
+}
+
+enum FacilityStatType {
+  QUALITY_STANDARD // e.g. "Flexural strength — ≥ 18 MPa"
+  INFRASTRUCTURE   // e.g. "50K — Sq ft integrated facility"
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ----------------------------------------------------------------------------
+// AUTH (NextAuth — Credentials via bcrypt, Prisma adapter compatible)
+// ----------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(EDITOR)
+  image         String?
+  emailVerified DateTime?
+
+  accounts Account[]
+  sessions Session[]
+
+  blogPosts BlogPost[]
+  assets    Asset[]
+
+  assignedEnquiries Enquiry[]     @relation("EnquiryAssignee")
+  enquiryNotes      EnquiryNote[] @relation("EnquiryNoteAuthor")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ----------------------------------------------------------------------------
+// MEDIA (Cloudinary-backed asset library)
+// ----------------------------------------------------------------------------
+
+enum AssetResourceType {
+  IMAGE
+  VIDEO
+  RAW // PDFs and other non-image files
+}
+
+model Asset {
+  id           String   @id @default(cuid())
+  publicId     String   @unique // Cloudinary public_id — used to build transformed URLs and to delete
+  url          String // secure_url as returned by Cloudinary at upload time
+  folder       String   @default("bydevyora") // Cloudinary folder, also used for library filtering
+  resourceType AssetResourceType @default(IMAGE)
+  format       String? // "jpg", "png", "pdf"...
+  width        Int?
+  height       Int?
+  bytes        Int
+
+  name String // original filename, shown in the library
+  alt  String? // required before an image can be used on a public page — see validations/media.ts
+
+  uploadedById String?
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([folder])
+  @@index([resourceType])
+  @@map("assets")
+}
+
+// ----------------------------------------------------------------------------
+// MATERIALS (the 11 architectural "systems": GRC, FRP, Terracotta, etc.)
+// This is the top-level material family. Sellable catalogue items live one
+// level down in `Product` (SKU-level: a specific panel, finish, size...).
+// ----------------------------------------------------------------------------
+
+model Material {
+  id          String  @id @default(cuid())
+  num         Int     @unique // display order / catalogue number, e.g. 1..11
+  slug        String  @unique
+  name        String
+  tagline     String // short "line" copy shown on cards
+  description String? @db.Text
+
+  material String? // e.g. "Alkali-resistant glass fibre & cement"
+  finishes String? // e.g. "Sandblasted, acid-etched, board-formed"
+  formats  String  @default("Standard & made to drawing")
+  leadTime String  @default("6–10 weeks")
+
+  heroImage String?
+  published Boolean @default(true)
+
+  specs        MaterialSpec[]
+  applications MaterialApplication[]
+  images       MaterialImage[]
+  products     Product[]
+  projects     ProjectMaterial[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("materials")
+}
+
+model MaterialSpec {
+  id         String   @id @default(cuid())
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  key        String // e.g. "Material"
+  value      String
+  order      Int      @default(0)
+
+  @@index([materialId])
+  @@map("material_specs")
+}
+
+model MaterialApplication {
+  id         String   @id @default(cuid())
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  label      String // e.g. "Facades"
+  slug       String // e.g. "facades" — URL segment for /materials/[material]/[application]/[city]
+  order      Int      @default(0)
+
+  @@unique([materialId, slug])
+  @@index([materialId])
+  @@map("material_applications")
+}
+
+model MaterialImage {
+  id         String   @id @default(cuid())
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  url        String
+  alt        String?
+  order      Int      @default(0)
+
+  @@index([materialId])
+  @@map("material_images")
+}
+
+// ----------------------------------------------------------------------------
+// CATEGORIES (cross-cutting taxonomy, independent of Material — e.g.
+// "Facades", "Landscape Elements", "Interior Screens". Supports one level
+// of nesting via `parent`.)
+// ----------------------------------------------------------------------------
+
+model Category {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String?
+  order       Int     @default(0)
+
+  parentId String?
+  parent   Category?  @relation("CategoryToParent", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryToParent")
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@map("categories")
+}
+
+// ----------------------------------------------------------------------------
+// PRODUCTS (SKU-level catalogue items — e.g. "GRC Facade Panel, Board-Formed")
+// Belongs to one Material family and one Category; carries its own
+// specifications, purchasable variants, images and downloadable files.
+// ----------------------------------------------------------------------------
+
+model Product {
+  id    String @id @default(cuid())
+  sku   String @unique
+  slug  String @unique
+  name  String
+
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Restrict)
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  shortDescription String?
+  description      String? @db.Text
+
+  status   ProductStatus @default(DRAFT)
+  featured Boolean       @default(false)
+  order    Int           @default(0)
+
+  specifications ProductSpecification[]
+  variants       ProductVariant[]
+  images         ProductImage[]
+  downloads      DownloadFile[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([materialId])
+  @@index([categoryId])
+  @@index([status])
+  @@map("products")
+}
+
+model ProductSpecification {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  key       String // e.g. "Panel thickness"
+  value     String // e.g. "12mm nominal"
+  order     Int     @default(0)
+
+  @@index([productId])
+  @@map("product_specifications")
+}
+
+// A purchasable configuration of a Product — e.g. a specific size/finish/colour
+// combination, each with its own SKU and (optionally) its own images.
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  sku   String @unique
+  name  String // e.g. "600×1200mm — Acid Etched — Ash Grey"
+
+  size   String?
+  finish String?
+  color  String?
+
+  price     Decimal? @db.Decimal(10, 2)
+  currency  String   @default("INR")
+  inStock   Boolean  @default(true)
+  isDefault Boolean  @default(false)
+  order     Int      @default(0)
+
+  images ProductImage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@map("product_variants")
+}
+
+// Belongs to a Product; optionally scoped to one of its Variants.
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  url       String
+  alt       String?
+  isPrimary Boolean @default(false)
+  order     Int     @default(0)
+
+  @@index([productId])
+  @@index([variantId])
+  @@map("product_images_gallery")
+}
+
+// ----------------------------------------------------------------------------
+// PROJECTS (portfolio)
+// ----------------------------------------------------------------------------
+
+model Project {
+  id       String      @id @default(cuid())
+  slug     String      @unique
+  name     String
+  location String
+  type     ProjectType
+  architect String
+  year     Int
+
+  description     String  @db.Text
+  technicalInfo   String? @db.Text
+  heroImage       String?
+
+  featured  Boolean @default(false)
+  published Boolean @default(true)
+
+  images    ProjectImage[]
+  materials ProjectMaterial[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@map("projects")
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  isHero    Boolean @default(false)
+  order     Int     @default(0)
+
+  @@index([projectId])
+  @@map("project_images")
+}
+
+// Join table: which Material systems were used on which Project ("Products used")
+model ProjectMaterial {
+  projectId  String
+  materialId String
+  note       String? // optional free text, e.g. "12mm nominal thickness"
+
+  project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, materialId])
+  @@map("project_materials")
+}
+
+// ----------------------------------------------------------------------------
+// BLOG / JOURNAL
+// ----------------------------------------------------------------------------
+
+model BlogCategory {
+  id   String @id @default(cuid())
+  slug String @unique
+  name String
+
+  posts BlogPost[]
+
+  @@map("blog_categories")
+}
+
+model BlogPost {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  title      String
+  excerpt    String
+  content    String   @db.Text
+  coverImage String?
+  featured   Boolean  @default(false)
+  published  Boolean  @default(false)
+  publishedAt DateTime?
+
+  // SEO overrides — fall back to title/excerpt when unset (see lib/seo.ts usage on the journal detail page)
+  metaTitle       String?
+  metaDescription String?
+
+  categoryId String
+  category   BlogCategory @relation(fields: [categoryId], references: [id])
+
+  authorId String?
+  author   User?  @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  tags BlogPostTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@map("blog_posts")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  slug String @unique
+  name String
+
+  posts BlogPostTag[]
+
+  @@map("tags")
+}
+
+model BlogPostTag {
+  postId String
+  tagId  String
+
+  post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("blog_post_tags")
+}
+
+// ----------------------------------------------------------------------------
+// DOWNLOADS (catalogues, technical sheets, brochures)
+// ----------------------------------------------------------------------------
+
+model DownloadFile {
+  id       String           @id @default(cuid())
+  name     String
+  category DownloadCategory
+  fileUrl  String
+  fileSize Int // bytes
+  year     Int?
+  published Boolean         @default(true)
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([productId])
+  @@map("download_files")
+}
+
+// ----------------------------------------------------------------------------
+// CONTACT / ENQUIRIES
+// ----------------------------------------------------------------------------
+
+model Branch {
+  id            String  @id @default(cuid())
+  city          String
+  address       String
+  phone         String
+  email         String?
+  isHeadOffice  Boolean @default(false)
+  order         Int     @default(0)
+
+  @@map("branches")
+}
+
+model Enquiry {
+  id        String        @id @default(cuid())
+  type      EnquiryType
+  status    EnquiryStatus @default(NEW)
+
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+  company   String?
+  message   String        @db.Text
+
+  productsInterested String[] // free-form list of product names/slugs selected
+  source             String   @default("website") // "website", "referral", "trade-show"... — set programmatically today, editable later
+
+  assignedToId String?
+  assignedTo   User?   @relation("EnquiryAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  notes EnquiryNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([assignedToId])
+  @@map("enquiries")
+}
+
+// A follow-up log entry on an Enquiry — a call summary, an email sent, a
+// reminder to check back in. `followUpDate` is optional: set it when the
+// note represents "do this next", leave it blank for a plain activity log entry.
+model EnquiryNote {
+  id        String   @id @default(cuid())
+  enquiryId String
+  enquiry   Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+
+  authorId String?
+  author   User?   @relation("EnquiryNoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  note         String    @db.Text
+  followUpDate DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([enquiryId])
+  @@map("enquiry_notes")
+}
+
+// ----------------------------------------------------------------------------
+// MANUFACTURING (steps, quality standards / infra stats, certifications)
+// ----------------------------------------------------------------------------
+
+model ManufacturingStep {
+  id          String @id @default(cuid())
+  num         String // "01".."06" (kept as string to match display formatting)
+  title       String
+  description String @db.Text
+  order       Int    @default(0)
+
+  @@map("manufacturing_steps")
+}
+
+model FacilityStat {
+  id    String           @id @default(cuid())
+  type  FacilityStatType
+  label String
+  value String // e.g. "≥ 18 MPa (GRC)" or "50K"
+  order Int              @default(0)
+
+  @@index([type])
+  @@map("facility_stats")
+}
+
+model Certification {
+  id    String @id @default(cuid())
+  name  String // e.g. "ISO 9001:2015"
+  body  String // e.g. "Quality Management"
+  order Int    @default(0)
+
+  @@map("certifications")
+}
+
+// ----------------------------------------------------------------------------
+// CITIES — powers automatically-generated location landing pages:
+// /materials/[materialSlug]/[applicationSlug]/[citySlug]
+// e.g. /materials/grc/pillars/bhopal
+// ----------------------------------------------------------------------------
+
+model City {
+  id     String  @id @default(cuid())
+  slug   String  @unique
+  name   String
+  state  String
+  region String? // e.g. "North India" — matches About page's service regions
+  order  Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@map("cities")
+}

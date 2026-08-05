@@ -1,0 +1,20 @@
+/* Global reset — applies everywhere (public site + admin + login), since
+   app/layout.tsx is the one root layout every route renders under.
+
+   Why this instead of patching every <Link>: dozens of components set
+   `color` inline but never `textDecoration`, so the browser's default
+   `a { text-decoration: underline }` was showing through everywhere.
+   Author stylesheets beat the browser's user-agent stylesheet regardless of
+   selector specificity, and this rule doesn't fight any of the existing
+   inline styles (none of them set textDecoration to a conflicting value),
+   so one rule here fixes it globally instead of touching 30+ files. */
+
+a {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+/* If a link is meant to look underlined (rare — none currently are, but
+   this keeps the door open), opt in explicitly on that element with
+   style={{ textDecoration: "underline" }} — it will still win, since
+   inline styles override this stylesheet. */
