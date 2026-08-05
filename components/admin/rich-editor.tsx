@@ -48,7 +48,7 @@ export function RichEditor({ value, onChange }: RichEditorProps) {
   // Keep the editor in sync if `value` changes from outside (e.g. loading a different post)
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value, { emitUpdate: false });
+      editor.commands.setContent(value, false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
