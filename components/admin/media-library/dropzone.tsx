@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { requestUploadSignatureAction, confirmUploadAction } from "@/app/actions/media.actions";
+import type { signUpload } from "@/lib/cloudinary";
 
 type UploadItem = {
   id: string;
@@ -26,7 +27,7 @@ function resourceTypeFor(file: File): "IMAGE" | "VIDEO" | "RAW" {
 /** Uploads one file straight to Cloudinary using a signed request, reporting progress via XHR. */
 function uploadToCloudinary(
   file: File,
-  signed: Awaited<ReturnType<typeof requestUploadSignatureAction>> extends { ok: true; data: infer D } ? D : never,
+  signed: ReturnType<typeof signUpload>,
   onProgress: (pct: number) => void
 ): Promise<{ public_id: string; secure_url: string; width?: number; height?: number; format?: string; bytes: number; resource_type: string }> {
   return new Promise((resolve, reject) => {
