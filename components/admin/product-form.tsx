@@ -5,19 +5,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import slugify from "slugify";
+import type { z } from "zod";
 import {
   createProductSchema,
-  type CreateProductInput,
 } from "@/lib/validations/product";
 import { createProductAction, updateProductAction } from "@/app/actions/product.actions";
 import { ImageUploader } from "@/components/admin/image-uploader";
+
+// createProductSchema (and its nested spec/variant/image sub-schemas) has
+// fields with `.default(...)` (currency, inStock, isDefault, order,
+// isPrimary, status, featured), so its *input* type (pre-default) is what
+// zodResolver expects — not the z.infer *output* type, which has those
+// fields required.
+type ProductFormValues = z.input<typeof createProductSchema>;
 
 type Option = { id: string; name: string };
 
 type ProductFormProps = {
   materials: Option[];
   categories: Option[];
-  defaultValues?: Partial<CreateProductInput> & { id?: string };
+  defaultValues?: Partial<ProductFormValues> & { id?: string };
 };
 
 const inputStyle: React.CSSProperties = {
@@ -70,7 +77,7 @@ export function ProductForm({ materials, categories, defaultValues }: ProductFor
     setValue,
     control,
     formState: { errors },
-  } = useForm<CreateProductInput>({
+  } = useForm<ProductFormValues>({
     resolver: zodResolver(createProductSchema),
     defaultValues: {
       status: "DRAFT",
@@ -89,7 +96,7 @@ export function ProductForm({ materials, categories, defaultValues }: ProductFor
 
   const name = watch("name");
 
-  async function onSubmit(data: CreateProductInput) {
+  async function onSubmit(data: ProductFormValues) {
     setServerError(null);
     setIsSubmitting(true);
     const result = isEditing

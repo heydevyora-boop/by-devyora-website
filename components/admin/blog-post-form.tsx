@@ -6,9 +6,17 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import slugify from "slugify";
-import { createBlogPostSchema, type CreateBlogPostInput } from "@/lib/validations/blog";
+import type { z } from "zod";
+import { createBlogPostSchema } from "@/lib/validations/blog";
 import { createBlogPostAction, updateBlogPostAction } from "@/app/actions/blog.actions";
 import { ImageUploader } from "./image-uploader";
+
+// createBlogPostSchema has fields with `.default(...)` (featured, published,
+// tagIds), so its *input* type (what the form actually collects, before
+// defaults are applied) has those as optional — while CreateBlogPostInput
+// (z.infer, i.e. the *output* type) has them required. zodResolver types
+// against the input side, so the form must use this, not CreateBlogPostInput.
+type BlogPostFormValues = z.input<typeof createBlogPostSchema>;
 
 // Tiptap touches the DOM on mount and isn't needed anywhere but this form —
 // lazy-loaded so it's out of every other admin page's bundle (Module 12).
@@ -20,7 +28,7 @@ const RichEditor = dynamic(() => import("./rich-editor").then((m) => m.RichEdito
 type BlogPostFormProps = {
   categories: { id: string; name: string }[];
   tags: { id: string; name: string }[];
-  defaultValues?: Partial<CreateBlogPostInput> & { id?: string };
+  defaultValues?: Partial<BlogPostFormValues> & { id?: string };
 };
 
 const inputStyle: React.CSSProperties = {
@@ -56,7 +64,7 @@ export function BlogPostForm({ categories, tags, defaultValues }: BlogPostFormPr
     setValue,
     control,
     formState: { errors },
-  } = useForm<CreateBlogPostInput>({
+  } = useForm<BlogPostFormValues>({
     resolver: zodResolver(createBlogPostSchema),
     defaultValues: { published: false, featured: false, content: "", tagIds: [], ...defaultValues },
   });
@@ -65,7 +73,7 @@ export function BlogPostForm({ categories, tags, defaultValues }: BlogPostFormPr
   const metaTitle = watch("metaTitle");
   const metaDescription = watch("metaDescription");
 
-  async function onSubmit(data: CreateBlogPostInput) {
+  async function onSubmit(data: BlogPostFormValues) {
     setServerError(null);
     setIsSubmitting(true);
     const result = isEditing ? await updateBlogPostAction({ ...data, id: defaultValues!.id }) : await createBlogPostAction(data);

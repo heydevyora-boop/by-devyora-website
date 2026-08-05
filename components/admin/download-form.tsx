@@ -4,13 +4,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createDownloadFileSchema, type CreateDownloadFileInput } from "@/lib/validations/download";
+import type { z } from "zod";
+import { createDownloadFileSchema } from "@/lib/validations/download";
 import { createDownloadFileAction, updateDownloadFileAction } from "@/app/actions/download.actions";
 import { FileUploader } from "@/components/admin/file-uploader";
 
+// createDownloadFileSchema has fields with `.default(...)` (published), so
+// its *input* type (pre-default) is what zodResolver expects — not the
+// z.infer *output* type, which has those fields required.
+type DownloadFormValues = z.input<typeof createDownloadFileSchema>;
+
 type DownloadFormProps = {
   products: { id: string; name: string }[];
-  defaultValues?: Partial<CreateDownloadFileInput> & { id?: string };
+  defaultValues?: Partial<DownloadFormValues> & { id?: string };
 };
 
 const inputStyle: React.CSSProperties = {
@@ -43,12 +49,12 @@ export function DownloadForm({ products, defaultValues }: DownloadFormProps) {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<CreateDownloadFileInput>({
+  } = useForm<DownloadFormValues>({
     resolver: zodResolver(createDownloadFileSchema),
     defaultValues: { published: true, category: "TECHNICAL", ...defaultValues },
   });
 
-  async function onSubmit(data: CreateDownloadFileInput) {
+  async function onSubmit(data: DownloadFormValues) {
     setServerError(null);
     setIsSubmitting(true);
     const result = isEditing

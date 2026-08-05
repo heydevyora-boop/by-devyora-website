@@ -5,12 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import slugify from "slugify";
-import { createCategorySchema, type CreateCategoryInput } from "@/lib/validations/category";
+import type { z } from "zod";
+import { createCategorySchema } from "@/lib/validations/category";
 import { createCategoryAction, updateCategoryAction } from "@/app/actions/category.actions";
+
+// createCategorySchema has fields with `.default(...)` (order), so its
+// *input* type (pre-default) is what zodResolver expects — not the z.infer
+// *output* type, which has those fields required.
+type CategoryFormValues = z.input<typeof createCategorySchema>;
 
 type CategoryFormProps = {
   parentOptions: { id: string; name: string }[];
-  defaultValues?: Partial<CreateCategoryInput> & { id?: string };
+  defaultValues?: Partial<CategoryFormValues> & { id?: string };
 };
 
 const inputStyle: React.CSSProperties = {
@@ -44,12 +50,12 @@ export function CategoryForm({ parentOptions, defaultValues }: CategoryFormProps
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CreateCategoryInput>({
+  } = useForm<CategoryFormValues>({
     resolver: zodResolver(createCategorySchema),
     defaultValues: { order: 0, ...defaultValues },
   });
 
-  async function onSubmit(data: CreateCategoryInput) {
+  async function onSubmit(data: CategoryFormValues) {
     setServerError(null);
     setIsSubmitting(true);
     const result = isEditing

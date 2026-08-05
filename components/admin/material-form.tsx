@@ -5,11 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import slugify from "slugify";
-import { createMaterialSchema, type CreateMaterialInput } from "@/lib/validations/material";
+import type { z } from "zod";
+import { createMaterialSchema } from "@/lib/validations/material";
 import { createMaterialAction, updateMaterialAction } from "@/app/actions/material.actions";
 
+// createMaterialSchema has fields with `.default(...)` (order, formats,
+// leadTime, published, and nested specs/applications `order`), so its
+// *input* type (pre-default) is what zodResolver expects — not the z.infer
+// *output* type, which has those fields required.
+type MaterialFormValues = z.input<typeof createMaterialSchema>;
+
 type MaterialFormProps = {
-  defaultValues?: Partial<CreateMaterialInput> & { id?: string };
+  defaultValues?: Partial<MaterialFormValues> & { id?: string };
   nextNum: number;
 };
 
@@ -55,7 +62,7 @@ export function MaterialForm({ defaultValues, nextNum }: MaterialFormProps) {
     watch,
     control,
     formState: { errors },
-  } = useForm<CreateMaterialInput>({
+  } = useForm<MaterialFormValues>({
     resolver: zodResolver(createMaterialSchema),
     defaultValues: {
       num: nextNum,
@@ -73,7 +80,7 @@ export function MaterialForm({ defaultValues, nextNum }: MaterialFormProps) {
   const applications = useFieldArray({ control, name: "applications" });
   const images = useFieldArray({ control, name: "images" });
 
-  async function onSubmit(data: CreateMaterialInput) {
+  async function onSubmit(data: MaterialFormValues) {
     setServerError(null);
     setIsSubmitting(true);
     const result = isEditing
