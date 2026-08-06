@@ -18,3 +18,15 @@ a {
    this keeps the door open), opt in explicitly on that element with
    style={{ textDecoration: "underline" }} — it will still win, since
    inline styles override this stylesheet. */
+
+/* Products dropdown (components/site/header.tsx) — each material's name
+   gets an underline on hover, matching the reference (Mutina) menu. Can't
+   do this with inline styles since :hover isn't expressible there, hence
+   the small stylesheet rule instead of an inline style object. */
+.dropdown-item-name {
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms ease;
+}
+.dropdown-item-link:hover .dropdown-item-name {
+  border-bottom-color: currentColor;
+}

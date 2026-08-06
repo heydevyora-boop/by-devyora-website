@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   description:
     "Cast, moulded and fired architectural materials for facades, thresholds and landscapes — made to drawing.",
   icons: {
-    icon: "/images/logo.jpeg",
-    apple: "/images/logo.jpeg",
+    icon: "/images/logo.png",
+    apple: "/images/logo.png",
   },
   openGraph: {
-    images: ["/images/logo.jpeg"],
+    images: ["/images/logo.png"],
   },
 };
 
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@300;400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

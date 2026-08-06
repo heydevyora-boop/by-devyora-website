@@ -19,9 +19,9 @@ import { theme } from "@/lib/theme";
 
 type Phase = "idle" | "entering" | "revealing" | "exiting";
 
-const ENTER_MS = 420; // curtain rises to cover the screen
-const REVEAL_MS = 650; // title wipes from muted to ink, left to right
-const EXIT_MS = 480; // curtain rises off-screen, revealing the new page
+const ENTER_MS = 520; // curtain rises to cover the screen
+const REVEAL_MS = 800; // title wipes from muted to ink, left to right
+const EXIT_MS = 600; // curtain rises off-screen, revealing the new page
 
 type TransitionContextValue = {
   start: (href: string, title: string) => void;
