@@ -10,7 +10,7 @@ import { usePageTransition } from "./page-transition";
 type NavMaterial = { id: string; slug: string; name: string; tagline: string };
 
 const NAV = [
-  { href: "/materials", label: "Collections", dropdown: true },
+  { href: "/materials", label: "Products", dropdown: true },
   { href: "/projects", label: "Projects", dropdown: false },
   { href: "/journal", label: "Journal", dropdown: false },
   { href: "/manufacturing", label: "Manufacturing", dropdown: false },
@@ -20,21 +20,23 @@ const NAV = [
 
 export function SiteHeader({ materials }: { materials: NavMaterial[] }) {
   const [open, setOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const { start } = usePageTransition();
 
-  // Close the dropdown on any click outside the header (the panel included,
-  // since it's rendered inside the same <header>).
+  // Close the desktop dropdown and the mobile menu on any click outside the
+  // header (panels included, since both render inside the same <header>).
   useEffect(() => {
-    if (!open) return;
+    if (!open && !mobileMenuOpen) return;
     function handleClick(e: MouseEvent) {
       if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
         setOpen(false);
+        setMobileMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [open]);
+  }, [open, mobileMenuOpen]);
 
   return (
     <header
@@ -60,12 +62,14 @@ export function SiteHeader({ materials }: { materials: NavMaterial[] }) {
           width={653}
           height={112}
           priority
-          style={{ height: 40, width: "auto" }}
+          style={{ height: 30, width: "auto" }}
         />
-        
+       
       </Link>
 
-      <nav
+      <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+        <nav
+          className="desktop-nav"
         style={{
           display: "flex",
           flexWrap: "wrap",
@@ -99,6 +103,60 @@ export function SiteHeader({ materials }: { materials: NavMaterial[] }) {
           )
         )}
       </nav>
+
+      {/* Hamburger toggle — hidden by default, shown under 860px via the
+          .mobile-menu-toggle rule in globals.css. */}
+      <button
+        type="button"
+        className="mobile-menu-toggle"
+        onClick={() => {
+          setMobileMenuOpen((v) => !v);
+          setOpen(false);
+        }}
+        aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={mobileMenuOpen}
+        style={{
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 5,
+          width: 32,
+          height: 32,
+          background: "none",
+          border: "none",
+          padding: 0,
+          cursor: "pointer",
+        }}
+      >
+        <span
+          style={{
+            width: 22,
+            height: 2,
+            background: theme.color.ink,
+            transition: "transform 220ms ease, opacity 220ms ease",
+            transform: mobileMenuOpen ? "translateY(7px) rotate(45deg)" : "none",
+          }}
+        />
+        <span
+          style={{
+            width: 22,
+            height: 2,
+            background: theme.color.ink,
+            transition: "opacity 220ms ease",
+            opacity: mobileMenuOpen ? 0 : 1,
+          }}
+        />
+        <span
+          style={{
+            width: 22,
+            height: 2,
+            background: theme.color.ink,
+            transition: "transform 220ms ease, opacity 220ms ease",
+            transform: mobileMenuOpen ? "translateY(-7px) rotate(-45deg)" : "none",
+          }}
+        />
+      </button>
+      </div>
 
       {/* Dropdown panel — full width, sits directly under the header, opens
           on clicking "Products" and closes on click-outside (see the effect
@@ -159,6 +217,50 @@ export function SiteHeader({ materials }: { materials: NavMaterial[] }) {
             </a>
           ))}
         </div>
+      </div>
+
+      {/* Mobile nav panel — stacked list, only ever visible under 860px
+          since the hamburger button that opens it is hidden above that
+          width (see .mobile-menu-toggle in globals.css). Each item just
+          navigates directly, including "Products" — the image mega-menu
+          is a desktop-only affordance, not worth replicating in a narrow
+          column. */}
+      <div
+        aria-hidden={!mobileMenuOpen}
+        style={{
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          right: 0,
+          background: "#FFFFFF",
+          borderBottom: `1px solid ${theme.color.border}`,
+          boxShadow: "0 16px 32px rgba(18,17,16,0.08)",
+          display: "flex",
+          flexDirection: "column",
+          opacity: mobileMenuOpen ? 1 : 0,
+          transform: mobileMenuOpen ? "translateY(0)" : "translateY(-10px)",
+          pointerEvents: mobileMenuOpen ? "auto" : "none",
+          transition: "opacity 280ms ease, transform 280ms ease",
+        }}
+      >
+        {NAV.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              padding: `18px ${pagePadX}`,
+              borderTop: `1px solid ${theme.color.border}`,
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: theme.color.ink,
+            }}
+          >
+            {item.label}
+          </Link>
+        ))}
       </div>
     </header>
   );

@@ -30,3 +30,26 @@ a {
 .dropdown-item-link:hover .dropdown-item-name {
   border-bottom-color: currentColor;
 }
+
+/* Header responsiveness (components/site/header.tsx). Inline styles can't
+   express a media query, hence this small stylesheet block. Breakpoint
+   matches where the nav's word-count realistically stops fitting one row
+   next to the logo. */
+.mobile-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-tagline {
+    display: none !important;
+  }
+}
