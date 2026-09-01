@@ -32,7 +32,7 @@ export function TransitionLink({
   }
 
   return (
-    <Link href={href} style={style} onClick={handleClick} {...rest}>
+    <Link href={href} style={style} onClick={handleClick} data-transition-title={title} {...rest}>
       {children}
     </Link>
   );

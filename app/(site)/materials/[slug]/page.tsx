@@ -1,34 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
+
 import { MaterialRepository } from "@/lib/repositories/material.repository";
 import { CityRepository } from "@/lib/repositories/city.repository";
 import { theme, pagePadX } from "@/lib/theme";
 import { ImagePlaceholder } from "@/components/site/ui";
-import { ProductLink } from "@/components/site/product-link";
-import { TransitionLink } from "@/components/site/transition-link";
 import { buildMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
-type PageProps = { params: Promise<{ slug: string }> };
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
 
-// Prebuild every published material at deploy time (there are only 11) — new
-// ones added later still render fine on first request via dynamicParams.
+// Prebuild every published material at deploy time
 export async function generateStaticParams() {
-  const materials = await MaterialRepository.findAll({ publishedOnly: true });
-  return materials.map((m) => ({ slug: m.slug }));
+  const materials = await MaterialRepository.findAll({
+    publishedOnly: true,
+  });
+
+  return materials.map((m) => ({
+    slug: m.slug,
+  }));
 }
 
-// Falls back to a time-based refresh if nothing triggers on-demand
-// revalidation — material.actions.ts already calls revalidatePath() on every
-// edit, so in practice this rarely needs to fire, but it's a safety net for
-// edits made directly in the DB (e.g. a manual fix) that bypass the action layer.
+// Revalidate page every hour
 export const revalidate = 3600;
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
+
   const material = await MaterialRepository.findBySlug(slug);
+
   if (!material) return {};
+
   return buildMetadata({
     title: `${material.name} — Architectural Material System`,
     description: material.description ?? material.tagline,
@@ -39,56 +47,1034 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function MaterialDetailPage({ params }: PageProps) {
   const { slug } = await params;
+
   const material = await MaterialRepository.findBySlug(slug);
-  if (!material) notFound();
+
+  if (!material) {
+    notFound();
+  }
 
   const related = await MaterialRepository.findRelated(material.num, 3);
+
   const cities = await CityRepository.findAll();
+
   const topCities = cities.slice(0, 8);
 
+  /*
+   * ------------------------------------------------------------
+   * GRC HERO IMAGE
+   * ------------------------------------------------------------
+   *
+   * GRC image:
+   *
+   * /public/images/grc-hero.jpeg
+   *
+   * Browser URL:
+   *
+   * /images/grc-hero.jpeg
+   *
+   * It is displayed only on:
+   *
+   * /materials/grc
+   *
+   * Other materials continue using their database heroImage
+   * or the ImagePlaceholder.
+   */
+
+  const materialSlug = material.slug.toLowerCase();
+  const isGRC = materialSlug === "grc";
+  const isFRP = materialSlug === "frp";
+  const isTerracotta =
+    materialSlug === "terracotta" || materialSlug === "teracotta";
+
+  const specialContent = isFRP
+    ? {
+        eyebrow: "FRP — Architectural Applications",
+        intro:
+          "FRP can be used across residential, commercial, hospitality and institutional projects to create distinctive architectural forms and detailing.",
+        applicationsLabel: "FRP Applications",
+        applications: [
+          {
+            title: "FRP Jali & Screens",
+            description:
+              "For facades, balconies, partitions and decorative applications.",
+          },
+          {
+            title: "FRP Pillars & Columns",
+            description: "For entrances, facades and architectural spaces.",
+          },
+          {
+            title: "FRP Arches",
+            description: "For doors, windows, entrances and facade detailing.",
+          },
+          {
+            title: "FRP Stone Cladding",
+            description:
+              "For adding texture and character to architectural surfaces.",
+          },
+          {
+            title: "FRP Facade Elements",
+            description: "For contemporary and decorative building elevations.",
+          },
+          {
+            title: "FRP Cornices & Mouldings",
+            description:
+              "For rooflines, windows, doors and architectural transitions.",
+          },
+          {
+            title: "FRP Bases & Architectural Details",
+            description: "For columns, walls and other design applications.",
+          },
+        ],
+        productsLabel: "FRP Products",
+        productsText:
+          "Our architectural FRP range includes: FRP Jali | FRP Pillars | FRP Arches | FRP Cornices | FRP Mouldings | FRP Facade Elements | FRP Stone Cladding | FRP Bases | Custom FRP Elements",
+        productsDescription:
+          "Whether you need an FRP jali, pillar, cornice, moulding or custom facade element, solutions can be developed around the design, dimensions and application requirements of your project.",
+        whyChoose: [
+          {
+            title: "Design-Focused Approach",
+            description:
+              "FRP elements designed to complement the overall architectural vision of a project.",
+          },
+          {
+            title: "Custom Solutions",
+            description:
+              "Explore custom forms, patterns, profiles and dimensions based on your requirements.",
+          },
+          {
+            title: "Wide Range of Applications",
+            description:
+              "From FRP jali and pillars to arches, cornices, mouldings and facade elements.",
+          },
+          {
+            title: "Project-Oriented Support",
+            description:
+              "Suitable for architects, builders, interior designers and project teams.",
+          },
+          {
+            title: "PAN-India Delivery",
+            description:
+              "Supporting FRP requirements for projects across India.",
+          },
+        ],
+        ctaEyebrow: "FRP By Devyora",
+        ctaDescription:
+          "Share your drawing, reference image, dimensions or project requirement with By Devyora to explore the right FRP solution for your project.",
+      }
+    : isTerracotta
+      ? {
+          eyebrow: "Terracotta — Architectural Applications",
+          intro:
+            "Add warmth, texture and natural character to your spaces with terracotta products By Devyora. From terracotta pots and planters to vases and larger decorative pieces, our collection is designed for architectural, landscape and interior applications.",
+          applicationsLabel: "Terracotta Products",
+          applications: [
+            {
+              title: "Terracotta Pots",
+              description:
+                "Natural and versatile pots for gardens, entrances, balconies and indoor spaces.",
+            },
+            {
+              title: "Large Terracotta Pots",
+              description:
+                "Statement pieces for landscapes, courtyards, entrances and hospitality spaces.",
+            },
+            {
+              title: "Terracotta Planters",
+              description:
+                "Earthy planters designed to complement residential, commercial and landscape settings.",
+            },
+            {
+              title: "Terracotta Vases",
+              description:
+                "Decorative forms that add warmth and handcrafted character to interiors and curated spaces.",
+            },
+            {
+              title: "Custom & Decorative Terracotta Elements",
+              description:
+                "Terracotta pieces developed around specific design and project requirements.",
+            },
+          ],
+          productsLabel: "Terracotta Products",
+          productsText:
+            "Our terracotta collection includes terracotta pots, large terracotta pots, terracotta planters, terracotta vases and custom decorative terracotta elements.",
+          productsDescription:
+            "Explore terracotta products designed to bring natural warmth, texture and character to architectural, landscape and interior spaces.",
+          whyChoose: [
+            {
+              title: "Design-Focused Collection",
+              description:
+                "Contemporary terracotta forms suited to different architectural styles.",
+            },
+            {
+              title: "Multiple Applications",
+              description:
+                "From pots and planters to vases and decorative elements.",
+            },
+            {
+              title: "Natural Aesthetic",
+              description:
+                "Earthy tones and textures that bring warmth and character to spaces.",
+            },
+            {
+              title: "Project-Friendly Solutions",
+              description:
+                "Suitable for residential, commercial, hospitality and landscape requirements.",
+            },
+            {
+              title: "Custom Requirements",
+              description:
+                "Options can be explored based on design, dimensions and project requirements.",
+            },
+          ],
+          ctaEyebrow: "Terracotta By Devyora",
+          ctaDescription:
+            "Explore terracotta pots, large terracotta pots, terracotta planters and terracotta vases designed to bring natural warmth, texture and character to architectural, landscape and interior spaces.",
+        }
+      : {
+          eyebrow: "GRC — Architectural Applications",
+          intro:
+            "GRC can be used across residential, commercial, hospitality and institutional architecture for creating distinctive architectural details and refined facades.",
+          applicationsLabel: "GRC Products & Applications",
+          applications: [
+            {
+              title: "GRC Jali",
+              description: "For facades, screens, balconies and partitions.",
+            },
+            {
+              title: "GRC Pillars & Columns",
+              description:
+                "For entrances, elevations and architectural spaces.",
+            },
+            {
+              title: "GRC Arches",
+              description: "For doors, windows and facade detailing.",
+            },
+            {
+              title: "GRC Cornices & Mouldings",
+              description:
+                "For rooflines, windows, doors and facade transitions.",
+            },
+            {
+              title: "GRC Facade Elements",
+              description:
+                "For contemporary and traditional architectural elevations.",
+            },
+            {
+              title: "GRC Stone Cladding",
+              description:
+                "For adding texture and architectural character to exterior surfaces.",
+            },
+            {
+              title: "GRC Bases & Architectural Details",
+              description:
+                "For columns, walls and other structural or decorative applications.",
+            },
+          ],
+          productsLabel: "GRC Products",
+          productsText:
+            "Our architectural GRC range includes jali, pillars, arches, cornices, mouldings, facade elements, stone cladding, bases and custom architectural details.",
+          productsDescription:
+            "Whether you are looking for a decorative GRC jali, architectural cornice or a custom facade element, products can be developed around the design, dimensions and application requirements of your project.",
+          whyChoose: [
+            {
+              title: "Architectural Design Focus",
+              description:
+                "GRC elements designed to complement the overall architecture of a project.",
+            },
+            {
+              title: "Custom Solutions",
+              description:
+                "Explore custom patterns, profiles, dimensions and architectural details.",
+            },
+            {
+              title: "Wide Product Range",
+              description:
+                "From GRC jali and pillars to cornices, mouldings and facade elements.",
+            },
+            {
+              title: "Project-Oriented Support",
+              description:
+                "Suitable for architects, builders, designers and large-scale projects.",
+            },
+            {
+              title: "PAN-India Delivery",
+              description: "GRC solutions available for projects across India.",
+            },
+          ],
+          ctaEyebrow: "GRC By Devyora",
+          ctaDescription:
+            "Share your drawing, reference image, dimensions or project requirement with Devyora to explore the right GRC solution for your project.",
+        };
+
   return (
-    <main style={{ padding: `0 ${pagePadX} clamp(60px, 8vw, 120px)` }}>
-      <div style={{ paddingTop: "clamp(24px, 4vw, 40px)" }}>
-        <Breadcrumbs items={[{ name: "Products", path: "/materials" }, { name: material.name, path: `/materials/${material.slug}` }]} />
+    <main
+      style={{
+        padding: `0 ${pagePadX} clamp(60px, 8vw, 120px)`,
+      }}
+    >
+      {/* =========================================================
+          BREADCRUMBS
+      ========================================================= */}
+
+      <div
+        style={{
+          paddingTop: "clamp(24px, 4vw, 40px)",
+        }}
+      >
+        <Breadcrumbs
+          items={[
+            {
+              name: "Products",
+              path: "/materials",
+            },
+            {
+              name: material.name,
+              path: `/materials/${material.slug}`,
+            },
+          ]}
+        />
       </div>
-      <section style={{ minHeight: "60vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(24px, 4vw, 48px) 0 clamp(32px, 5vw, 60px)" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, marginBottom: "clamp(20px, 3vw, 36px)" }}>
+
+      {/* =========================================================
+          MATERIAL HERO TEXT
+      ========================================================= */}
+
+      <section
+        style={{
+          minHeight: "60vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "clamp(24px, 4vw, 48px) 0 clamp(32px, 5vw, 60px)",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 10,
+            letterSpacing: "0.3em",
+            textTransform: "uppercase",
+            color: theme.color.accent,
+            marginBottom: "clamp(20px, 3vw, 36px)",
+          }}
+        >
           {String(material.num).padStart(3, "0")} / 011 — Architectural System
         </div>
-        <h1 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(56px, 12.5vw, 210px)", lineHeight: 0.86, letterSpacing: "-0.03em", margin: 0 }}>
+
+        <h1
+          style={{
+            fontFamily: theme.font.serif,
+            fontWeight: 400,
+            fontSize: "clamp(56px, 12.5vw, 210px)",
+            lineHeight: 0.86,
+            letterSpacing: "-0.03em",
+            margin: 0,
+          }}
+        >
           {material.name}
         </h1>
-        <p style={{ maxWidth: "40ch", margin: "clamp(28px, 4vw, 48px) 0 0", fontSize: "clamp(16px, 1.4vw, 21px)", lineHeight: 1.6, color: "#4A4844" }}>
+
+        <p
+          style={{
+            maxWidth: "40ch",
+            margin: "clamp(28px, 4vw, 48px) 0 0",
+            fontSize: "clamp(16px, 1.4vw, 21px)",
+            lineHeight: 1.6,
+            color: "#4A4844",
+          }}
+        >
           {material.tagline}
         </p>
       </section>
 
-      <div style={{ aspectRatio: "16/7", width: "100%", overflow: "hidden" }}>
-        <ImagePlaceholder label={`${material.name} — Hero`} aspectRatio="16/7" />
+      {/* =========================================================
+          HERO IMAGE
+      ========================================================= */}
+
+      <div
+        style={{
+          width: "100vw",
+          marginLeft: "calc(50% - 50vw)",
+          marginRight: "calc(50% - 50vw)",
+          aspectRatio: "16/9",
+          overflow: "hidden",
+          position: "relative",
+          background: "#F6F4F1",
+        }}
+      >
+        {isGRC ? (
+          <Image
+            src="/images/GRC.webp"
+            alt="GRC architectural facade by Devyora"
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
+        ) : isFRP ? (
+          <Image
+            src="/images/FRP.webp"
+            alt="FRP architectural facade by Devyora"
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
+        ) : isTerracotta ? (
+          <Image
+            src="/images/Tera.webp"
+            alt="Terracotta architectural facade by Devyora"
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
+        ) : material.heroImage ? (
+          <Image
+            src={material.heroImage}
+            alt={`${material.name} — Architectural Material`}
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
+        ) : (
+          <ImagePlaceholder
+            label={`${material.name} — Hero`}
+            aspectRatio="16/9"
+          />
+        )}
       </div>
 
-      <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "clamp(28px, 5vw, 80px)", padding: "clamp(48px, 7vw, 110px) 0 0" }}>
+      {/* =========================================================
+          MATERIAL INTRODUCTION
+      ========================================================= */}
+
+      {(isGRC || isFRP || isTerracotta) && (
+        <section
+          style={{
+            padding: "clamp(70px, 10vw, 150px) 0 0",
+          }}
+        >
+          {/* =======================================================
+              INTRO
+          ======================================================= */}
+
+          <div
+            style={{
+              maxWidth: "900px",
+              marginBottom: "clamp(60px, 8vw, 110px)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.3em",
+                textTransform: "uppercase",
+                color: theme.color.accent,
+                marginBottom: 24,
+              }}
+            >
+              {specialContent.eyebrow}
+            </div>
+
+            <p
+              style={{
+                fontFamily: theme.font.serif,
+                fontSize: "clamp(28px, 4vw, 52px)",
+                lineHeight: 1.15,
+                letterSpacing: "-0.015em",
+                margin: 0,
+                color: theme.color.ink,
+              }}
+            >
+              {specialContent.intro}
+            </p>
+          </div>
+
+          {/* =======================================================
+              MATERIAL APPLICATIONS
+          ======================================================= */}
+
+          <div
+            style={{
+              borderTop: `1px solid ${theme.color.ink}`,
+            }}
+          >
+            <div
+              style={{
+                padding: "20px 0",
+                fontSize: 10,
+                letterSpacing: "0.3em",
+                textTransform: "uppercase",
+                color: theme.color.accent,
+              }}
+            >
+              {specialContent.applicationsLabel}
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                borderTop: `1px solid ${theme.color.border}`,
+              }}
+            >
+              {specialContent.applications.map((item, index) => (
+                <div
+                  key={item.title}
+                  style={{
+                    padding: "clamp(24px, 3vw, 38px) clamp(20px, 3vw, 34px)",
+                    borderRight: `1px solid ${theme.color.border}`,
+                    borderBottom: `1px solid ${theme.color.border}`,
+                    minHeight: 150,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    gap: 24,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: "0.18em",
+                      color: theme.color.accent,
+                    }}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+
+                  <div>
+                    <h3
+                      style={{
+                        fontFamily: theme.font.serif,
+                        fontSize: "clamp(21px, 2vw, 28px)",
+                        fontWeight: 400,
+                        lineHeight: 1.1,
+                        margin: "0 0 10px",
+                      }}
+                    >
+                      {item.title}
+                    </h3>
+
+                    <p
+                      style={{
+                        fontSize: 13,
+                        lineHeight: 1.6,
+                        color: theme.color.muted,
+                        margin: 0,
+                        maxWidth: "42ch",
+                      }}
+                    >
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* =======================================================
+              MATERIAL PRODUCTS
+          ======================================================= */}
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(180px, 0.6fr) minmax(300px, 1.4fr)",
+              gap: "clamp(30px, 6vw, 100px)",
+              padding: "clamp(70px, 9vw, 130px) 0",
+              borderBottom: `1px solid ${theme.color.border}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.3em",
+                textTransform: "uppercase",
+                color: theme.color.accent,
+              }}
+            >
+              {specialContent.productsLabel}
+            </div>
+
+            <div>
+              <p
+                style={{
+                  fontFamily: theme.font.serif,
+                  fontSize: "clamp(25px, 3vw, 40px)",
+                  lineHeight: 1.2,
+                  margin: 0,
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                {specialContent.productsText}
+                <br />
+                <br />
+                {specialContent.productsDescription}
+              </p>
+            </div>
+          </div>
+
+          {/* =======================================================
+              WHY CHOOSE BY DEVYORA
+          ======================================================= */}
+
+          <div
+            style={{
+              padding: "clamp(70px, 9vw, 130px) 0",
+              borderBottom: `1px solid ${theme.color.border}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.3em",
+                textTransform: "uppercase",
+                color: theme.color.accent,
+                marginBottom: "clamp(30px, 5vw, 55px)",
+              }}
+            >
+              Why Choose By Devyora?
+            </div>
+
+            <div>
+              {specialContent.whyChoose.map((item, index) => (
+                <div
+                  key={item.title}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "60px minmax(220px, 0.7fr) minmax(280px, 1.3fr)",
+                    gap: "clamp(15px, 3vw, 40px)",
+                    alignItems: "baseline",
+                    padding: "clamp(18px, 2.5vw, 28px) 0",
+                    borderTop:
+                      index === 0 ? `1px solid ${theme.color.border}` : "none",
+                    borderBottom: `1px solid ${theme.color.border}`,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: "0.15em",
+                      color: theme.color.accent,
+                    }}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <span
+                    style={{
+                      fontFamily: theme.font.serif,
+                      fontSize: "clamp(19px, 2vw, 26px)",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {item.title}
+                  </span>
+
+                  <span
+                    style={{
+                      fontSize: 13,
+                      lineHeight: 1.6,
+                      color: theme.color.muted,
+                    }}
+                  >
+                    {item.description}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* =======================================================
+              MATERIAL REQUIREMENT FORM
+          ======================================================= */}
+
+          <section
+            style={{
+              marginTop: "clamp(60px, 8vw, 110px)",
+              padding: "clamp(45px, 7vw, 85px) clamp(25px, 5vw, 70px)",
+              background: theme.color.ink,
+              color: "#FFFFFF",
+              display: "grid",
+              gridTemplateColumns: "minmax(260px, 0.8fr) minmax(320px, 1.2fr)",
+              gap: "clamp(45px, 8vw, 120px)",
+              alignItems: "start",
+            }}
+          >
+            {/* FORM INTRODUCTION */}
+
+            <div>
+              <div
+                style={{
+                  fontSize: 10,
+                  letterSpacing: "0.3em",
+                  textTransform: "uppercase",
+                  color: theme.color.accent,
+                  marginBottom: 24,
+                }}
+              >
+                {specialContent.ctaEyebrow}
+              </div>
+
+              <h2
+                style={{
+                  fontFamily: theme.font.serif,
+                  fontWeight: 400,
+                  fontSize: "clamp(36px, 5vw, 68px)",
+                  lineHeight: 0.98,
+                  letterSpacing: "-0.02em",
+                  margin: "0 0 28px",
+                }}
+              >
+                Bring your
+                <br />
+                drawing to life.
+              </h2>
+
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.7,
+                  color: "rgba(255,255,255,0.68)",
+                  maxWidth: "40ch",
+                  margin: 0,
+                }}
+              >
+                {specialContent.ctaDescription}
+              </p>
+            </div>
+
+            {/* REQUIREMENT FORM */}
+
+            <form
+              action="/contact"
+              method="GET"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+              }}
+            >
+              {/* NAME */}
+
+              <div
+                style={{
+                  borderTop: "1px solid rgba(255,255,255,0.25)",
+                }}
+              >
+                <label
+                  htmlFor={`${materialSlug}-name`}
+                  style={{
+                    display: "block",
+                    paddingTop: 14,
+                    marginBottom: 7,
+                    fontSize: 9,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: theme.color.accent,
+                  }}
+                >
+                  Name
+                </label>
+
+                <input
+                  id={`${materialSlug}-name`}
+                  name="name"
+                  type="text"
+                  placeholder="Your name"
+                  autoComplete="name"
+                  required
+                  style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    color: "#FFFFFF",
+                    fontFamily: "inherit",
+                    fontSize: 15,
+                    padding: "8px 0 18px",
+                  }}
+                />
+              </div>
+
+              {/* EMAIL */}
+
+              <div
+                style={{
+                  borderTop: "1px solid rgba(255,255,255,0.25)",
+                }}
+              >
+                <label
+                  htmlFor={`${materialSlug}-email`}
+                  style={{
+                    display: "block",
+                    paddingTop: 14,
+                    marginBottom: 7,
+                    fontSize: 9,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: theme.color.accent,
+                  }}
+                >
+                  Email
+                </label>
+
+                <input
+                  id={`${materialSlug}-email`}
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                  required
+                  style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    color: "#FFFFFF",
+                    fontFamily: "inherit",
+                    fontSize: 15,
+                    padding: "8px 0 18px",
+                  }}
+                />
+              </div>
+
+              {/* PHONE */}
+
+              <div
+                style={{
+                  borderTop: "1px solid rgba(255,255,255,0.25)",
+                }}
+              >
+                <label
+                  htmlFor={`${materialSlug}-phone`}
+                  style={{
+                    display: "block",
+                    paddingTop: 14,
+                    marginBottom: 7,
+                    fontSize: 9,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: theme.color.accent,
+                  }}
+                >
+                  Phone
+                </label>
+
+                <input
+                  id={`${materialSlug}-phone`}
+                  name="phone"
+                  type="tel"
+                  placeholder="+91 XXXXX XXXXX"
+                  autoComplete="tel"
+                  required
+                  style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    color: "#FFFFFF",
+                    fontFamily: "inherit",
+                    fontSize: 15,
+                    padding: "8px 0 18px",
+                  }}
+                />
+              </div>
+
+              {/* REQUIREMENTS */}
+
+              <div
+                style={{
+                  borderTop: "1px solid rgba(255,255,255,0.25)",
+                  borderBottom: "1px solid rgba(255,255,255,0.25)",
+                }}
+              >
+                <label
+                  htmlFor={`${materialSlug}-requirements`}
+                  style={{
+                    display: "block",
+                    paddingTop: 14,
+                    marginBottom: 7,
+                    fontSize: 9,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: theme.color.accent,
+                  }}
+                >
+                  Project Requirements
+                </label>
+
+                <textarea
+                  id={`${materialSlug}-requirements`}
+                  name="requirements"
+                  placeholder="Tell us about your project, dimensions, quantity, design or requirements..."
+                  required
+                  rows={5}
+                  style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    border: "none",
+                    outline: "none",
+                    resize: "vertical",
+                    background: "transparent",
+                    color: "#FFFFFF",
+                    fontFamily: "inherit",
+                    fontSize: 15,
+                    lineHeight: 1.6,
+                    padding: "8px 0 18px",
+                  }}
+                />
+              </div>
+
+              {/* SUBMIT */}
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  paddingTop: 28,
+                }}
+              >
+                <button
+                  type="submit"
+                  style={{
+                    border: "none",
+                    background: "#FFFFFF",
+                    color: theme.color.ink,
+                    padding: "15px 28px",
+                    fontSize: 10,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  Submit Requirement →
+                </button>
+              </div>
+            </form>
+          </section>
+        </section>
+      )}
+
+      {/* =========================================================
+          SPECIFICATION + APPLICATIONS
+      ========================================================= */}
+
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "clamp(28px, 5vw, 80px)",
+          padding: "clamp(48px, 7vw, 110px) 0 0",
+        }}
+      >
+        {/* =======================================================
+            SPECIFICATION
+        ======================================================= */}
+
         <div>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 18, borderBottom: `1px solid ${theme.color.ink}` }}>
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 18,
+              borderBottom: `1px solid ${theme.color.ink}`,
+            }}
+          >
             Specification
           </div>
+
           {material.specs.map((s) => (
-            <div key={s.id} style={{ display: "flex", justifyContent: "space-between", gap: 24, padding: "16px 0", borderBottom: `1px solid ${theme.color.border}`, fontSize: 14 }}>
-              <span style={{ color: theme.color.muted }}>{s.key}</span>
-              <span style={{ textAlign: "right" }}>{s.value}</span>
+            <div
+              key={s.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 24,
+                padding: "16px 0",
+                borderBottom: `1px solid ${theme.color.border}`,
+                fontSize: 14,
+              }}
+            >
+              <span
+                style={{
+                  color: theme.color.muted,
+                }}
+              >
+                {s.key}
+              </span>
+
+              <span
+                style={{
+                  textAlign: "right",
+                }}
+              >
+                {s.value}
+              </span>
             </div>
           ))}
         </div>
+
+        {/* =======================================================
+            APPLICATIONS
+        ======================================================= */}
+
         <div>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 18, borderBottom: `1px solid ${theme.color.ink}` }}>
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 18,
+              borderBottom: `1px solid ${theme.color.ink}`,
+            }}
+          >
             Applications
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, paddingTop: 22 }}>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10,
+              paddingTop: 22,
+            }}
+          >
             {material.applications.map((a) => (
               <Link
                 key={a.id}
-                href={topCities[0] ? `/materials/${material.slug}/${a.slug}/${topCities[0].slug}` : "#"}
-                style={{ padding: "8px 16px", border: `1px solid ${theme.color.border}`, fontSize: 12, color: theme.color.muted }}
+                href={
+                  topCities[0]
+                    ? `/materials/${material.slug}/${a.slug}/${topCities[0].slug}`
+                    : "#"
+                }
+                style={{
+                  padding: "8px 16px",
+                  border: `1px solid ${theme.color.border}`,
+                  fontSize: 12,
+                  color: theme.color.muted,
+                }}
               >
                 {a.label}
               </Link>
@@ -97,18 +1083,45 @@ export default async function MaterialDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* City coverage — surfaces the automatically-generated location pages so search engines and visitors can discover them via internal links, not just the sitemap */}
+      {/* =========================================================
+          CITY COVERAGE
+      ========================================================= */}
+
       {topCities.length > 0 && material.applications[0] && (
-        <section style={{ padding: "clamp(40px, 6vw, 72px) 0 0" }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 18, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: 22 }}>
+        <section
+          style={{
+            padding: "clamp(40px, 6vw, 72px) 0 0",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 18,
+              borderBottom: `1px solid ${theme.color.ink}`,
+              marginBottom: 22,
+            }}
+          >
             {material.name} {material.applications[0].label}, by city
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 8,
+            }}
+          >
             {topCities.map((c) => (
               <Link
                 key={c.id}
                 href={`/materials/${material.slug}/${material.applications[0].slug}/${c.slug}`}
-                style={{ fontSize: 12, color: theme.color.accent }}
+                style={{
+                  fontSize: 12,
+                  color: theme.color.accent,
+                }}
               >
                 {c.name}
               </Link>
@@ -117,44 +1130,169 @@ export default async function MaterialDetailPage({ params }: PageProps) {
         </section>
       )}
 
-      {/* Products built on this material */}
+      {/* =========================================================
+          PRODUCTS BUILT ON THIS MATERIAL
+      ========================================================= */}
+
       {material.products.length > 0 && (
-        <section style={{ padding: "clamp(56px, 9vw, 130px) 0 0" }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: 28 }}>
+        <section
+          style={{
+            padding: "clamp(56px, 9vw, 130px) 0 0",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 20,
+              borderBottom: `1px solid ${theme.color.ink}`,
+              marginBottom: 28,
+            }}
+          >
             Products in this system
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "clamp(20px, 3vw, 32px)" }}>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+              gap: "clamp(20px, 3vw, 32px)",
+            }}
+          >
             {material.products.map((p) => (
-              <ProductLink key={p.id} href={`/products/${p.slug}`} title={p.name} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <Link
+                key={p.id}
+                href={`/products/${p.slug}`}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                }}
+              >
                 <ImagePlaceholder label={p.name} />
-                <span style={{ fontFamily: theme.font.serif, fontSize: 20 }}>{p.name}</span>
-                {p.shortDescription && <span style={{ fontSize: 12, color: theme.color.muted }}>{p.shortDescription}</span>}
-              </ProductLink>
+
+                <span
+                  style={{
+                    fontFamily: theme.font.serif,
+                    fontSize: 20,
+                  }}
+                >
+                  {p.name}
+                </span>
+
+                {p.shortDescription && (
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: theme.color.muted,
+                    }}
+                  >
+                    {p.shortDescription}
+                  </span>
+                )}
+              </Link>
             ))}
           </div>
         </section>
       )}
 
-      {/* Related systems */}
+      {/* =========================================================
+          RELATED SYSTEMS
+      ========================================================= */}
+
       {related.length > 0 && (
-        <section style={{ padding: "clamp(56px, 9vw, 130px) 0 0" }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}` }}>
+        <section
+          style={{
+            padding: "clamp(56px, 9vw, 130px) 0 0",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 20,
+              borderBottom: `1px solid ${theme.color.ink}`,
+            }}
+          >
             Related systems
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+              gap: 1,
+              background: theme.color.border,
+            }}
+          >
             {related.map((r) => (
-              <TransitionLink key={r.id} href={`/materials/${r.slug}`} title={r.name} style={{ background: "#FFFFFF", padding: "clamp(24px, 3vw, 40px) clamp(18px, 2vw, 28px)", display: "flex", flexDirection: "column", gap: 12, borderRight: `1px solid ${theme.color.border}`, borderBottom: `1px solid ${theme.color.border}` }}>
-                <span style={{ fontSize: 11, letterSpacing: "0.2em", color: theme.color.accent }}>{String(r.num).padStart(3, "0")}</span>
-                <span style={{ fontFamily: theme.font.serif, fontSize: "clamp(24px, 2.4vw, 34px)", lineHeight: 1.05 }}>{r.name}</span>
-                <span style={{ fontSize: 13, color: theme.color.muted }}>{r.tagline}</span>
-              </TransitionLink>
+              <Link
+                key={r.id}
+                href={`/materials/${r.slug}`}
+                style={{
+                  background: "#FFFFFF",
+                  padding: "clamp(24px, 3vw, 40px) clamp(18px, 2vw, 28px)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 11,
+                    letterSpacing: "0.2em",
+                    color: theme.color.accent,
+                  }}
+                >
+                  {String(r.num).padStart(3, "0")}
+                </span>
+
+                <span
+                  style={{
+                    fontFamily: theme.font.serif,
+                    fontSize: "clamp(24px, 2.4vw, 34px)",
+                    lineHeight: 1.05,
+                  }}
+                >
+                  {r.name}
+                </span>
+
+                <span
+                  style={{
+                    fontSize: 13,
+                    color: theme.color.muted,
+                  }}
+                >
+                  {r.tagline}
+                </span>
+              </Link>
             ))}
           </div>
         </section>
       )}
 
-      <div style={{ paddingTop: "clamp(48px, 7vw, 96px)" }}>
-        <Link href="/materials" style={{ fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: theme.color.muted }}>
+      {/* =========================================================
+          BACK TO ALL PRODUCTS
+      ========================================================= */}
+
+      <div
+        style={{
+          paddingTop: "clamp(48px, 7vw, 96px)",
+        }}
+      >
+        <Link
+          href="/materials"
+          style={{
+            fontSize: 11,
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            color: theme.color.muted,
+          }}
+        >
           ← All products
         </Link>
       </div>

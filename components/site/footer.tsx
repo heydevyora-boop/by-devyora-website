@@ -17,9 +17,9 @@ export function SiteFooter() {
       <Image
         src="/images/logo.png"
         alt="By Devyora"
-        width={146}
-        height={80}
-        style={{ height: 20, width: "auto" }}
+        width={653}
+        height={112}
+        style={{ height: 34, width: "auto" }}
       />
       <span>
         Architectural products
@@ -27,9 +27,9 @@ export function SiteFooter() {
         made to drawing.
       </span>
       <span>
-      by@devyora.com
+        studio@bydevyora.com
         <br />
-        +91 87659492**
+        +91 000 000 0000
       </span>
       <span style={{ fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase" }}>© 2026</span>
     </footer>

@@ -18,13 +18,17 @@ export async function generateStaticParams() {
 
 export const revalidate = 3600;
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await ProductRepository.findBySlug(slug);
   if (!product) return {};
   return buildMetadata({
     title: product.name,
-    description: product.shortDescription ?? `${product.name} — a ${product.material.name} product from By Devyora, made to drawing.`,
+    description:
+      product.shortDescription ??
+      `${product.name} — a ${product.material.name} product from By Devyora, made to drawing.`,
     path: `/products/${product.slug}`,
     image: product.images[0]?.url ?? undefined,
     type: "product",
@@ -43,7 +47,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const related = await ProductRepository.findRelated(product, 4);
 
   return (
-    <main style={{ padding: `clamp(48px, 8vw, 110px) ${pagePadX} clamp(64px, 10vw, 160px)` }}>
+    <main
+      style={{
+        padding: `clamp(48px, 8vw, 110px) ${pagePadX} clamp(64px, 10vw, 160px)`,
+      }}
+    >
       <JsonLd
         data={productJsonLd({
           name: product.name,
@@ -64,22 +72,56 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <Breadcrumbs
         items={[
           { name: "Products", path: "/materials" },
-          { name: product.material.name, path: `/materials/${product.material.slug}` },
-          ...(product.category ? [{ name: product.category.name, path: `/categories/${product.category.slug}` }] : []),
+          {
+            name: product.material.name,
+            path: `/materials/${product.material.slug}`,
+          },
+          ...(product.category
+            ? [
+                {
+                  name: product.category.name,
+                  path: `/categories/${product.category.slug}`,
+                },
+              ]
+            : []),
           { name: product.name, path: `/products/${product.slug}` },
         ]}
       />
 
-      <h1 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(36px, 5vw, 64px)", lineHeight: 1.02, letterSpacing: "-0.015em", margin: "0 0 12px" }}>
+      <h1
+        style={{
+          fontFamily: theme.font.serif,
+          fontWeight: 400,
+          fontSize: "clamp(36px, 5vw, 64px)",
+          lineHeight: 1.02,
+          letterSpacing: "-0.015em",
+          margin: "0 0 12px",
+        }}
+      >
         {product.name}
       </h1>
       {product.shortDescription && (
-        <p style={{ fontSize: 15, color: theme.color.muted, maxWidth: "60ch", marginBottom: "clamp(32px, 5vw, 56px)" }}>{product.shortDescription}</p>
+        <p
+          style={{
+            fontSize: 15,
+            color: theme.color.muted,
+            maxWidth: "60ch",
+            marginBottom: "clamp(32px, 5vw, 56px)",
+          }}
+        >
+          {product.shortDescription}
+        </p>
       )}
 
       <ProductDetailInteractive
         productName={product.name}
-        images={product.images.map((img) => ({ id: img.id, url: img.url, alt: img.alt, variantId: img.variantId, isPrimary: img.isPrimary }))}
+        images={product.images.map((img) => ({
+          id: img.id,
+          url: img.url,
+          alt: img.alt,
+          variantId: img.variantId,
+          isPrimary: img.isPrimary,
+        }))}
         variants={product.variants.map((v) => ({
           id: v.id,
           sku: v.sku,
@@ -95,18 +137,53 @@ export default async function ProductDetailPage({ params }: PageProps) {
       />
 
       {product.description && (
-        <section style={{ padding: "clamp(48px, 7vw, 88px) 0 0", borderTop: `1px solid ${theme.color.border}`, marginTop: "clamp(48px, 7vw, 88px)" }}>
-          <p style={{ maxWidth: "68ch", fontSize: 15, lineHeight: 1.75, color: "#4A4844" }}>{product.description}</p>
+        <section
+          style={{
+            padding: "clamp(48px, 7vw, 88px) 0 0",
+            borderTop: `1px solid ${theme.color.border}`,
+            marginTop: "clamp(48px, 7vw, 88px)",
+          }}
+        >
+          <p
+            style={{
+              maxWidth: "68ch",
+              fontSize: 15,
+              lineHeight: 1.75,
+              color: "#4A4844",
+            }}
+          >
+            {product.description}
+          </p>
         </section>
       )}
 
       {product.specifications.length > 0 && (
         <section style={{ padding: "clamp(40px, 6vw, 72px) 0 0" }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 18, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: 4 }}>
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 18,
+              borderBottom: `1px solid ${theme.color.ink}`,
+              marginBottom: 4,
+            }}
+          >
             Specification
           </div>
           {product.specifications.map((s) => (
-            <div key={s.id} style={{ display: "flex", justifyContent: "space-between", gap: 24, padding: "14px 0", borderBottom: `1px solid ${theme.color.border}`, fontSize: 14 }}>
+            <div
+              key={s.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 24,
+                padding: "14px 0",
+                borderBottom: `1px solid ${theme.color.border}`,
+                fontSize: 14,
+              }}
+            >
               <span style={{ color: theme.color.muted }}>{s.key}</span>
               <span style={{ textAlign: "right" }}>{s.value}</span>
             </div>
@@ -116,7 +193,17 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
       {product.downloads.length > 0 && (
         <section style={{ padding: "clamp(40px, 6vw, 72px) 0 0" }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 18, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: 4 }}>
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 18,
+              borderBottom: `1px solid ${theme.color.ink}`,
+              marginBottom: 4,
+            }}
+          >
             Downloads
           </div>
           {product.downloads.map((d) => (
@@ -125,11 +212,30 @@ export default async function ProductDetailPage({ params }: PageProps) {
               href={d.fileUrl}
               target="_blank"
               rel="noreferrer"
-              style={{ display: "grid", gridTemplateColumns: "1fr auto auto", alignItems: "center", gap: 24, padding: "16px 0", borderBottom: `1px solid ${theme.color.border}`, fontSize: 14 }}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr auto auto",
+                alignItems: "center",
+                gap: 24,
+                padding: "16px 0",
+                borderBottom: `1px solid ${theme.color.border}`,
+                fontSize: 14,
+              }}
             >
               <span>{d.name}</span>
-              <span style={{ fontSize: 12, color: theme.color.muted }}>{formatBytes(d.fileSize)}</span>
-              <span style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: theme.color.accent }}>Download ↓</span>
+              <span style={{ fontSize: 12, color: theme.color.muted }}>
+                {formatBytes(d.fileSize)}
+              </span>
+              <span
+                style={{
+                  fontSize: 11,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: theme.color.accent,
+                }}
+              >
+                Download ↓
+              </span>
             </a>
           ))}
         </section>
@@ -137,14 +243,37 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
       {related.length > 0 && (
         <section style={{ padding: "clamp(56px, 9vw, 130px) 0 0" }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: 28 }}>
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: theme.color.accent,
+              paddingBottom: 20,
+              borderBottom: `1px solid ${theme.color.ink}`,
+              marginBottom: 28,
+            }}
+          >
             You might also specify
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "clamp(20px, 3vw, 32px)" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: "clamp(20px, 3vw, 32px)",
+            }}
+          >
             {related.map((p) => (
-              <ProductLink key={p.id} href={`/products/${p.slug}`} title={p.name} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <ProductLink
+                key={p.id}
+                href={`/products/${p.slug}`}
+                title={p.name}
+                style={{ display: "flex", flexDirection: "column", gap: 12 }}
+              >
                 <ImagePlaceholder label={p.name} />
-                <span style={{ fontFamily: theme.font.serif, fontSize: 20 }}>{p.name}</span>
+                <span style={{ fontFamily: theme.font.serif, fontSize: 20 }}>
+                  {p.name}
+                </span>
               </ProductLink>
             ))}
           </div>
