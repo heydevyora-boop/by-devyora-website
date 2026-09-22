@@ -52,7 +52,7 @@ export function ProductDetailInteractive({ productName, images, variants }: Prod
   const current = shownImages[Math.min(activeImage, shownImages.length - 1)];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "clamp(28px, 5vw, 64px)" }}>
+    <div className="grid-stack-tablet" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "clamp(28px, 5vw, 64px)" }}>
       {/* Gallery */}
       <div>
         <div style={{ aspectRatio: "4/3", background: theme.color.mutedBg, border: `1px solid ${theme.color.border}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
@@ -70,7 +70,7 @@ export function ProductDetailInteractive({ productName, images, variants }: Prod
           )}
         </div>
         {shownImages.length > 1 && (
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {shownImages.map((img, i) => (
               <button
                 key={img.id}

@@ -74,7 +74,7 @@ export default async function JournalPage({ searchParams }: { searchParams: Prom
       {items.length === 0 ? (
         <p style={{ color: theme.color.muted }}>No posts match this filter yet.</p>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(28px, 4vw, 48px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "clamp(28px, 4vw, 48px)" }}>
           {items.map((post) => (
             <Link key={post.id} href={`/journal/${post.slug}`} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <ImagePlaceholder label={post.title} aspectRatio="3/2" />

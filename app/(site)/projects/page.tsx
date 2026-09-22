@@ -39,7 +39,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
   return (
     <main style={{ padding: `clamp(48px, 9vw, 130px) ${pagePadX} 0` }}>
       <Breadcrumbs items={[{ name: "Projects", path: "/projects" }]} />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(28px, 5vw, 80px)", alignItems: "end", paddingBottom: "clamp(40px, 6vw, 84px)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "clamp(28px, 5vw, 80px)", alignItems: "end", paddingBottom: "clamp(40px, 6vw, 84px)" }}>
         <div>
           <Eyebrow>Portfolio</Eyebrow>
           <h1 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(54px, 10vw, 150px)", lineHeight: 0.9, letterSpacing: "-0.02em", margin: 0 }}>
@@ -76,7 +76,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
         })}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: "clamp(28px, 4vw, 56px)", padding: "clamp(36px, 5vw, 64px) 0 clamp(64px, 8vw, 120px)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))", gap: "clamp(28px, 4vw, 56px)", padding: "clamp(36px, 5vw, 64px) 0 clamp(64px, 8vw, 120px)" }}>
         {projects.map((p) => (
           <TransitionLink key={p.id} href={`/projects/${p.slug}`} title={p.name} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <ImagePlaceholder label={p.name} aspectRatio="16/10" />

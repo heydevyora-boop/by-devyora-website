@@ -30,7 +30,7 @@ export default async function ManufacturingPage() {
         </h1>
       </section>
 
-      <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <div style={{ padding: `clamp(48px, 7vw, 96px) clamp(28px, 4vw, 56px)`, display: "flex", flexDirection: "column", justifyContent: "center", gap: "clamp(20px, 3vw, 28px)" }}>
           <Eyebrow>Factory Overview</Eyebrow>
           <h2 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1, letterSpacing: "-0.015em", margin: 0 }}>
@@ -50,7 +50,7 @@ export default async function ManufacturingPage() {
         <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: "clamp(36px, 5vw, 64px)" }}>
           Manufacturing Process
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
           {steps.map((s) => (
             <div key={s.id} style={{ background: "#FFFFFF", padding: "clamp(28px, 3.5vw, 48px) clamp(20px, 2.5vw, 32px)", display: "flex", flexDirection: "column", gap: 16, borderRight: `1px solid ${theme.color.border}`, borderBottom: `1px solid ${theme.color.border}` }}>
               <span style={{ fontSize: 11, letterSpacing: "0.2em", color: theme.color.accent, fontVariantNumeric: "tabular-nums" }}>{s.num}</span>
@@ -62,7 +62,7 @@ export default async function ManufacturingPage() {
       </section>
 
       <section style={{ padding: `clamp(64px, 10vw, 160px) ${pagePadX}`, background: theme.color.ink, color: "#FFFFFF" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(28px, 5vw, 80px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "clamp(28px, 5vw, 80px)" }}>
           <div>
             <Eyebrow>Quality Standards</Eyebrow>
             <h2 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1, letterSpacing: "-0.015em", margin: 0 }}>
@@ -86,7 +86,7 @@ export default async function ManufacturingPage() {
         <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: "clamp(36px, 5vw, 64px)" }}>
           Infrastructure
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "clamp(20px, 3vw, 36px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(200px, 100%), 1fr))", gap: "clamp(20px, 3vw, 36px)" }}>
           {infra.map((inf) => (
             <div key={inf.id} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <span style={{ fontFamily: theme.font.serif, fontSize: "clamp(36px, 4vw, 56px)", lineHeight: 1, letterSpacing: "-0.02em" }}>{inf.value}</span>

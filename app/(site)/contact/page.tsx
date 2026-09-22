@@ -28,7 +28,7 @@ export default async function ContactPage() {
       <ImagePlaceholder label="Google Map — Gurugram" aspectRatio="21/7" />
 
       <div style={{ padding: `clamp(48px, 7vw, 96px) ${pagePadX} clamp(64px, 10vw, 160px)` }}>
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "clamp(28px, 4vw, 56px)", paddingBottom: "clamp(48px, 7vw, 96px)", borderBottom: `1px solid ${theme.color.border}` }}>
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "clamp(28px, 4vw, 56px)", paddingBottom: "clamp(48px, 7vw, 96px)", borderBottom: `1px solid ${theme.color.border}` }}>
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, marginBottom: 8 }}>Head Office</div>
             <span style={{ fontSize: 15, lineHeight: 1.6, color: "#4A4844" }}>Industrial Area, Sector 82<br />Gurugram, Haryana 122004<br />India</span>
@@ -51,7 +51,7 @@ export default async function ContactPage() {
           <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: "clamp(28px, 4vw, 44px)" }}>
             Offices & Showrooms
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
             {branches.map((br) => (
               <div key={br.id} style={{ background: "#FFFFFF", padding: "clamp(24px, 3vw, 40px)", display: "flex", flexDirection: "column", gap: 12, borderRight: `1px solid ${theme.color.border}`, borderBottom: `1px solid ${theme.color.border}` }}>
                 <span style={{ fontFamily: theme.font.serif, fontSize: "clamp(20px, 1.8vw, 26px)", lineHeight: 1.15 }}>{br.city}</span>

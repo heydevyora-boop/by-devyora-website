@@ -3,6 +3,7 @@ import { MaterialRepository } from "@/lib/repositories/material.repository";
 import { pagePadX, theme } from "@/lib/theme";
 import { TransitionLink } from "./transition-link";
 import { ProductNavDropdown } from "./product-nav-dropdown";
+import { MobileNav } from "./mobile-nav";
 
 const NAV = [
   { href: "/projects", label: "Projects" },
@@ -73,6 +74,7 @@ export async function SiteHeader() {
       </TransitionLink>
 
       <nav
+        className="desktop-nav"
         style={{
           display: "flex",
           flexWrap: "wrap",
@@ -94,6 +96,8 @@ export async function SiteHeader() {
           </TransitionLink>
         ))}
       </nav>
+
+      <MobileNav nav={NAV} products={productMenu} />
     </header>
   );
 }
