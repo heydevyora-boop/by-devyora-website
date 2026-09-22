@@ -73,7 +73,7 @@ export default async function CategoryPage({ params }: PageProps) {
       {category.products.length === 0 ? (
         <p style={{ color: theme.color.muted, fontSize: 14 }}>No products in this category yet.</p>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "clamp(20px, 3vw, 32px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))", gap: "clamp(20px, 3vw, 32px)" }}>
           {category.products.map((p) => (
             <ProductLink key={p.id} href={`/products/${p.slug}`} title={p.name} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <ImagePlaceholder label={p.name} />

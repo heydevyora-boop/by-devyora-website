@@ -8,7 +8,7 @@ export function SiteFooter() {
         borderTop: `1px solid ${theme.color.border}`,
         padding: `clamp(36px, 5vw, 64px) ${pagePadX}`,
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))",
         gap: 28,
         fontSize: 12,
         color: theme.color.muted,

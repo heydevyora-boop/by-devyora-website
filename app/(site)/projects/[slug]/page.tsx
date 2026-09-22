@@ -46,7 +46,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <div style={{ paddingTop: "clamp(24px, 4vw, 40px)" }}>
           <Breadcrumbs items={[{ name: "Projects", path: "/projects" }, { name: project.name, path: `/projects/${project.slug}` }]} />
         </div>
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "clamp(28px, 5vw, 80px)", padding: "clamp(24px, 4vw, 48px) 0 clamp(48px, 7vw, 96px)" }}>
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "clamp(28px, 5vw, 80px)", padding: "clamp(24px, 4vw, 48px) 0 clamp(48px, 7vw, 96px)" }}>
           <div>
             <h1 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(40px, 6vw, 80px)", lineHeight: 0.95, letterSpacing: "-0.02em", margin: "0 0 clamp(24px, 3vw, 40px)" }}>
               {project.name}
@@ -68,7 +68,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(12px, 1.5vw, 20px)", paddingBottom: "clamp(48px, 7vw, 96px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "clamp(12px, 1.5vw, 20px)", paddingBottom: "clamp(48px, 7vw, 96px)" }}>
           <ImagePlaceholder label="Gallery 1" />
           <ImagePlaceholder label="Gallery 2" />
           <ImagePlaceholder label="Gallery 3" />
@@ -91,7 +91,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <h2 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(28px, 3.5vw, 44px)", margin: "0 0 clamp(28px, 4vw, 48px)" }}>
               Related projects
             </h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "clamp(28px, 4vw, 56px)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "clamp(28px, 4vw, 56px)" }}>
               {related.map((rp) => (
                 <TransitionLink key={rp.id} href={`/projects/${rp.slug}`} title={rp.name} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <ImagePlaceholder label={rp.name} aspectRatio="16/10" />

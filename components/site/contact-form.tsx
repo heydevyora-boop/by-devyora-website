@@ -82,7 +82,7 @@ export function ContactForm() {
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(28px, 5vw, 80px)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "clamp(28px, 5vw, 80px)" }}>
         <div>
           <h2 style={{ fontFamily: theme.font.serif, fontWeight: 400, fontSize: "clamp(28px, 3.5vw, 44px)", lineHeight: 1.05, margin: "0 0 16px" }}>
             {cfg.title}

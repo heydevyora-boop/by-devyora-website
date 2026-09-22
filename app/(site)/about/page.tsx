@@ -63,7 +63,7 @@ export default function AboutPage() {
         <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: "clamp(28px, 4vw, 44px)" }}>
           What we stand for
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
           {VALUES.map((v) => (
             <div key={v.title}>
               <h3 style={{ fontFamily: theme.font.serif, fontSize: 26, margin: "0 0 12px" }}>{v.title}</h3>
@@ -93,7 +93,7 @@ export default function AboutPage() {
         <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, paddingBottom: 20, borderBottom: `1px solid ${theme.color.ink}`, marginBottom: "clamp(28px, 4vw, 44px)" }}>
           Leadership
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "clamp(28px, 4vw, 48px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: "clamp(28px, 4vw, 48px)" }}>
           {LEADERS.map((l) => (
             <div key={l.name}>
               <ImagePlaceholder label="Founder — Portrait" aspectRatio="4/5" />
@@ -110,7 +110,7 @@ export default function AboutPage() {
         <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, marginBottom: "clamp(28px, 4vw, 44px)" }}>
           Where we work
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
           {REGIONS.map((r) => (
             <div key={r.region}>
               <h3 style={{ fontFamily: theme.font.serif, fontSize: 22, margin: "0 0 10px" }}>{r.region}</h3>

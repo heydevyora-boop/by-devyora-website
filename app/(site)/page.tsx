@@ -38,7 +38,7 @@ export default async function HomePage() {
       <section
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))",
           gap: "clamp(28px, 5vw, 80px)",
           alignItems: "end",
           padding: `clamp(100px, 14vw, 180px) ${pagePadX} clamp(48px, 7vw, 96px)`,
@@ -80,7 +80,7 @@ export default async function HomePage() {
             View all →
           </Link>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(220px, 100%), 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
           {topMaterials.map((m) => (
             <TransitionLink
               key={m.id}
@@ -105,7 +105,7 @@ export default async function HomePage() {
               All projects →
             </Link>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "clamp(28px, 4vw, 56px)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: "clamp(28px, 4vw, 56px)" }}>
             {featuredProjects.map((p) => (
               <TransitionLink key={p.id} href={`/projects/${p.slug}`} title={p.name} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 <ImagePlaceholder label={p.name} aspectRatio="16/10" />
@@ -123,7 +123,7 @@ export default async function HomePage() {
       {topDownloads.length > 0 && (
         <section style={{ padding: `clamp(48px, 7vw, 96px) ${pagePadX}` }}>
           <SectionLabel>Resources</SectionLabel>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", borderTop: `1px solid ${theme.color.border}`, borderLeft: `1px solid ${theme.color.border}` }}>
             {topDownloads.map((d) => (
               <div key={d.id} style={{ background: "#FFFFFF", padding: "clamp(20px, 2.5vw, 32px)", display: "flex", flexDirection: "column", gap: 8, borderRight: `1px solid ${theme.color.border}`, borderBottom: `1px solid ${theme.color.border}` }}>
                 <span style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: theme.color.accent }}>{d.category}</span>
@@ -146,7 +146,7 @@ export default async function HomePage() {
               Read the journal →
             </Link>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
             {topPosts.map((post) => (
               <Link key={post.id} href={`/journal/${post.slug}`} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <span style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: theme.color.accent }}>

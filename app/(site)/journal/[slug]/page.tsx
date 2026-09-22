@@ -91,7 +91,7 @@ export default async function JournalPostPage({ params }: PageProps) {
       {related.length > 0 && (
         <section style={{ paddingTop: "clamp(48px, 7vw, 80px)", borderTop: `1px solid ${theme.color.border}` }}>
           <h2 style={{ fontFamily: theme.font.serif, fontSize: "clamp(24px, 3vw, 34px)", marginBottom: 28 }}>More from {post.category.name}</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "clamp(24px, 3vw, 40px)" }}>
             {related.map((r) => (
               <Link key={r.id} href={`/journal/${r.slug}`} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <ImagePlaceholder label={r.title} aspectRatio="3/2" />

@@ -1,3 +1,18 @@
+/* box-sizing reset — applies everywhere, for the same reason as the `a`
+   reset below. Nothing in this codebase sets box-sizing, so it defaults to
+   content-box: any element that combines `width: 100%` (or a fixed width)
+   with padding or a border — every form input/textarea/select styled with
+   `inputStyle` across the site, for instance — renders wider than its
+   parent by exactly that padding/border, which is what was pushing form
+   fields past the viewport edge on narrower screens. border-box is the
+   standard fix and doesn't change how anything already looks: it only
+   changes what `width` measures, so already-correct layouts are unaffected. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* Global reset — applies everywhere (public site + admin + login), since
    app/layout.tsx is the one root layout every route renders under.
 
@@ -51,5 +66,25 @@ a {
 @media (max-width: 480px) {
   .header-tagline {
     display: none !important;
+  }
+}
+
+/* Detail-page grids built with fixed minmax() column ratios (not
+   auto-fit/auto-fill) don't reflow on their own — each column simply gets
+   squeezed below its own minmax floor and the row overflows the viewport
+   instead of wrapping. Stack those to one column below tablet width; desktop
+   is untouched since this rule only exists inside the media query. */
+@media (max-width: 860px) {
+  .grid-stack-tablet {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Materials listing "all systems" grid (app/(site)/materials/page.tsx) — a
+   fixed 3-column grid that's comfortable down to tablet width but too
+   cramped once a phone-width column drops under ~200px. */
+@media (max-width: 640px) {
+  .grid-cols-3-to-1-phone {
+    grid-template-columns: 1fr !important;
   }
 }

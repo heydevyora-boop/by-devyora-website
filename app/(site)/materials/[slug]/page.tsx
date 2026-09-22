@@ -527,7 +527,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))",
                 borderTop: `1px solid ${theme.color.border}`,
               }}
             >
@@ -590,6 +590,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           ======================================================= */}
 
           <div
+            className="grid-stack-tablet"
             style={{
               display: "grid",
               gridTemplateColumns: "minmax(180px, 0.6fr) minmax(300px, 1.4fr)",
@@ -653,6 +654,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
               {specialContent.whyChoose.map((item, index) => (
                 <div
                   key={item.title}
+                  className="grid-stack-tablet"
                   style={{
                     display: "grid",
                     gridTemplateColumns:
@@ -704,6 +706,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           ======================================================= */}
 
           <section
+            className="grid-stack-tablet"
             style={{
               marginTop: "clamp(60px, 8vw, 110px)",
               padding: "clamp(45px, 7vw, 85px) clamp(25px, 5vw, 70px)",
@@ -981,7 +984,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
       <section
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
           gap: "clamp(28px, 5vw, 80px)",
           padding: "clamp(48px, 7vw, 110px) 0 0",
         }}
@@ -1157,7 +1160,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
               gap: "clamp(20px, 3vw, 32px)",
             }}
           >
@@ -1224,7 +1227,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(230px, 100%), 1fr))",
               gap: 1,
               background: theme.color.border,
             }}
