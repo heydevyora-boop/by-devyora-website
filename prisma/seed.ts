@@ -181,9 +181,12 @@ async function main() {
   // free catalogue number, so this is safe on a database that already has data.
   for (const m of NEW_MATERIALS) {
     const existing = await prisma.material.findUnique({ where: { slug: m.slug } });
-    if (existing) continue;
+    if (existing) {
+      materialRecords[m.name] = existing.id;
+      continue;
+    }
     const { _max } = await prisma.material.aggregate({ _max: { num: true } });
-    await prisma.material.create({
+    const rec = await prisma.material.create({
       data: {
         num: (_max.num ?? 0) + 1,
         slug: m.slug,
@@ -191,6 +194,7 @@ async function main() {
         tagline: `${m.name} by Devyora.`,
       },
     });
+    materialRecords[m.name] = rec.id;
   }
 
   // Safe mode for databases that are already seeded: only the materials above
@@ -249,6 +253,73 @@ async function main() {
       images: { create: [{ url: IMAGES[0], alt: "GRC board-formed facade panel", isPrimary: true, order: 0 }] },
     },
   });
+
+  // --- Placeholder sample product for every other material ---
+  // Every material should have at least one Product so its "Products in this
+  // system" section and any /products/<slug> link resolves instead of
+  // 404ing, matching the one GRC already has above. These are deliberately
+  // generic, clearly-labelled placeholders (name ends in "— Sample") built
+  // only from data the material record already carries — no material-specific
+  // claims like panel sizes or fire ratings are invented for materials that
+  // aren't panels. `update: {}` means this never touches a product that
+  // already exists at that slug, so any real catalogue entry an admin adds
+  // later (under a different slug) is left alone.
+  const LOCAL_HERO_IMAGE: Record<string, string> = {
+    GRC: "/images/GRC.webp",
+    FRP: "/images/FRP.webp",
+    Terracotta: "/images/Tera.webp",
+    WPC: "/images/WPC.webp",
+    Planters: "/images/Planters.webp",
+    UHPC: "/images/UHPC.webp",
+    Marble: "/images/Marble.webp",
+    "GRG POP": "/images/GRG-POP.webp",
+    "Wall Art": "/images/Wall-Art.webp",
+    Brass: "/images/Brass.webp",
+    "Handmade Ceramics": "/images/Handmade-Ceramics.webp",
+  };
+
+  const MATERIALS_NEEDING_SAMPLE_PRODUCT = [
+    ...PRODUCTS.filter(([name]) => name !== "GRC").map(([name]) => ({
+      name,
+      slug: slugify(name, { lower: true, strict: true }),
+      fallbackImage: IMAGES[PRODUCTS.findIndex(([n]) => n === name)] ?? IMAGES[0],
+    })),
+    ...NEW_MATERIALS.map((m) => ({ name: m.name, slug: m.slug, fallbackImage: IMAGES[0] })),
+  ];
+
+  for (const { name, slug: materialSlug, fallbackImage } of MATERIALS_NEEDING_SAMPLE_PRODUCT) {
+    const sampleSlug = `${materialSlug}-sample`;
+    const sampleSku = `${materialSlug.toUpperCase()}-SAMPLE`;
+    await prisma.product.upsert({
+      where: { slug: sampleSlug },
+      update: {},
+      create: {
+        sku: sampleSku,
+        slug: sampleSlug,
+        name: `${name} — Sample`,
+        materialId: materialRecords[name],
+        shortDescription: `${name} product, made to drawing.`,
+        description: `A ${name} product made to drawing. Specifications, finishes and sizing shown here are indicative — share your drawing or project requirement to confirm the right configuration.`,
+        status: ProductStatus.PUBLISHED,
+        specifications: {
+          create: [
+            { key: "Formats", value: "Standard & made to drawing", order: 0 },
+            { key: "Lead time", value: "6–10 weeks", order: 1 },
+          ],
+        },
+        variants: {
+          create: [
+            { sku: `${sampleSku}-STD`, name: "Standard — Made to drawing", isDefault: true, order: 0 },
+          ],
+        },
+        images: {
+          create: [
+            { url: LOCAL_HERO_IMAGE[name] ?? fallbackImage, alt: `${name} — By Devyora`, isPrimary: true, order: 0 },
+          ],
+        },
+      },
+    });
+  }
 
   // --- Projects ---
   for (const p of PROJECTS) {
