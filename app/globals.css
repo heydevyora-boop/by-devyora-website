@@ -34,16 +34,32 @@ a {
    style={{ textDecoration: "underline" }} — it will still win, since
    inline styles override this stylesheet. */
 
-/* Products dropdown (components/site/header.tsx) — each material's name
-   gets an underline on hover, matching the reference (Mutina) menu. Can't
-   do this with inline styles since :hover isn't expressible there, hence
-   the small stylesheet rule instead of an inline style object. */
-.dropdown-item-name {
-  border-bottom: 1px solid transparent;
-  transition: border-color 200ms ease;
+/* Products dropdown (components/site/product-nav-dropdown.tsx) — each
+   material's name gets an underline that wipes in from the left on hover
+   and retracts the same way on hover-out, matching the reference (Mutina)
+   menu: moving the cursor from one name to the next reads as the underline
+   sliding across rather than two independent fades. Can't do this with
+   inline styles since :hover isn't expressible there, hence the small
+   stylesheet rule instead of an inline style object.
+
+   This is a real DOM child (.dropdown-item-underline), not a ::after
+   pseudo-element — the rail this sits inside uses mask-image + overflow:
+   hidden for its horizontal fade-edges, and Chromium doesn't paint an
+   absolutely-positioned ::after inside that combination (confirmed by
+   testing: a normal in-flow child renders fine there, an absolutely
+   positioned ::after with identical styles doesn't). The name span needs
+   `display: inline-block` (set where it's used) so the underline's own
+   `width: 100%` matches the word, not the card. */
+.dropdown-item-underline {
+  display: block;
+  width: 0%;
+  height: 1px;
+  margin-top: 2px;
+  background: currentColor;
+  transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.dropdown-item-link:hover .dropdown-item-name {
-  border-bottom-color: currentColor;
+.dropdown-item-link:hover .dropdown-item-underline {
+  width: 100%;
 }
 
 /* Header responsiveness (components/site/header.tsx). Inline styles can't
