@@ -34,6 +34,20 @@ const PRODUCTS = [
   ["Architectural Elements", "Cornices, brackets, mouldings and one-off commissions.", ["Restoration", "Facades", "Interiors", "Bespoke"], "Moulded GRC / FRP", "To sample"],
 ] as const;
 
+// Additional materials shown in the Products menu. WPC and Planters already exist
+// in PRODUCTS above and are reused, not duplicated. Neutral taglines only — no
+// specs, applications or hero image are invented here. Replace the copy later
+// from the admin panel or in lib/material-pages.ts.
+// Catalogue numbers are assigned automatically (next free number) in the loop below.
+const NEW_MATERIALS = [
+  { name: "UHPC", slug: "uhpc" },
+  { name: "Marble", slug: "marble" },
+  { name: "GRG POP", slug: "grg-pop" },
+  { name: "Wall Art", slug: "wall-art" },
+  { name: "Brass", slug: "brass" },
+  { name: "Handmade Ceramics", slug: "handmade-ceramics" },
+] as const;
+
 const CITIES = [
   { name: "Bhopal", state: "Madhya Pradesh", region: "Central India" },
   { name: "Indore", state: "Madhya Pradesh", region: "Central India" },
@@ -160,6 +174,31 @@ async function main() {
       },
     });
     materialRecords[name] = rec.id;
+  }
+
+  // --- Additional materials (UHPC, Marble, GRG POP, Wall Art, Brass, Handmade Ceramics) ---
+  // Existing rows (matched by slug) are never modified. New rows take the next
+  // free catalogue number, so this is safe on a database that already has data.
+  for (const m of NEW_MATERIALS) {
+    const existing = await prisma.material.findUnique({ where: { slug: m.slug } });
+    if (existing) continue;
+    const { _max } = await prisma.material.aggregate({ _max: { num: true } });
+    await prisma.material.create({
+      data: {
+        num: (_max.num ?? 0) + 1,
+        slug: m.slug,
+        name: m.name,
+        tagline: `${m.name} by Devyora.`,
+      },
+    });
+  }
+
+  // Safe mode for databases that are already seeded: only the materials above
+  // are touched. Branches, steps, stats, certifications and downloads use
+  // plain `create` further down and would be duplicated by a full re-run.
+  if (process.env.SEED_MATERIALS_ONLY === "true") {
+    console.log("Materials seeded (SEED_MATERIALS_ONLY).");
+    return;
   }
 
   // --- Categories ---

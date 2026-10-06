@@ -9,6 +9,10 @@ import { theme, pagePadX } from "@/lib/theme";
 import { ImagePlaceholder } from "@/components/site/ui";
 import { buildMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
+import {
+  MATERIAL_PAGE_CONTENT,
+  type MaterialPageContent,
+} from "@/lib/material-pages";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -56,6 +60,8 @@ export default async function MaterialDetailPage({ params }: PageProps) {
 
   const related = await MaterialRepository.findRelated(material.num, 3);
 
+  const totalMaterials = await MaterialRepository.countPublished();
+
   const cities = await CityRepository.findAll();
 
   const topCities = cities.slice(0, 8);
@@ -87,7 +93,10 @@ export default async function MaterialDetailPage({ params }: PageProps) {
   const isTerracotta =
     materialSlug === "terracotta" || materialSlug === "teracotta";
 
-  const specialContent = isFRP
+  // Content for materials configured in lib/material-pages.ts (WPC, NHPS, ...)
+  const extraContent = MATERIAL_PAGE_CONTENT[materialSlug];
+
+  const specialContent: MaterialPageContent | null = isFRP
     ? {
         eyebrow: "FRP — Architectural Applications",
         intro:
@@ -231,7 +240,8 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           ctaDescription:
             "Explore terracotta pots, large terracotta pots, terracotta planters and terracotta vases designed to bring natural warmth, texture and character to architectural, landscape and interior spaces.",
         }
-      : {
+      : isGRC
+        ? {
           eyebrow: "GRC — Architectural Applications",
           intro:
             "GRC can be used across residential, commercial, hospitality and institutional architecture for creating distinctive architectural details and refined facades.",
@@ -305,7 +315,8 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           ctaEyebrow: "GRC By Devyora",
           ctaDescription:
             "Share your drawing, reference image, dimensions or project requirement with Devyora to explore the right GRC solution for your project.",
-        };
+        }
+        : (extraContent ?? null);
 
   return (
     <main
@@ -358,7 +369,8 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             marginBottom: "clamp(20px, 3vw, 36px)",
           }}
         >
-          {String(material.num).padStart(3, "0")} / 011 — Architectural System
+          {String(material.num).padStart(3, "0")} /{" "}
+          {String(totalMaterials).padStart(3, "0")} — Architectural System
         </div>
 
         <h1
@@ -438,6 +450,18 @@ export default async function MaterialDetailPage({ params }: PageProps) {
               objectPosition: "center",
             }}
           />
+        ) : extraContent ? (
+          <Image
+            src={extraContent.heroImage}
+            alt={extraContent.heroAlt}
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
         ) : material.heroImage ? (
           <Image
             src={material.heroImage}
@@ -461,7 +485,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           MATERIAL INTRODUCTION
       ========================================================= */}
 
-      {(isGRC || isFRP || isTerracotta) && (
+      {specialContent && (
         <section
           style={{
             padding: "clamp(70px, 10vw, 150px) 0 0",
@@ -507,6 +531,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
               MATERIAL APPLICATIONS
           ======================================================= */}
 
+          {specialContent.applications.length > 0 && (
           <div
             style={{
               borderTop: `1px solid ${theme.color.ink}`,
@@ -584,11 +609,13 @@ export default async function MaterialDetailPage({ params }: PageProps) {
               ))}
             </div>
           </div>
+          )}
 
           {/* =======================================================
               MATERIAL PRODUCTS
           ======================================================= */}
 
+          {(specialContent.productsText || specialContent.productsDescription) && (
           <div
             className="grid-stack-tablet"
             style={{
@@ -627,11 +654,13 @@ export default async function MaterialDetailPage({ params }: PageProps) {
               </p>
             </div>
           </div>
+          )}
 
           {/* =======================================================
               WHY CHOOSE BY DEVYORA
           ======================================================= */}
 
+          {specialContent.whyChoose.length > 0 && (
           <div
             style={{
               padding: "clamp(70px, 9vw, 130px) 0",
@@ -700,6 +729,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
               ))}
             </div>
           </div>
+          )}
 
           {/* =======================================================
               MATERIAL REQUIREMENT FORM
@@ -981,6 +1011,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           SPECIFICATION + APPLICATIONS
       ========================================================= */}
 
+      {(material.specs.length > 0 || material.applications.length > 0) && (
       <section
         style={{
           display: "grid",
@@ -993,6 +1024,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             SPECIFICATION
         ======================================================= */}
 
+        {material.specs.length > 0 && (
         <div>
           <div
             style={{
@@ -1037,11 +1069,13 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             </div>
           ))}
         </div>
+        )}
 
         {/* =======================================================
             APPLICATIONS
         ======================================================= */}
 
+        {material.applications.length > 0 && (
         <div>
           <div
             style={{
@@ -1084,7 +1118,9 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             ))}
           </div>
         </div>
+        )}
       </section>
+      )}
 
       {/* =========================================================
           CITY COVERAGE

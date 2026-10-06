@@ -36,6 +36,46 @@ export async function SiteHeader() {
       slug: byName.get("terracotta")?.slug ?? "terracotta",
       image: "/images/nav-products/Terracotta.webp",
     },
+    {
+      name: "WPC",
+      slug: byName.get("wpc")?.slug ?? "wpc",
+      image: "/images/nav-products/WPC.webp",
+    },
+    {
+      name: "UHPC",
+      slug: byName.get("uhpc")?.slug ?? "uhpc",
+      image: "/images/nav-products/UHPC.webp",
+    },
+    {
+      name: "Marble",
+      slug: byName.get("marble")?.slug ?? "marble",
+      image: "/images/nav-products/Marble.webp",
+    },
+    {
+      name: "GRG POP",
+      slug: byName.get("grg pop")?.slug ?? "grg-pop",
+      image: "/images/nav-products/GRG-POP.webp",
+    },
+    {
+      name: "Planters",
+      slug: byName.get("planters")?.slug ?? "planters",
+      image: "/images/nav-products/Planters.webp",
+    },
+    {
+      name: "Wall Art",
+      slug: byName.get("wall art")?.slug ?? "wall-art",
+      image: "/images/nav-products/Wall-Art.webp",
+    },
+    {
+      name: "Brass",
+      slug: byName.get("brass")?.slug ?? "brass",
+      image: "/images/nav-products/Brass.webp",
+    },
+    {
+      name: "Handmade Ceramics",
+      slug: byName.get("handmade ceramics")?.slug ?? "handmade-ceramics",
+      image: "/images/nav-products/Handmade-Ceramics.webp",
+    },
   ];
 
   return (

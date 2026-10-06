@@ -27,6 +27,11 @@ export class MaterialRepository {
     });
   }
 
+  /** Number of published materials — used for the "NNN / TOTAL" catalogue label. */
+  static async countPublished() {
+    return prisma.material.count({ where: { published: true } });
+  }
+
   static async findById(id: string) {
     return prisma.material.findUnique({
       where: { id },
