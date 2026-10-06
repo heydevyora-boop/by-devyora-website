@@ -8,10 +8,15 @@ type ProductItem = {
   name: string;
   slug: string;
   image: string;
+  // Sub-types shown in the expandable panel under each card. Left unset (or
+  // empty) until real copy exists per material — the panel then shows a
+  // "coming soon" placeholder instead of an empty box.
+  types?: string[];
 };
 
 export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
   const [open, setOpen] = useState(false);
+  const [openTypesFor, setOpenTypesFor] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const { start } = usePageTransition();
 
@@ -34,6 +39,13 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
+
+  // Don't carry a selection over to the next time the menu opens.
+  useEffect(() => {
+    if (!open) setOpenTypesFor(null);
+  }, [open]);
+
+  const selectedProduct = products.find((p) => p.slug === openTypesFor) ?? null;
 
   return (
     <div
@@ -107,69 +119,173 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                   className={isClone ? "product-rail-set product-rail-clone" : "product-rail-set"}
                   aria-hidden={isClone || undefined}
                 >
-                  {products.map((product) => (
-                    <button
-                      key={product.slug}
-                      type="button"
-                      className="product-rail-card"
-                      tabIndex={isClone ? -1 : undefined}
-                      onClick={() => {
-                        setOpen(false);
-                        start(`/materials/${product.slug}`, product.name);
-                      }}
-                      style={{
-                        appearance: "none",
-                        border: 0,
-                        background: "transparent",
-                        padding: 0,
-                        textAlign: "left",
-                        cursor: "pointer",
-                        color: "#121110",
-                      }}
-                    >
-                      <div
+                  {products.map((product) => {
+                    const typesOpen = !isClone && openTypesFor === product.slug;
+                    return (
+                    <div key={product.slug} className="product-rail-card" style={{ position: "relative" }}>
+                      <button
+                        type="button"
+                        tabIndex={isClone ? -1 : undefined}
+                        onClick={() => {
+                          setOpen(false);
+                          start(`/materials/${product.slug}`, product.name);
+                        }}
                         style={{
+                          appearance: "none",
+                          border: 0,
+                          background: "transparent",
+                          padding: 0,
                           width: "100%",
-                          aspectRatio: "282 / 170",
-                          overflow: "hidden",
-                          background: "#F6F4F1",
+                          textAlign: "left",
+                          cursor: "pointer",
+                          color: "#121110",
                         }}
                       >
-                        <img
-                          src={product.image}
-                          alt={isClone ? "" : `${product.name} architectural material`}
-                          loading="eager"
-                          decoding="async"
-                          draggable={false}
+                        <div
+                          style={{
+                            width: "100%",
+                            aspectRatio: "282 / 170",
+                            overflow: "hidden",
+                            background: "#F6F4F1",
+                          }}
+                        >
+                          <img
+                            src={product.image}
+                            alt={isClone ? "" : `${product.name} architectural material`}
+                            loading="eager"
+                            decoding="async"
+                            draggable={false}
+                            style={{
+                              display: "block",
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </div>
+
+                        <span
                           style={{
                             display: "block",
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
+                            marginTop: 11,
+                            fontFamily: "Arial, Helvetica, sans-serif",
+                            fontSize: "clamp(14px, 1.1vw, 18px)",
+                            lineHeight: 1.2,
+                            letterSpacing: "-0.01em",
+                            textTransform: "none",
+                            whiteSpace: "nowrap",
                           }}
-                        />
-                      </div>
+                        >
+                          {product.name}
+                        </span>
+                      </button>
 
-                      <span
+                      {/* Reveals that material's types in the shared panel below the
+                          rail — a separate control from the card above so it never
+                          triggers navigation. */}
+                      <button
+                        type="button"
+                        aria-label={`${product.name} types`}
+                        aria-expanded={typesOpen}
+                        tabIndex={isClone ? -1 : undefined}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setOpenTypesFor((current) => (current === product.slug ? null : product.slug));
+                        }}
                         style={{
-                          display: "block",
-                          marginTop: 11,
-                          fontFamily: "Arial, Helvetica, sans-serif",
-                          fontSize: "clamp(14px, 1.1vw, 18px)",
-                          lineHeight: 1.2,
-                          letterSpacing: "-0.01em",
-                          textTransform: "none",
-                          whiteSpace: "nowrap",
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          width: 26,
+                          height: 26,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          appearance: "none",
+                          border: 0,
+                          borderRadius: "50%",
+                          background: "rgba(18,17,16,0.55)",
+                          cursor: isClone ? "default" : "pointer",
+                          pointerEvents: isClone ? "none" : "auto",
                         }}
                       >
-                        {product.name}
-                      </span>
-                    </button>
-                  ))}
+                        <svg
+                          width="11"
+                          height="7"
+                          viewBox="0 0 11 7"
+                          fill="none"
+                          style={{
+                            transform: typesOpen ? "rotate(180deg)" : "none",
+                            transition: "transform 200ms ease",
+                          }}
+                        >
+                          <path d="M1 1L5.5 5.5L10 1" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
+                    </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
           </div>
+        </div>
+
+        {/* TYPES PANEL — shared across all cards, populated once real type
+            copy exists per material (ProductItem.types). Sits outside
+            .product-rail so it's never clipped by the rail's overflow mask. */}
+        <div
+          style={{
+            width: "min(1440px, 100%)",
+            margin: "0 auto",
+            padding: "0 clamp(20px, 3vw, 48px)",
+            maxHeight: selectedProduct ? 200 : 0,
+            overflow: "hidden",
+            transition: "max-height 240ms ease",
+          }}
+        >
+          {selectedProduct && (
+            <div
+              style={{
+                borderTop: "1px solid #E4E1DC",
+                padding: "20px 0 24px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 10,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "#8C6A45",
+                  marginBottom: 14,
+                }}
+              >
+                {selectedProduct.name} — Types
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                {selectedProduct.types && selectedProduct.types.length > 0 ? (
+                  selectedProduct.types.map((t) => (
+                    <TransitionLink
+                      key={t}
+                      href={`/materials/${selectedProduct.slug}`}
+                      title={t}
+                      onClick={() => setOpen(false)}
+                      style={{
+                        padding: "8px 16px",
+                        border: "1px solid #E4E1DC",
+                        fontSize: 12,
+                        color: "#121110",
+                      }}
+                    >
+                      {t}
+                    </TransitionLink>
+                  ))
+                ) : (
+                  <span style={{ fontSize: 12, color: "#A6A29B" }}>Types coming soon.</span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <div
