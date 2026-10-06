@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { usePageTransition } from "./page-transition";
 import { TransitionLink } from "./transition-link";
 
@@ -88,79 +88,97 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
             "opacity 180ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1), visibility 240ms",
         }}
       >
+        {/* Single-row product rail. Two identical copies of the list sit in one
+            track that slides left by exactly 50% (see .product-rail in
+            globals.css), so the loop is seamless. Pauses on hover/focus. */}
+        <div style={{ paddingTop: 48 }}>
+          <div className="product-rail" data-open={open}>
+            <div
+              className="product-rail-track"
+              style={
+                {
+                  "--product-rail-duration": `${products.length * 7}s`,
+                } as CSSProperties
+              }
+            >
+              {[false, true].map((isClone) => (
+                <div
+                  key={isClone ? "clone" : "original"}
+                  className={isClone ? "product-rail-set product-rail-clone" : "product-rail-set"}
+                  aria-hidden={isClone || undefined}
+                >
+                  {products.map((product) => (
+                    <button
+                      key={product.slug}
+                      type="button"
+                      className="product-rail-card"
+                      tabIndex={isClone ? -1 : undefined}
+                      onClick={() => {
+                        setOpen(false);
+                        start(`/materials/${product.slug}`, product.name);
+                      }}
+                      style={{
+                        appearance: "none",
+                        border: 0,
+                        background: "transparent",
+                        padding: 0,
+                        textAlign: "left",
+                        cursor: "pointer",
+                        color: "#121110",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "100%",
+                          aspectRatio: "282 / 170",
+                          overflow: "hidden",
+                          background: "#F6F4F1",
+                        }}
+                      >
+                        <img
+                          src={product.image}
+                          alt={isClone ? "" : `${product.name} architectural material`}
+                          loading="eager"
+                          decoding="async"
+                          draggable={false}
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+
+                      <span
+                        style={{
+                          display: "block",
+                          marginTop: 11,
+                          fontFamily: "Arial, Helvetica, sans-serif",
+                          fontSize: "clamp(14px, 1.1vw, 18px)",
+                          lineHeight: 1.2,
+                          letterSpacing: "-0.01em",
+                          textTransform: "none",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {product.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div
           style={{
             width: "min(1440px, 100%)",
             margin: "0 auto",
-            padding: "48px clamp(20px, 3vw, 48px) 34px",
+            padding: "0 clamp(20px, 3vw, 48px) 34px",
           }}
         >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-              gap: "clamp(18px, 2.1vw, 34px)",
-              maxWidth: 1550,
-            }}
-          >
-            {products.map((product) => (
-              <button
-                key={product.slug}
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  start(`/materials/${product.slug}`, product.name);
-                }}
-                style={{
-                  appearance: "none",
-                  border: 0,
-                  background: "transparent",
-                  padding: 0,
-                  margin: 0,
-                  textAlign: "left",
-                  cursor: "pointer",
-                  color: "#121110",
-                }}
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    aspectRatio: "282 / 170",
-                    overflow: "hidden",
-                    background: "#F6F4F1",
-                  }}
-                >
-                  <img
-                    src={product.image}
-                    alt={`${product.name} architectural material`}
-                    loading="eager"
-                    decoding="async"
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-
-                <span
-                  style={{
-                    display: "block",
-                    marginTop: 11,
-                    fontFamily: "Arial, Helvetica, sans-serif",
-                    fontSize: "clamp(14px, 1.1vw, 18px)",
-                    lineHeight: 1.2,
-                    letterSpacing: "-0.01em",
-                    textTransform: "none",
-                  }}
-                >
-                  {product.name}
-                </span>
-              </button>
-            ))}
-          </div>
-
           <TransitionLink
             href="/materials"
             title="Products"
