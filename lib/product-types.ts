@@ -92,3 +92,39 @@ export const PRODUCT_TYPES: Record<string, ProductType[]> = {
     { name: "Terracotta Bricks", slug: "terracotta-bricks" },
   ],
 };
+
+/** Every `/products/<slug>` this file implies should exist (one per type,
+ * `<type.slug>-sample`). Fed into generateStaticParams so each type's page
+ * is always prerendered — not only once the database has a matching row —
+ * and into the fallback lookup below. */
+export const ALL_PRODUCT_TYPE_SLUGS: string[] = Object.values(PRODUCT_TYPES)
+  .flat()
+  .map((t) => `${t.slug}-sample`);
+
+/**
+ * Reverse lookup: given a product slug (e.g. "frp-capitals-sample"), finds
+ * which material/type it belongs to.
+ *
+ * Why this exists: a type's real Product row only exists in the database
+ * after `npx prisma db seed` has been run there. Production isn't reseeded
+ * automatically on every deploy, so for a while after a new type is added
+ * here, /products/<type-slug>-sample would 404 on the live site even though
+ * the dropdown already links to it. The product detail page uses this as a
+ * fallback — render a minimal page (name + enquiry form, no photo yet) from
+ * this file alone — so that page is never a dead link, seeded or not. Once
+ * the real row exists, the database version takes over automatically (same
+ * slug), with no change needed here.
+ */
+export function findProductTypeBySlug(
+  productSlug: string
+): { materialSlug: string; type: ProductType } | null {
+  const SUFFIX = "-sample";
+  if (!productSlug.endsWith(SUFFIX)) return null;
+  const typeSlug = productSlug.slice(0, -SUFFIX.length);
+
+  for (const [materialSlug, types] of Object.entries(PRODUCT_TYPES)) {
+    const type = types.find((t) => t.slug === typeSlug);
+    if (type) return { materialSlug, type };
+  }
+  return null;
+}
