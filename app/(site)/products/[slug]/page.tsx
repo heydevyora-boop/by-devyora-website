@@ -8,6 +8,7 @@ import { buildMetadata, productJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/site/json-ld";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ProductLink } from "@/components/site/product-link";
+import { RequirementForm } from "@/components/site/requirement-form";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -240,6 +241,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
           ))}
         </section>
       )}
+
+      <RequirementForm
+        eyebrow={`${product.name} By Devyora`}
+        description={`Share your drawing, reference image, dimensions or project requirement with By Devyora to discuss ${product.name}.`}
+        idPrefix={product.slug}
+      />
 
       {related.length > 0 && (
         <section style={{ padding: "clamp(56px, 9vw, 130px) 0 0" }}>

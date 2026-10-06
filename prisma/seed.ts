@@ -3,6 +3,7 @@ import { ProjectType, DownloadCategory, FacilityStatType, Role, ProductStatus } 
 import bcrypt from "bcrypt";
 import slugify from "slugify";
 import { prisma } from "../lib/prisma";
+import { PRODUCT_TYPES } from "../lib/product-types";
 
 // ---- Source data (mirrors what's already in the Products / Projects / Manufacturing pages) ----
 
@@ -268,6 +269,57 @@ async function main() {
         },
       },
     });
+  }
+
+  // --- Placeholder sample product for every product type (lib/product-types.ts) ---
+  // Each type shown in the header's Products dropdown types panel needs its
+  // own product page to link to — same reasoning and same shape as the
+  // one-per-material loop above, just one level more specific. A type's
+  // page is still a generic, clearly-labelled placeholder (name ends in
+  // "— Sample"); real copy and photos go in from the admin panel later.
+  const ALL_MATERIALS = [
+    ...PRODUCTS.map(([name]) => ({ name, slug: slugify(name, { lower: true, strict: true }) })),
+    ...NEW_MATERIALS.map((m) => ({ name: m.name, slug: m.slug })),
+  ];
+
+  for (const material of ALL_MATERIALS) {
+    const types = PRODUCT_TYPES[material.slug];
+    if (!types || types.length === 0) continue;
+    const materialId = materialRecords[material.name];
+    if (!materialId) continue;
+    const image = LOCAL_HERO_IMAGE[material.name] ?? IMAGES[0];
+
+    for (const type of types) {
+      const sampleSlug = `${type.slug}-sample`;
+      const sampleSku = `${type.slug.toUpperCase()}-SAMPLE`;
+      await prisma.product.upsert({
+        where: { slug: sampleSlug },
+        update: {},
+        create: {
+          sku: sampleSku,
+          slug: sampleSlug,
+          name: `${type.name} — Sample`,
+          materialId,
+          shortDescription: `${type.name}, made to drawing.`,
+          description: `A ${type.name} product made to drawing. Specifications, finishes and sizing shown here are indicative — share your drawing or project requirement to confirm the right configuration.`,
+          status: ProductStatus.PUBLISHED,
+          specifications: {
+            create: [
+              { key: "Formats", value: "Standard & made to drawing", order: 0 },
+              { key: "Lead time", value: "6–10 weeks", order: 1 },
+            ],
+          },
+          variants: {
+            create: [
+              { sku: `${sampleSku}-STD`, name: "Standard — Made to drawing", isDefault: true, order: 0 },
+            ],
+          },
+          images: {
+            create: [{ url: image, alt: `${type.name} — By Devyora`, isPrimary: true, order: 0 }],
+          },
+        },
+      });
+    }
   }
 
   // Safe mode for databases that are already seeded: only the materials and

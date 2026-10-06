@@ -1,0 +1,94 @@
+/**
+ * The product types offered under each material.
+ *
+ * One source of truth, used in two places:
+ *   - components/site/header.tsx — fills the Products dropdown's per-material
+ *     types panel.
+ *   - prisma/seed.ts — creates one Product (and therefore one
+ *     /products/<slug> page) per type.
+ *
+ * To add, rename or remove a type, edit it here and re-run the seed:
+ *   SEED_MATERIALS_ONLY=true npx prisma db seed
+ * Renaming a `slug` changes that product's URL; renaming only `name` is safe.
+ *
+ * Keys are material slugs. A material with no entry here simply shows no
+ * types panel, and keeps the single placeholder product seeded for it.
+ */
+
+export type ProductType = {
+  name: string;
+  slug: string;
+};
+
+export const PRODUCT_TYPES: Record<string, ProductType[]> = {
+  grc: [
+    { name: "GRC Pillars", slug: "grc-pillars" },
+    { name: "GRC Capitals", slug: "grc-capitals" },
+    { name: "GRC Brackets", slug: "grc-brackets" },
+    { name: "GRC Jali", slug: "grc-jali" },
+  ],
+  frp: [
+    { name: "FRP Pillars", slug: "frp-pillars" },
+    { name: "FRP Capitals", slug: "frp-capitals" },
+    { name: "FRP Brackets", slug: "frp-brackets" },
+    { name: "FRP Jali", slug: "frp-jali" },
+    { name: "FRP Decorative Screens", slug: "frp-decorative-screens" },
+    { name: "FRP Props", slug: "frp-props" },
+    { name: "FRP Planters", slug: "frp-planters" },
+  ],
+  wpc: [
+    { name: "WPC Pergolas", slug: "wpc-pergolas" },
+    { name: "WPC Gazebos", slug: "wpc-gazebos" },
+    { name: "WPC Deck Flooring", slug: "wpc-deck-flooring" },
+  ],
+  uhpc: [
+    { name: "UHPC Wall Panels", slug: "uhpc-wall-panels" },
+    { name: "UHPC Pillars", slug: "uhpc-pillars" },
+    { name: "UHPC Capitals", slug: "uhpc-capitals" },
+    { name: "UHPC Brackets", slug: "uhpc-brackets" },
+  ],
+  brass: [{ name: "Brass Antiques", slug: "brass-antiques" }],
+  "handmade-ceramics": [
+    { name: "Handmade Ceramic Tiles", slug: "handmade-ceramic-tiles" },
+    { name: "Handmade Ceramic Basins", slug: "handmade-ceramic-basins" },
+    { name: "Handmade Ceramic Murals", slug: "handmade-ceramic-murals" },
+    { name: "Handmade Ceramic Planters", slug: "handmade-ceramic-planters" },
+  ],
+  "wall-art": [
+    { name: "Wall Art", slug: "wall-art" },
+    { name: "Concrete Wall Art", slug: "concrete-wall-art" },
+    { name: "Hand-Painted Wall Art", slug: "hand-painted-wall-art" },
+    { name: "Digitally Printed Wall Art", slug: "digitally-printed-wall-art" },
+    { name: "UV Printed Wall Art", slug: "uv-printed-wall-art" },
+    { name: "FRP Wall Art", slug: "frp-wall-art" },
+    { name: "Stone Wall Art", slug: "stone-wall-art" },
+  ],
+  marble: [
+    { name: "Marble Capitals", slug: "marble-capitals" },
+    { name: "Marble Cornices", slug: "marble-cornices" },
+    { name: "Marble Mandir Interior Marbles", slug: "marble-mandir-interior-marbles" },
+    { name: "Marble Planters", slug: "marble-planters" },
+    { name: "Marble Statues", slug: "marble-statues" },
+    { name: "Marble Wall Art", slug: "marble-wall-art" },
+    { name: "Marble Basins", slug: "marble-basins" },
+    { name: "Marble Inlay — On Site", slug: "marble-inlay-on-site" },
+    { name: "Marble Inlay — On Countertop", slug: "marble-inlay-on-countertop" },
+  ],
+  // Named GRG POP throughout the site; the source list said "GRC POP".
+  "grg-pop": [
+    { name: "GRG POP Plus", slug: "grg-pop-plus" },
+    { name: "GRG POP Capitals", slug: "grg-pop-capitals" },
+    { name: "GRG POP Brackets", slug: "grg-pop-brackets" },
+    { name: "GRG POP Cornices", slug: "grg-pop-cornices" },
+    { name: "GRG POP Wall Panels", slug: "grg-pop-wall-panels" },
+    { name: "GRG POP Ceiling Elements", slug: "grg-pop-ceiling-elements" },
+  ],
+  terracotta: [
+    { name: "Terracotta Planters", slug: "terracotta-planters" },
+    { name: "Handmade Terracotta Murals", slug: "handmade-terracotta-murals" },
+    { name: "Terracotta Cladding Bricks", slug: "terracotta-cladding-bricks" },
+    { name: "Terracotta Jali", slug: "terracotta-jali" },
+    { name: "Terracotta Flooring", slug: "terracotta-flooring" },
+    { name: "Terracotta Bricks", slug: "terracotta-bricks" },
+  ],
+};
