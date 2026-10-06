@@ -15,16 +15,24 @@ export function TransitionLink({
   title,
   children,
   style,
+  onClick,
   ...rest
 }: {
   href: string;
   title: string;
   children: ReactNode;
   style?: CSSProperties;
-} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "style">) {
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
+} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "style" | "onClick">) {
   const { start } = usePageTransition();
 
   function handleClick(e: MouseEvent<HTMLAnchorElement>) {
+    // Run the caller's own onClick first (e.g. closing a dropdown) — pulling
+    // it out of `rest` instead of letting it spread onto <Link> after this
+    // handler, which would silently replace this handler instead of running
+    // alongside it, skipping the curtain transition below with no warning.
+    onClick?.(e);
+    if (e.defaultPrevented) return;
     // Let modified clicks (open in new tab, etc.) behave normally.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
