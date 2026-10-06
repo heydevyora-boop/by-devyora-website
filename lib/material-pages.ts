@@ -32,11 +32,15 @@ export type MaterialPageEntry = MaterialPageContent & {
   heroAlt: string;
 };
 
-/** Neutral copy only. Replace per product once final descriptions exist. */
-function neutralContent(name: string, heroImage: string): MaterialPageEntry {
+/**
+ * Neutral copy only. Replace per product once final descriptions exist.
+ *
+ * Also used directly by /materials/[slug] as the fallback for any material
+ * that has no entry below, so every material page renders the same intro and
+ * the same enquiry form rather than dropping that whole section.
+ */
+export function neutralMaterialContent(name: string): MaterialPageContent {
   return {
-    heroImage,
-    heroAlt: `${name} by Devyora`,
     eyebrow: `${name} — By Devyora`,
     intro: `${name} by Devyora. Share your drawing, reference image or project requirement to discuss ${name} for your project.`,
     applicationsLabel: `${name} Applications`,
@@ -47,6 +51,14 @@ function neutralContent(name: string, heroImage: string): MaterialPageEntry {
     whyChoose: [],
     ctaEyebrow: `${name} By Devyora`,
     ctaDescription: `Share your drawing, reference image, dimensions or project requirement with By Devyora to discuss ${name}.`,
+  };
+}
+
+function neutralContent(name: string, heroImage: string): MaterialPageEntry {
+  return {
+    ...neutralMaterialContent(name),
+    heroImage,
+    heroAlt: `${name} by Devyora`,
   };
 }
 
