@@ -125,6 +125,7 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                     <div key={product.slug} className="product-rail-card" style={{ position: "relative" }}>
                       <button
                         type="button"
+                        className="dropdown-item-link"
                         tabIndex={isClone ? -1 : undefined}
                         onClick={() => {
                           setOpen(false);
@@ -165,8 +166,9 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                         </div>
 
                         <span
+                          className="dropdown-item-name"
                           style={{
-                            display: "block",
+                            display: "inline-block",
                             marginTop: 11,
                             fontFamily: "Arial, Helvetica, sans-serif",
                             fontSize: "clamp(14px, 1.1vw, 18px)",
@@ -177,6 +179,7 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                           }}
                         >
                           {product.name}
+                          <span className="dropdown-item-underline" />
                         </span>
                       </button>
 
