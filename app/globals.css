@@ -62,6 +62,18 @@ a {
   width: 100%;
 }
 
+/* Type pills in the Products dropdown's types panel (same component) — a
+   simple hover state (darker border, subtle fill) so the list of a
+   material's types reads as clickable rather than static labels. */
+.type-pill {
+  display: inline-block;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+.type-pill:hover {
+  border-color: #121110 !important;
+  background: #F6F4F1;
+}
+
 /* Header responsiveness (components/site/header.tsx). Inline styles can't
    express a media query, hence this small stylesheet block. Breakpoint
    matches where the nav's word-count realistically stops fitting one row

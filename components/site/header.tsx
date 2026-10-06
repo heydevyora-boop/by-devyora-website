@@ -4,6 +4,7 @@ import { pagePadX, theme } from "@/lib/theme";
 import { TransitionLink } from "./transition-link";
 import { ProductNavDropdown } from "./product-nav-dropdown";
 import { MobileNav } from "./mobile-nav";
+import { PRODUCT_TYPES } from "@/lib/product-types";
 
 const NAV = [
   { href: "/projects", label: "Projects" },
@@ -76,7 +77,7 @@ export async function SiteHeader() {
       slug: byName.get("handmade ceramics")?.slug ?? "handmade-ceramics",
       image: "/images/nav-products/Handmade-Ceramics.webp",
     },
-  ];
+  ].map((item) => ({ ...item, types: PRODUCT_TYPES[item.slug] }));
 
   return (
     <header

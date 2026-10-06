@@ -4,14 +4,17 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { usePageTransition } from "./page-transition";
 import { TransitionLink } from "./transition-link";
 
+type ProductType = { name: string; slug: string };
+
 type ProductItem = {
   name: string;
   slug: string;
   image: string;
-  // Sub-types shown in the expandable panel under each card. Left unset (or
-  // empty) until real copy exists per material — the panel then shows a
-  // "coming soon" placeholder instead of an empty box.
-  types?: string[];
+  // Sub-types shown in the expandable panel under each card, each one
+  // linking to its own product page. Left unset (or empty) until a
+  // material has real types — the panel then shows a "coming soon"
+  // placeholder instead of an empty box.
+  types?: ProductType[];
 };
 
 export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
@@ -242,16 +245,16 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
             width: "min(1440px, 100%)",
             margin: "0 auto",
             padding: "0 clamp(20px, 3vw, 48px)",
-            maxHeight: selectedProduct ? 200 : 0,
+            maxHeight: selectedProduct ? 280 : 0,
             overflow: "hidden",
-            transition: "max-height 240ms ease",
+            transition: "max-height 280ms ease",
           }}
         >
           {selectedProduct && (
             <div
               style={{
                 borderTop: "1px solid #E4E1DC",
-                padding: "20px 0 24px",
+                padding: "22px 0 26px",
               }}
             >
               <div
@@ -260,7 +263,7 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
                   color: "#8C6A45",
-                  marginBottom: 14,
+                  marginBottom: 16,
                 }}
               >
                 {selectedProduct.name} — Types
@@ -269,18 +272,19 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                 {selectedProduct.types && selectedProduct.types.length > 0 ? (
                   selectedProduct.types.map((t) => (
                     <TransitionLink
-                      key={t}
-                      href={`/materials/${selectedProduct.slug}`}
-                      title={t}
+                      key={t.slug}
+                      href={`/products/${t.slug}-sample`}
+                      title={t.name}
                       onClick={() => setOpen(false)}
+                      className="type-pill"
                       style={{
-                        padding: "8px 16px",
+                        padding: "9px 16px",
                         border: "1px solid #E4E1DC",
                         fontSize: 12,
                         color: "#121110",
                       }}
                     >
-                      {t}
+                      {t.name}
                     </TransitionLink>
                   ))
                 ) : (
