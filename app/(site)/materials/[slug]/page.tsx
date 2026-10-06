@@ -11,6 +11,7 @@ import { buildMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import {
   MATERIAL_PAGE_CONTENT,
+  neutralMaterialContent,
   type MaterialPageContent,
 } from "@/lib/material-pages";
 
@@ -96,7 +97,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
   // Content for materials configured in lib/material-pages.ts (WPC, NHPS, ...)
   const extraContent = MATERIAL_PAGE_CONTENT[materialSlug];
 
-  const specialContent: MaterialPageContent | null = isFRP
+  const specialContent: MaterialPageContent = isFRP
     ? {
         eyebrow: "FRP — Architectural Applications",
         intro:
@@ -316,7 +317,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           ctaDescription:
             "Share your drawing, reference image, dimensions or project requirement with Devyora to explore the right GRC solution for your project.",
         }
-        : (extraContent ?? null);
+        : (extraContent ?? neutralMaterialContent(material.name));
 
   return (
     <main
@@ -485,12 +486,11 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           MATERIAL INTRODUCTION
       ========================================================= */}
 
-      {specialContent && (
-        <section
-          style={{
-            padding: "clamp(70px, 10vw, 150px) 0 0",
-          }}
-        >
+      <section
+        style={{
+          padding: "clamp(70px, 10vw, 150px) 0 0",
+        }}
+      >
           {/* =======================================================
               INTRO
           ======================================================= */}
@@ -1004,8 +1004,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
               </div>
             </form>
           </section>
-        </section>
-      )}
+      </section>
 
       {/* =========================================================
           SPECIFICATION + APPLICATIONS
