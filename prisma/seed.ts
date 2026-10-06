@@ -287,7 +287,6 @@ async function main() {
     if (!types || types.length === 0) continue;
     const materialId = materialRecords[material.name];
     if (!materialId) continue;
-    const image = LOCAL_HERO_IMAGE[material.name] ?? IMAGES[0];
 
     for (const type of types) {
       const sampleSlug = `${type.slug}-sample`;
@@ -314,9 +313,12 @@ async function main() {
               { sku: `${sampleSku}-STD`, name: "Standard — Made to drawing", isDefault: true, order: 0 },
             ],
           },
-          images: {
-            create: [{ url: image, alt: `${type.name} — By Devyora`, isPrimary: true, order: 0 }],
-          },
+          // No image for now, by design — a type's own photo isn't ready
+          // yet, and reusing the material's generic hero image on every one
+          // of its type pages was misleading. ProductDetailInteractive
+          // already renders a clean placeholder when a product has no
+          // images, so this just lets that do its job. Add real photos via
+          // the admin panel once they're available.
         },
       });
     }
