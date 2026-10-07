@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { usePageTransition } from "./page-transition";
 import { TransitionLink } from "./transition-link";
+import { RUSTIC_PAPER, RUSTIC_PAPER_COLOR } from "@/lib/rustic-paper";
 
 type ProductType = { name: string; slug: string };
 
@@ -91,7 +92,15 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
           left: 0,
           right: 0,
           zIndex: 100,
-          background: "#FFFFFF",
+          // Same rustic-paper texture as the page-transition curtain — reused
+          // here (not approximated) per request, behind/around and below the
+          // cards. backgroundSize: cover keeps it seamless as the panel's
+          // height changes (e.g. the types panel opening) at any viewport.
+          backgroundColor: RUSTIC_PAPER_COLOR,
+          backgroundImage: `url("${RUSTIC_PAPER}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           borderTop: "1px solid #E4E1DC",
           borderBottom: "1px solid #121110",
           boxShadow: open ? "0 18px 40px rgba(18,17,16,0.08)" : "none",
