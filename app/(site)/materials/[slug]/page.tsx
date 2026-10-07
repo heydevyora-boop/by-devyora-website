@@ -870,11 +870,19 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             ? `${material.name} ${material.applications[0].label}, by city`
             : `${material.name}, by city`
         }
-        basePath={
+        entityName={
           material.applications[0]
-            ? `/materials/${material.slug}/${material.applications[0].slug}`
-            : `/materials/${material.slug}`
+            ? `${material.name} ${material.applications[0].label}`
+            : material.name
         }
+        // Always the 3-segment shape, even with no application — Next.js
+        // doesn't allow two different dynamic segment names (e.g.
+        // [application] and [city]) at the same path level, so a 2-segment
+        // fallback here would collide with the city page's own route.
+        // "overview" is a non-matching application slug the destination
+        // page (materials/[slug]/[application]/[city]) already treats as
+        // "no specific application" rather than 404ing.
+        basePath={`/materials/${material.slug}/${material.applications[0]?.slug ?? "overview"}`}
       />
 
       {/* =========================================================
