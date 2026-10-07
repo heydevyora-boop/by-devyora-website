@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { MaterialRepository } from "@/lib/repositories/material.repository";
 import { CityRepository } from "@/lib/repositories/city.repository";
+import { CityCoverage } from "@/components/site/city-coverage";
 import { theme, pagePadX } from "@/lib/theme";
 import { ImagePlaceholder } from "@/components/site/ui";
 import { buildMetadata } from "@/lib/seo";
@@ -67,6 +68,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
   const cities = await CityRepository.findAll();
 
   const topCities = cities.slice(0, 8);
+
 
   /*
    * ------------------------------------------------------------
@@ -862,48 +864,13 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           CITY COVERAGE
       ========================================================= */}
 
-      {topCities.length > 0 && material.applications[0] && (
-        <section
-          style={{
-            padding: "clamp(40px, 6vw, 72px) 0 0",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 10,
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
-              color: theme.color.accent,
-              paddingBottom: 18,
-              borderBottom: `1px solid ${theme.color.ink}`,
-              marginBottom: 22,
-            }}
-          >
-            {material.name} {material.applications[0].label}, by city
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 8,
-            }}
-          >
-            {topCities.map((c) => (
-              <Link
-                key={c.id}
-                href={`/materials/${material.slug}/${material.applications[0].slug}/${c.slug}`}
-                style={{
-                  fontSize: 12,
-                  color: theme.color.accent,
-                }}
-              >
-                {c.name}
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+      <CityCoverage
+        label={
+          material.applications[0]
+            ? `${material.name} ${material.applications[0].label}, by city`
+            : `${material.name}, by city`
+        }
+      />
 
       {/* =========================================================
           PRODUCTS BUILT ON THIS MATERIAL

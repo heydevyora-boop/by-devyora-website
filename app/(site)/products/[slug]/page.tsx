@@ -10,6 +10,7 @@ import { JsonLd } from "@/components/site/json-ld";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ProductLink } from "@/components/site/product-link";
 import { RequirementForm } from "@/components/site/requirement-form";
+import { CityCoverage } from "@/components/site/city-coverage";
 import { ALL_PRODUCT_TYPE_SLUGS, findProductTypeBySlug } from "@/lib/product-types";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -122,6 +123,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
           description={`Share your drawing, reference image, dimensions or project requirement with By Devyora to discuss ${fallback.type.name}.`}
           idPrefix={slug}
         />
+
+        <CityCoverage label={`${fallback.type.name}, by city`} />
       </main>
     );
   }
@@ -328,6 +331,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
         description={`Share your drawing, reference image, dimensions or project requirement with By Devyora to discuss ${product.name}.`}
         idPrefix={product.slug}
       />
+
+      <CityCoverage label={`${product.name}, by city`} />
 
       {related.length > 0 && (
         <section style={{ padding: "clamp(56px, 9vw, 130px) 0 0" }}>
