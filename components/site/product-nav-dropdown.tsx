@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePageTransition } from "./page-transition";
 import { TransitionLink } from "./transition-link";
 import { RUSTIC_PAPER, RUSTIC_PAPER_COLOR } from "@/lib/rustic-paper";
@@ -23,6 +23,105 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
   const [openTypesFor, setOpenTypesFor] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const { start } = usePageTransition();
+
+  // Auto-scroll + manual drag-to-scroll for the product rail. Driven by JS
+  // (scrollLeft on a genuinely scrollable track) rather than a CSS
+  // transform/keyframe, for two reasons: it lets a mouse drag the rail left
+  // and right, and it lets "paused while hovered" be real mouse-presence
+  // state instead of CSS :focus-within — which stayed true (and the
+  // animation stayed paused) after clicking a card or its types chevron,
+  // even once the pointer had moved away, since the clicked button kept
+  // focus. Touch devices get native swipe scrolling for free from
+  // overflow-x; this only adds drag handling for an actual mouse.
+  const railRef = useRef<HTMLDivElement>(null);
+  const isHoveringRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartScrollRef = useRef(0);
+  const dragDistanceRef = useRef(0);
+
+  useEffect(() => {
+    if (!open) return;
+    const rail = railRef.current;
+    if (!rail) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Same overall pace as the old CSS animation: a full set-width (half the
+    // doubled track's scrollWidth) every `products.length * 7` seconds.
+    const halfWidth = rail.scrollWidth / 2;
+    const durationMs = products.length * 7000;
+    const pxPerMs = halfWidth / durationMs;
+
+    let rafId: number;
+    let lastTime: number | null = null;
+
+    function step(time: number) {
+      if (lastTime === null) lastTime = time;
+      const dt = time - lastTime;
+      lastTime = time;
+
+      if (rail) {
+        if (!isHoveringRef.current && !isDraggingRef.current) {
+          rail.scrollLeft += pxPerMs * dt;
+        }
+        // Runs every frame regardless of pause state, so a manual drag that
+        // crosses into the clone set wraps just as seamlessly as auto-scroll.
+        // If a drag is in progress when this fires, dragStartScrollRef has
+        // to shift by the same amount, or the next pointermove would jump
+        // the track back using a now-stale start position.
+        const half = rail.scrollWidth / 2;
+        if (rail.scrollLeft >= half) {
+          rail.scrollLeft -= half;
+          if (isDraggingRef.current) dragStartScrollRef.current -= half;
+        }
+      }
+      rafId = requestAnimationFrame(step);
+    }
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [open, products.length]);
+
+  // Deliberately NOT using setPointerCapture here: capturing the pointer on
+  // the rail retargets the browser's mouseup/click to the rail itself
+  // instead of whatever card or chevron button is under the cursor, so
+  // those buttons silently stopped receiving clicks entirely. Tracking the
+  // drag with plain window listeners (the standard "grab to scroll" pattern)
+  // avoids that — the click still lands on the real button, and wasDrag()
+  // below is what tells that click to ignore itself if it was really a drag.
+  function onRailPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse" || !railRef.current) return;
+    isDraggingRef.current = true;
+    dragDistanceRef.current = 0;
+    dragStartXRef.current = event.clientX;
+    dragStartScrollRef.current = railRef.current.scrollLeft;
+    railRef.current.dataset.dragging = "true";
+
+    function onMove(moveEvent: PointerEvent) {
+      if (!railRef.current) return;
+      const delta = moveEvent.clientX - dragStartXRef.current;
+      dragDistanceRef.current = Math.abs(delta);
+      railRef.current.scrollLeft = dragStartScrollRef.current - delta;
+    }
+
+    function onUp() {
+      isDraggingRef.current = false;
+      if (railRef.current) delete railRef.current.dataset.dragging;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    }
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+  }
+
+  // A click that's really the end of a drag shouldn't also navigate or
+  // toggle a types panel.
+  function wasDrag() {
+    return dragDistanceRef.current > 5;
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -113,18 +212,24 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
         }}
       >
         {/* Single-row product rail. Two identical copies of the list sit in one
-            track that slides left by exactly 50% (see .product-rail in
-            globals.css), so the loop is seamless. Pauses on hover/focus. */}
+            scrollable track; the auto-scroll effect above wraps scrollLeft
+            by half the track's width so the loop is seamless. Auto-scroll
+            pauses while the mouse is over it or while dragging; a mouse can
+            also drag it left/right directly, and touch devices can swipe it
+            via native scrolling. */}
         <div style={{ paddingTop: 48 }}>
-          <div className="product-rail" data-open={open}>
-            <div
-              className="product-rail-track"
-              style={
-                {
-                  "--product-rail-duration": `${products.length * 7}s`,
-                } as CSSProperties
-              }
-            >
+          <div
+            ref={railRef}
+            className="product-rail"
+            onMouseEnter={() => {
+              isHoveringRef.current = true;
+            }}
+            onMouseLeave={() => {
+              isHoveringRef.current = false;
+            }}
+            onPointerDown={onRailPointerDown}
+          >
+            <div className="product-rail-track">
               {[false, true].map((isClone) => (
                 <div
                   key={isClone ? "clone" : "original"}
@@ -140,6 +245,7 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                         className="dropdown-item-link"
                         tabIndex={isClone ? -1 : undefined}
                         onClick={() => {
+                          if (wasDrag()) return;
                           setOpen(false);
                           start(`/materials/${product.slug}`, product.name);
                         }}
@@ -205,6 +311,7 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                         tabIndex={isClone ? -1 : undefined}
                         onClick={(event) => {
                           event.stopPropagation();
+                          if (wasDrag()) return;
                           setOpenTypesFor((current) => (current === product.slug ? null : product.slug));
                         }}
                         style={{

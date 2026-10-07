@@ -118,23 +118,39 @@ a {
 }
 
 /* ---------------------------------------------------------------------------
-   Products dropdown: single-row, slow right-to-left marquee.
-   The track holds two identical sets; sliding it by -50% lands exactly on the
-   start of the second set, so the loop never jumps or shows a gap. Each card
-   carries its own trailing margin (no flex gap) so both sets are equal width.
-   Pauses while hovered/focused or while the dropdown is closed. On touch
-   devices and for reduced-motion users it becomes a plain scrollable row.
+   Products dropdown: single-row marquee that auto-scrolls right-to-left and
+   can also be scrolled manually — dragged with a mouse, or swiped on touch,
+   via native overflow scrolling (see the rAF auto-scroll + pointer-drag
+   handlers in product-nav-dropdown.tsx). The track holds two identical
+   sets; that effect wraps scrollLeft by half the track's width once it
+   passes the first set, so the loop never jumps or shows a gap. Each card
+   carries its own trailing margin (no flex gap) so both sets are equal
+   width, which that wrap math depends on.
+   Auto-scroll pauses while the mouse is over the rail or while dragging —
+   tracked as real mouse state in JS, not CSS :hover/:focus-within, so it
+   can't get stuck paused by a clicked button keeping focus after the
+   pointer has moved away. Manual scrolling always works, reduced-motion
+   users included (they just don't get the auto-scroll).
 --------------------------------------------------------------------------- */
 .product-rail {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  cursor: grab;
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
+}
+.product-rail::-webkit-scrollbar {
+  display: none;
+}
+.product-rail[data-dragging="true"] {
+  cursor: grabbing;
+  user-select: none;
 }
 .product-rail-track {
   display: flex;
   width: max-content;
-  animation: product-rail-scroll var(--product-rail-duration, 77s) linear infinite;
-  will-change: transform;
 }
 .product-rail-set {
   display: flex;
@@ -144,34 +160,4 @@ a {
   flex: 0 0 auto;
   width: clamp(150px, 13vw, 196px);
   margin: 0 clamp(16px, 1.8vw, 28px) 0 0;
-}
-.product-rail:hover .product-rail-track,
-.product-rail:focus-within .product-rail-track,
-.product-rail[data-open="false"] .product-rail-track {
-  animation-play-state: paused;
-}
-@keyframes product-rail-scroll {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
-}
-@media (hover: none), (prefers-reduced-motion: reduce) {
-  .product-rail {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-  .product-rail::-webkit-scrollbar { display: none; }
-  .product-rail-track {
-    animation: none;
-    transform: none;
-    will-change: auto;
-    padding-left: clamp(20px, 3vw, 48px);
-  }
-  .product-rail-clone { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .product-rail { scrollbar-width: thin; }
-  .product-rail::-webkit-scrollbar { display: initial; }
 }
