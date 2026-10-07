@@ -128,3 +128,16 @@ export function findProductTypeBySlug(
   }
   return null;
 }
+
+/**
+ * Placeholder sample products — both the per-material ones and the per-type
+ * ones this file's data generates — are named "<Name> — Sample" in the
+ * database on purpose, so an admin can tell a real product from a
+ * placeholder at a glance. That suffix belongs in the admin panel, not in
+ * public-facing text that combines the name with something else (a
+ * page-transition title, a "<Name> in <City>" heading) — this strips it for
+ * display there only; the stored name and the admin view are unaffected.
+ */
+export function withoutSampleSuffix(name: string): string {
+  return name.replace(/\s*—\s*Sample$/, "");
+}

@@ -11,7 +11,7 @@ import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ProductLink } from "@/components/site/product-link";
 import { RequirementForm } from "@/components/site/requirement-form";
 import { CityCoverage } from "@/components/site/city-coverage";
-import { ALL_PRODUCT_TYPE_SLUGS, findProductTypeBySlug } from "@/lib/product-types";
+import { ALL_PRODUCT_TYPE_SLUGS, findProductTypeBySlug, withoutSampleSuffix } from "@/lib/product-types";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -126,6 +126,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
         <CityCoverage
           label={`${fallback.type.name}, by city`}
+          entityName={fallback.type.name}
           basePath={`/products/${slug}`}
         />
       </main>
@@ -337,6 +338,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
       <CityCoverage
         label={`${product.name}, by city`}
+        entityName={withoutSampleSuffix(product.name)}
         basePath={`/products/${product.slug}`}
       />
 

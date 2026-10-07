@@ -12,10 +12,20 @@ import { SERVICE_CITIES } from "@/lib/data/service-cities";
  * passes `/materials/grc/facades` so "Bhopal" becomes
  * `/materials/grc/facades/bhopal`, and a product/type page passes
  * `/products/<slug>` so "Bhopal" becomes `/products/grc-jali-sample/bhopal`.
- * Those landing pages aren't built yet, so these are forward-looking links
- * on purpose — ready for when per-city pages like "GRC Jali in Bhopal" exist.
+ * `entityName` (e.g. "GRC Jali", "GRC Facades") is the plain name those
+ * pages are about, without the ", by city" suffix — used for the curtain
+ * transition's title ("GRC Jali in Bhopal") and that page's own heading,
+ * so what the animation announces matches what the destination says.
  */
-export function CityCoverage({ label, basePath }: { label: string; basePath: string }) {
+export function CityCoverage({
+  label,
+  entityName,
+  basePath,
+}: {
+  label: string;
+  entityName: string;
+  basePath: string;
+}) {
   return (
     <section style={{ padding: "clamp(40px, 6vw, 72px) 0 0" }}>
       <div
@@ -37,7 +47,7 @@ export function CityCoverage({ label, basePath }: { label: string; basePath: str
           <span key={city.slug} style={{ display: "inline-flex", alignItems: "baseline" }}>
             <TransitionLink
               href={`${basePath}/${city.slug}`}
-              title={city.name}
+              title={`${entityName} in ${city.name}`}
               style={{ fontSize: 13, color: theme.color.accent }}
             >
               {city.name}
