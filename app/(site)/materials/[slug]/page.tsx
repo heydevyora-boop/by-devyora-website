@@ -870,6 +870,11 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             ? `${material.name} ${material.applications[0].label}, by city`
             : `${material.name}, by city`
         }
+        basePath={
+          material.applications[0]
+            ? `/materials/${material.slug}/${material.applications[0].slug}`
+            : `/materials/${material.slug}`
+        }
       />
 
       {/* =========================================================

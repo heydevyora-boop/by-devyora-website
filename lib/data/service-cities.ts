@@ -2,10 +2,9 @@
  * The states and cities By Devyora lists on every material and product page
  * ("…, by city"). One list, edited here, shown everywhere.
  *
- * Display only: these are names, not links. (The per-city landing pages the
- * SEO README describes are not built yet, so a link would lead nowhere.)
  * A city may sit under more than one state where it serves both, as
- * Chandigarh does for Haryana and Punjab.
+ * Chandigarh does for Haryana and Punjab — SERVICE_CITIES below dedupes
+ * that down to one entry per city for the flat list CityCoverage renders.
  */
 export type ServiceState = { state: string; cities: string[] };
 
@@ -39,3 +38,29 @@ export const SERVICE_STATES: ServiceState[] = [
   { state: "Uttarakhand", cities: ["Dehradun", "Haridwar"] },
   { state: "West Bengal", cities: ["Kolkata", "Siliguri"] },
 ];
+
+export type ServiceCity = { name: string; slug: string };
+
+function slugifyCityName(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, "-");
+}
+
+/**
+ * Every city above, flattened and deduplicated (a city like Chandigarh that
+ * serves more than one state appears once), in first-seen order, each with
+ * a slug for its future landing page. CityCoverage renders this — not
+ * SERVICE_STATES directly — as a flat list with no state grouping.
+ */
+export const SERVICE_CITIES: ServiceCity[] = (() => {
+  const seenSlugs = new Set<string>();
+  const cities: ServiceCity[] = [];
+  for (const { cities: stateCities } of SERVICE_STATES) {
+    for (const name of stateCities) {
+      const slug = slugifyCityName(name);
+      if (seenSlugs.has(slug)) continue;
+      seenSlugs.add(slug);
+      cities.push({ name, slug });
+    }
+  }
+  return cities;
+})();
