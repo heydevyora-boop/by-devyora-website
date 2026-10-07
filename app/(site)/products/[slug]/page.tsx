@@ -124,7 +124,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
           idPrefix={slug}
         />
 
-        <CityCoverage label={`${fallback.type.name}, by city`} />
+        <CityCoverage
+          label={`${fallback.type.name}, by city`}
+          basePath={`/products/${slug}`}
+        />
       </main>
     );
   }
@@ -332,7 +335,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
         idPrefix={product.slug}
       />
 
-      <CityCoverage label={`${product.name}, by city`} />
+      <CityCoverage
+        label={`${product.name}, by city`}
+        basePath={`/products/${product.slug}`}
+      />
 
       {related.length > 0 && (
         <section style={{ padding: "clamp(56px, 9vw, 130px) 0 0" }}>
