@@ -141,3 +141,23 @@ export function findProductTypeBySlug(
 export function withoutSampleSuffix(name: string): string {
   return name.replace(/\s*—\s*Sample$/, "");
 }
+
+/**
+ * A real photo for a type's own sample page — keyed by type slug (e.g.
+ * "frp-capitals", matching ProductType.slug above, not the product's own
+ * "<type-slug>-sample" slug). The type-sample products in prisma/seed.ts
+ * are deliberately seeded with no image (see the comment there), so this is
+ * the only place a type's photo lives; the product page renders it directly
+ * above the shared enquiry form when an entry exists here, and shows
+ * nothing in that spot otherwise — not every type has one yet.
+ */
+export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> = {
+  "frp-capitals": { url: "/images/types/frp-capitals.webp", alt: "FRP Capitals — By Devyora" },
+  "frp-props": { url: "/images/types/frp-props.webp", alt: "FRP Props — By Devyora" },
+  "frp-decorative-screens": {
+    url: "/images/types/frp-decorative-screens.webp",
+    alt: "FRP Decorative Screens — By Devyora",
+  },
+  "frp-planters": { url: "/images/types/frp-planters.webp", alt: "FRP Planters — By Devyora" },
+  "frp-jali": { url: "/images/types/frp-jali.webp", alt: "FRP Jali — By Devyora" },
+};
