@@ -76,3 +76,38 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   terrazzo: neutralContent("Terrazzo", "/images/Terrazzo.webp"),
   "designer-tiles": neutralContent("Designer Tiles", "/images/Designer-Tiles.webp"),
 };
+
+// GRC, FRP and Terracotta's hero photo is hardcoded inline in
+// app/(site)/materials/[slug]/page.tsx (ahead of everything else, including
+// this file) rather than configured here — mirrored here only so
+// resolveMaterialHeroImage can reuse the exact same photo, not a new one.
+const SPECIAL_HERO_IMAGES: Record<string, { url: string; alt: string }> = {
+  grc: { url: "/images/GRC.webp", alt: "GRC architectural facade by Devyora" },
+  frp: { url: "/images/FRP.webp", alt: "FRP architectural facade by Devyora" },
+  terracotta: { url: "/images/Tera.webp", alt: "Terracotta architectural facade by Devyora" },
+  teracotta: { url: "/images/Tera.webp", alt: "Terracotta architectural facade by Devyora" },
+};
+
+/**
+ * The same hero photo a material's own /materials/[slug] page shows,
+ * resolved in the identical order that page uses (GRC/FRP/Terracotta's
+ * hardcoded photo, then this file's MATERIAL_PAGE_CONTENT, then the
+ * database's heroImage field) — so a by-city page like "GRC in Bhopal"
+ * shows the exact same photo as "GRC" itself, never a different or newly
+ * invented one. Returns null when none of those has a photo yet.
+ */
+export function resolveMaterialHeroImage(
+  slug: string,
+  materialName: string,
+  dbHeroImage?: string | null
+): { url: string; alt: string } | null {
+  const special = SPECIAL_HERO_IMAGES[slug];
+  if (special) return special;
+
+  const extra = MATERIAL_PAGE_CONTENT[slug];
+  if (extra) return { url: extra.heroImage, alt: extra.heroAlt };
+
+  if (dbHeroImage) return { url: dbHeroImage, alt: `${materialName} — Architectural Material` };
+
+  return null;
+}

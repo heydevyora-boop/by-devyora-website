@@ -14,6 +14,7 @@ import { RequirementForm } from "@/components/site/requirement-form";
 import {
   MATERIAL_PAGE_CONTENT,
   neutralMaterialContent,
+  resolveMaterialHeroImage,
   type MaterialPageContent,
 } from "@/lib/material-pages";
 
@@ -181,6 +182,10 @@ export default async function MaterialDetailPage({ params }: PageProps) {
 
   // Content for materials configured in lib/material-pages.ts (WPC, NHPS, ...)
   const extraContent = MATERIAL_PAGE_CONTENT[materialSlug];
+
+  // Same resolution the by-city pages use (lib/material-pages.ts), so this
+  // page and "<Material> in <City>" always show the identical photo.
+  const heroImage = resolveMaterialHeroImage(materialSlug, material.name, material.heroImage);
 
   const specialContent: MaterialPageContent = isFRP
     ? {
@@ -500,59 +505,12 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           background: "#F6F4F1",
         }}
       >
-        {isGRC ? (
+        {heroImage ? (
           <Image
-            src="/images/GRC.webp"
-            alt="GRC architectural facade by Devyora"
+            src={heroImage.url}
+            alt={heroImage.alt}
             fill
             priority
-            sizes="100vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-        ) : isFRP ? (
-          <Image
-            src="/images/FRP.webp"
-            alt="FRP architectural facade by Devyora"
-            fill
-            priority
-            sizes="100vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-        ) : isTerracotta ? (
-          <Image
-            src="/images/Tera.webp"
-            alt="Terracotta architectural facade by Devyora"
-            fill
-            priority
-            sizes="100vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-        ) : extraContent ? (
-          <Image
-            src={extraContent.heroImage}
-            alt={extraContent.heroAlt}
-            fill
-            priority
-            sizes="100vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-        ) : material.heroImage ? (
-          <Image
-            src={material.heroImage}
-            alt={`${material.name} — Architectural Material`}
-            fill
             sizes="100vw"
             style={{
               objectFit: "cover",

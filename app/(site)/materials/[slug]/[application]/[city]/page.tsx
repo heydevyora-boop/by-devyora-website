@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MaterialRepository } from "@/lib/repositories/material.repository";
 import { theme, pagePadX } from "@/lib/theme";
@@ -6,6 +7,7 @@ import { buildMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { RequirementForm } from "@/components/site/requirement-form";
 import { SERVICE_CITIES } from "@/lib/data/service-cities";
+import { resolveMaterialHeroImage } from "@/lib/material-pages";
 
 type PageProps = {
   params: Promise<{ slug: string; application: string; city: string }>;
@@ -41,7 +43,11 @@ async function resolve(
   const application = material.applications.find((a) => a.slug === applicationSlug);
   const entityName = application ? `${material.name} ${application.label}` : material.name;
 
-  return { material, application, entityName, city };
+  // The identical photo the material's own /materials/<slug> page shows —
+  // never a different or newly invented one, per request.
+  const heroImage = resolveMaterialHeroImage(materialSlug, material.name, material.heroImage);
+
+  return { material, application, entityName, city, heroImage };
 }
 
 export async function generateMetadata({
@@ -65,7 +71,7 @@ export default async function MaterialApplicationCityPage({
   const resolved = await resolve(slug, application, citySlug);
   if (!resolved) notFound();
 
-  const { material, entityName, city } = resolved;
+  const { material, entityName, city, heroImage } = resolved;
 
   return (
     <main
@@ -102,8 +108,31 @@ export default async function MaterialApplicationCityPage({
         }}
       >
         {entityName}, made to drawing by By Devyora, serving {city.name} —
-        full specifications and photos coming soon.
+        full specifications{heroImage ? "" : " and photos"} coming soon.
       </p>
+
+      {heroImage && (
+        <div
+          style={{
+            width: "100vw",
+            marginLeft: "calc(50% - 50vw)",
+            marginRight: "calc(50% - 50vw)",
+            aspectRatio: "16/9",
+            overflow: "hidden",
+            position: "relative",
+            background: "#F6F4F1",
+            marginBottom: "clamp(40px, 6vw, 72px)",
+          }}
+        >
+          <Image
+            src={heroImage.url}
+            alt={heroImage.alt}
+            fill
+            sizes="100vw"
+            style={{ objectFit: "cover", objectPosition: "center" }}
+          />
+        </div>
+      )}
 
       <RequirementForm
         eyebrow={`${entityName} in ${city.name}`}
