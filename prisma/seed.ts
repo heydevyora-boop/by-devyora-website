@@ -47,6 +47,8 @@ const NEW_MATERIALS = [
   { name: "Wall Art", slug: "wall-art" },
   { name: "Brass", slug: "brass" },
   { name: "Handmade Ceramics", slug: "handmade-ceramics" },
+  { name: "Terrazzo", slug: "terrazzo" },
+  { name: "Designer Tiles", slug: "designer-tiles" },
 ] as const;
 
 const CITIES = [
@@ -222,6 +224,8 @@ async function main() {
     "Wall Art": "/images/Wall-Art.webp",
     Brass: "/images/Brass.webp",
     "Handmade Ceramics": "/images/Handmade-Ceramics.webp",
+    Terrazzo: "/images/Terrazzo.webp",
+    "Designer Tiles": "/images/Designer-Tiles.webp",
   };
 
   const MATERIALS_NEEDING_SAMPLE_PRODUCT = [
