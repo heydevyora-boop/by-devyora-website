@@ -152,7 +152,9 @@ export function withoutSampleSuffix(name: string): string {
  * nothing in that spot otherwise — not every type has one yet.
  */
 export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> = {
+  "frp-pillars": { url: "/images/types/frp-pillars.webp", alt: "FRP Pillars — By Devyora" },
   "frp-capitals": { url: "/images/types/frp-capitals.webp", alt: "FRP Capitals — By Devyora" },
+  "frp-brackets": { url: "/images/types/frp-brackets.webp", alt: "FRP Brackets — By Devyora" },
   "frp-props": { url: "/images/types/frp-props.webp", alt: "FRP Props — By Devyora" },
   "frp-decorative-screens": {
     url: "/images/types/frp-decorative-screens.webp",
