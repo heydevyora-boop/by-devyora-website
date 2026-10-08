@@ -199,6 +199,7 @@ function PageTransitionOverlay({ phase, title }: { phase: Phase; title: string }
       }}
     >
       <div
+        className="curtain-title"
         style={{
           position: "relative",
           display: "inline-block",
@@ -215,6 +216,7 @@ function PageTransitionOverlay({ phase, title }: { phase: Phase; title: string }
         <span style={{ color: "#FFFFFF" }}>{title}</span>
         <span
           aria-hidden="true"
+          className="curtain-title-reveal"
           style={{
             position: "absolute",
             inset: 0,

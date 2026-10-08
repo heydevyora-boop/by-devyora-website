@@ -3,11 +3,8 @@
 import { useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
 import { TransitionLink } from "./transition-link";
-
-type ProductItem = {
-  name: string;
-  slug: string;
-};
+import { usePageTransition } from "./page-transition";
+import { ProductRail, type RailProduct } from "./product-rail";
 
 type NavItem = {
   href: string;
@@ -19,9 +16,10 @@ export function MobileNav({
   products,
 }: {
   nav: NavItem[];
-  products: ProductItem[];
+  products: RailProduct[];
 }) {
   const [open, setOpen] = useState(false);
+  const { start } = usePageTransition();
 
   useEffect(() => {
     if (!open) return;
@@ -113,16 +111,11 @@ export function MobileNav({
           transition: "opacity 200ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1), visibility 240ms",
         }}
       >
-        <nav
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            padding: "8px clamp(20px, 5vw, 40px) 40px",
-          }}
-        >
+        <div style={{ paddingTop: 20 }}>
           <div
             style={{
-              padding: "18px 0",
+              padding: "0 clamp(20px, 5vw, 40px)",
+              marginBottom: 16,
               fontSize: 10,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
@@ -131,39 +124,43 @@ export function MobileNav({
           >
             Products
           </div>
-          <div style={{ display: "flex", flexDirection: "column", paddingLeft: 16 }}>
-            {products.map((product) => (
-              <TransitionLink
-                key={product.slug}
-                href={`/materials/${product.slug}`}
-                title={product.name}
-                onClick={() => setOpen(false)}
-                style={{
-                  padding: "12px 0",
-                  borderBottom: `1px solid ${theme.color.border}`,
-                  fontSize: 18,
-                  fontFamily: theme.font.serif,
-                  color: theme.color.ink,
-                }}
-              >
-                {product.name}
-              </TransitionLink>
-            ))}
-            <TransitionLink
-              href="/materials"
-              title="Products"
-              onClick={() => setOpen(false)}
-              style={{
-                padding: "14px 0 22px",
-                fontSize: 10,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: theme.color.muted,
-              }}
-            >
-              View all products →
-            </TransitionLink>
-          </div>
+
+          {/* Same auto-scrolling, swipe/drag-able image rail as the desktop
+              Products dropdown (components/site/product-nav-dropdown.tsx) —
+              shared via ProductRail so both stay visually and behaviourally
+              identical. Native touch scrolling on the rail handles swipe;
+              auto-scroll only runs while this menu is open. */}
+          <ProductRail
+            products={products}
+            active={open}
+            onSelect={(product) => {
+              setOpen(false);
+              start(`/materials/${product.slug}`, product.name);
+            }}
+          />
+        </div>
+
+        <nav
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            padding: "28px clamp(20px, 5vw, 40px) 40px",
+          }}
+        >
+          <TransitionLink
+            href="/materials"
+            title="Products"
+            onClick={() => setOpen(false)}
+            style={{
+              padding: "0 0 22px",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: theme.color.muted,
+            }}
+          >
+            View all products →
+          </TransitionLink>
 
           {nav.map((item) => (
             <TransitionLink
