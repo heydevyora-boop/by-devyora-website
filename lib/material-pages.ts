@@ -71,4 +71,6 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   "wall-art": neutralContent("Wall Art", "/images/Wall-Art.webp"),
   brass: neutralContent("Brass", "/images/Brass.webp"),
   "handmade-ceramics": neutralContent("Handmade Ceramics", "/images/Handmade-Ceramics.webp"),
+  terrazzo: neutralContent("Terrazzo", "/images/Terrazzo.webp"),
+  "designer-tiles": neutralContent("Designer Tiles", "/images/Designer-Tiles.webp"),
 };

@@ -77,6 +77,16 @@ export async function SiteHeader() {
       slug: byName.get("handmade ceramics")?.slug ?? "handmade-ceramics",
       image: "/images/nav-products/Handmade-Ceramics.webp",
     },
+    {
+      name: "Terrazzo",
+      slug: byName.get("terrazzo")?.slug ?? "terrazzo",
+      image: "/images/nav-products/Terrazzo.webp",
+    },
+    {
+      name: "Designer Tiles",
+      slug: byName.get("designer tiles")?.slug ?? "designer-tiles",
+      image: "/images/nav-products/Designer-Tiles.webp",
+    },
   ].map((item) => ({ ...item, types: PRODUCT_TYPES[item.slug] }));
 
   return (
