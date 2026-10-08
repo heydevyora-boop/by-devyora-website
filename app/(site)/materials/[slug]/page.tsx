@@ -21,15 +21,17 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// Prebuild every published material at deploy time
+// Prebuild every published material at deploy time, plus every material
+// defined in lib/material-pages.ts even if its database row doesn't exist
+// yet — see the fallback in the page component below for why.
 export async function generateStaticParams() {
   const materials = await MaterialRepository.findAll({
     publishedOnly: true,
   });
 
-  return materials.map((m) => ({
-    slug: m.slug,
-  }));
+  const dbSlugs = new Set(materials.map((m) => m.slug));
+  const allSlugs = new Set([...dbSlugs, ...Object.keys(MATERIAL_PAGE_CONTENT)]);
+  return Array.from(allSlugs).map((slug) => ({ slug }));
 }
 
 // Revalidate page every hour
@@ -42,13 +44,22 @@ export async function generateMetadata({
 
   const material = await MaterialRepository.findBySlug(slug);
 
-  if (!material) return {};
+  if (material) {
+    return buildMetadata({
+      title: `${material.name} — Architectural Material System`,
+      description: material.description ?? material.tagline,
+      path: `/materials/${material.slug}`,
+      image: material.heroImage ?? undefined,
+    });
+  }
 
+  const fallback = MATERIAL_PAGE_CONTENT[slug];
+  if (!fallback) return {};
   return buildMetadata({
-    title: `${material.name} — Architectural Material System`,
-    description: material.description ?? material.tagline,
-    path: `/materials/${material.slug}`,
-    image: material.heroImage ?? undefined,
+    title: `${fallback.name} — Architectural Material System`,
+    description: fallback.intro,
+    path: `/materials/${slug}`,
+    image: fallback.heroImage,
   });
 }
 
@@ -58,7 +69,78 @@ export default async function MaterialDetailPage({ params }: PageProps) {
   const material = await MaterialRepository.findBySlug(slug);
 
   if (!material) {
-    notFound();
+    // Not in the database yet — same situation (and same fix) as the
+    // product-type pages: a material added to lib/material-pages.ts is live
+    // in code the moment this merges, but its database row only exists
+    // once someone reseeds. Rather than 404 until then, render a minimal
+    // page from that file's content alone — hero image, name, the same
+    // shared enquiry form as every other page. Once the real row exists,
+    // the full page above takes over automatically at this same URL.
+    const fallback = MATERIAL_PAGE_CONTENT[slug];
+    if (!fallback) notFound();
+
+    const name = fallback.name;
+
+    return (
+      <main
+        style={{
+          padding: `clamp(48px, 8vw, 110px) ${pagePadX} clamp(64px, 10vw, 160px)`,
+        }}
+      >
+        <Breadcrumbs
+          items={[
+            { name: "Products", path: "/materials" },
+            { name, path: `/materials/${slug}` },
+          ]}
+        />
+
+        <h1
+          style={{
+            fontFamily: theme.font.serif,
+            fontWeight: 400,
+            fontSize: "clamp(56px, 12.5vw, 210px)",
+            lineHeight: 0.86,
+            letterSpacing: "-0.03em",
+            margin: "0 0 clamp(28px, 4vw, 48px)",
+          }}
+        >
+          {name}
+        </h1>
+
+        <div
+          style={{
+            width: "100vw",
+            marginLeft: "calc(50% - 50vw)",
+            marginRight: "calc(50% - 50vw)",
+            aspectRatio: "16/9",
+            overflow: "hidden",
+            position: "relative",
+            background: "#F6F4F1",
+          }}
+        >
+          <Image
+            src={fallback.heroImage}
+            alt={fallback.heroAlt}
+            fill
+            priority
+            sizes="100vw"
+            style={{ objectFit: "cover", objectPosition: "center" }}
+          />
+        </div>
+
+        <div style={{ paddingTop: "clamp(40px, 6vw, 72px)" }}>
+          <p style={{ maxWidth: "60ch", fontSize: 15, lineHeight: 1.75, color: "#4A4844" }}>
+            {fallback.intro}
+          </p>
+        </div>
+
+        <RequirementForm
+          eyebrow={fallback.ctaEyebrow}
+          description={fallback.ctaDescription}
+          idPrefix={slug}
+        />
+      </main>
+    );
   }
 
   const related = await MaterialRepository.findRelated(material.num, 3);

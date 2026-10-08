@@ -28,6 +28,7 @@ export type MaterialPageContent = {
 
 /** Content plus the hero image used by materials configured in this file. */
 export type MaterialPageEntry = MaterialPageContent & {
+  name: string;
   heroImage: string;
   heroAlt: string;
 };
@@ -57,6 +58,7 @@ export function neutralMaterialContent(name: string): MaterialPageContent {
 function neutralContent(name: string, heroImage: string): MaterialPageEntry {
   return {
     ...neutralMaterialContent(name),
+    name,
     heroImage,
     heroAlt: `${name} by Devyora`,
   };
