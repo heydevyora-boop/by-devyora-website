@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ProductRepository } from "@/lib/repositories/product.repository";
 import { MaterialRepository } from "@/lib/repositories/material.repository";
@@ -11,7 +12,12 @@ import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ProductLink } from "@/components/site/product-link";
 import { RequirementForm } from "@/components/site/requirement-form";
 import { CityCoverage } from "@/components/site/city-coverage";
-import { ALL_PRODUCT_TYPE_SLUGS, findProductTypeBySlug, withoutSampleSuffix } from "@/lib/product-types";
+import {
+  ALL_PRODUCT_TYPE_SLUGS,
+  findProductTypeBySlug,
+  withoutSampleSuffix,
+  PRODUCT_TYPE_IMAGES,
+} from "@/lib/product-types";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -64,6 +70,43 @@ function formatBytes(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+/**
+ * A type's own photo (PRODUCT_TYPE_IMAGES), shown full-width directly above
+ * the shared enquiry form — same placement and treatment as a material
+ * page's hero image. Renders nothing when a type has no photo yet (most
+ * don't): the type-sample products in prisma/seed.ts are deliberately
+ * seeded without one, so this is the only place a type's photo can come
+ * from, whether the product is a real database row or still the
+ * code-only fallback above.
+ */
+function TypeHeroImage({ typeSlug }: { typeSlug: string | undefined }) {
+  const image = typeSlug ? PRODUCT_TYPE_IMAGES[typeSlug] : undefined;
+  if (!image) return null;
+
+  return (
+    <div
+      style={{
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
+        marginRight: "calc(50% - 50vw)",
+        aspectRatio: "16/9",
+        overflow: "hidden",
+        position: "relative",
+        background: "#F6F4F1",
+        marginBottom: "clamp(40px, 6vw, 72px)",
+      }}
+    >
+      <Image
+        src={image.url}
+        alt={image.alt}
+        fill
+        sizes="100vw"
+        style={{ objectFit: "cover", objectPosition: "center" }}
+      />
+    </div>
+  );
+}
+
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const product = await ProductRepository.findBySlug(slug);
@@ -114,9 +157,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
             marginBottom: "clamp(32px, 5vw, 56px)",
           }}
         >
-          {fallback.type.name}, made to drawing — full specifications and
-          photos coming soon.
+          {fallback.type.name}, made to drawing — full specifications
+          {PRODUCT_TYPE_IMAGES[fallback.type.slug] ? "" : " and photos"}{" "}
+          coming soon.
         </p>
+
+        <TypeHeroImage typeSlug={fallback.type.slug} />
 
         <RequirementForm
           eyebrow={`${fallback.type.name} By Devyora`}
@@ -329,6 +375,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
           ))}
         </section>
       )}
+
+      <TypeHeroImage typeSlug={findProductTypeBySlug(product.slug)?.type.slug} />
 
       <RequirementForm
         eyebrow={`${product.name} By Devyora`}
