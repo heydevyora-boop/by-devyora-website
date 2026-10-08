@@ -97,6 +97,24 @@ a {
   }
 }
 
+/* The page-transition curtain title (e.g. "GRC Facades in
+   Thiruvananthapuram") is set with white-space: nowrap inline so the
+   left-to-right paint-wipe reveal can size itself as a clean percentage of
+   one line's width. On a phone, a long combined "<Entity> in <City>" title
+   at the 42px font-size floor is wider than the viewport and runs off both
+   edges. Below 480px, let it wrap onto two lines at a smaller size instead
+   — the reveal span mirrors the title span's own text and sizing, so it
+   wraps identically and the wipe still exactly covers the wrapped text. */
+@media (max-width: 480px) {
+  .curtain-title,
+  .curtain-title-reveal {
+    white-space: normal !important;
+    max-width: 86vw !important;
+    font-size: clamp(26px, 7.8vw, 40px) !important;
+    line-height: 1.15 !important;
+  }
+}
+
 /* Detail-page grids built with fixed minmax() column ratios (not
    auto-fit/auto-fill) don't reflow on their own — each column simply gets
    squeezed below its own minmax floor and the row overflows the viewport
