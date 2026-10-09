@@ -212,11 +212,24 @@ function PageTransitionOverlay({ phase, title }: { phase: Phase; title: string }
           textAlign: "center",
         }}
       >
-        {/* Reference animation starts white, then paints black from left to right. */}
+        {/* Reference animation starts white, then paints black from left to right.
+            That left-to-right wipe is a width: 0%->100% clip on this span, measured
+            from the box's own left edge — exactly matching the single line of
+            nowrap text it was built for, which always fills that box edge to edge.
+            On phone widths this title wraps onto 2 centered lines instead (see the
+            media query in globals.css); a shorter second line starts further right
+            than the first, so the same box-relative width sweep uncovers each
+            line's glyphs at a different pace and the reveal visibly desyncs mid-
+            transition, title text momentarily unreadable/overlapping. The
+            data-wiped attribute lets that media query swap this span to a plain
+            opacity crossfade instead, which has no box-geometry to get out of sync
+            with — desktop's single-line wipe (where sync was never an issue) is
+            untouched. */}
         <span style={{ color: "#FFFFFF" }}>{title}</span>
         <span
           aria-hidden="true"
           className="curtain-title-reveal"
+          data-wiped={wiped}
           style={{
             position: "absolute",
             inset: 0,
