@@ -102,9 +102,7 @@ a {
    left-to-right paint-wipe reveal can size itself as a clean percentage of
    one line's width. On a phone, a long combined "<Entity> in <City>" title
    at the 42px font-size floor is wider than the viewport and runs off both
-   edges. Below 480px, let it wrap onto two lines at a smaller size instead
-   — the reveal span mirrors the title span's own text and sizing, so it
-   wraps identically and the wipe still exactly covers the wrapped text. */
+   edges. Below 480px, let it wrap onto two lines at a smaller size instead. */
 @media (max-width: 480px) {
   .curtain-title,
   .curtain-title-reveal {
@@ -112,6 +110,27 @@ a {
     max-width: 86vw !important;
     font-size: clamp(26px, 7.8vw, 40px) !important;
     line-height: 1.15 !important;
+  }
+
+  /* The reveal span's left-to-right wipe (width: 0%->100%, inline in
+     page-transition.tsx) measures itself against this box's own left edge
+     — exactly right for the single line of nowrap text it was designed
+     for, which always fills that edge to edge. Once wrapped onto 2
+     centered lines above, a shorter second line starts further right than
+     the first, so that same box-relative sweep uncovers each line's text
+     at a different pace: the title visibly desyncs/overlaps mid-transition
+     instead of wiping cleanly. Swap to a plain opacity crossfade here
+     instead — ignores line geometry entirely, so it can't desync — and
+     force width to its end state so the now-unused clip plays no part.
+     data-wiped is set by PageTransitionOverlay; keep this transition's
+     duration matching REVEAL_MS (760ms) in page-transition.tsx. */
+  .curtain-title-reveal {
+    width: 100% !important;
+    opacity: 0;
+    transition: opacity 760ms cubic-bezier(0.65, 0, 0.35, 1) !important;
+  }
+  .curtain-title-reveal[data-wiped="true"] {
+    opacity: 1;
   }
 }
 
