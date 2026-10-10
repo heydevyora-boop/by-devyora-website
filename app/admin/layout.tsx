@@ -17,6 +17,7 @@ const NAV = [
   { href: "/admin/blog", label: "Blog", built: true, show: (role: string) => hasPermission(role as never, PERMISSIONS.BLOG_UPDATE) },
   { href: "/admin/downloads", label: "Downloads", built: true, show: (role: string) => hasPermission(role as never, PERMISSIONS.DOWNLOAD_MANAGE) },
   { href: "/admin/enquiries", label: "Enquiries", built: true, show: (role: string) => hasPermission(role as never, PERMISSIONS.ENQUIRY_VIEW) },
+  { href: "/admin/branches", label: "Branches", built: true, show: (role: string) => hasPermission(role as never, PERMISSIONS.BRANCH_MANAGE) },
   { href: "/admin/users", label: "Users", built: false, show: (role: string) => hasPermission(role as never, PERMISSIONS.USER_MANAGE) },
 ];
 

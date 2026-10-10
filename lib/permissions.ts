@@ -12,6 +12,8 @@ export const PERMISSIONS = {
 
   CATEGORY_MANAGE: "category:manage",
 
+  BRANCH_MANAGE: "branch:manage",
+
   PRODUCT_CREATE: "product:create",
   PRODUCT_UPDATE: "product:update",
   PRODUCT_DELETE: "product:delete",
