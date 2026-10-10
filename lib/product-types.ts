@@ -179,6 +179,10 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
     alt: "Terracotta Flooring — By Devyora",
   },
   "terracotta-jali": { url: "/images/types/terracotta-jali.webp", alt: "Terracotta Jali — By Devyora" },
+  "terracotta-planters": {
+    url: "/images/types/terracotta-planters.webp",
+    alt: "Terracotta Planters — By Devyora",
+  },
   "handmade-terracotta-murals": {
     url: "/images/types/handmade-terracotta-murals.webp",
     alt: "Handmade Terracotta Murals — By Devyora",
