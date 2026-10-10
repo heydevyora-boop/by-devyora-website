@@ -245,4 +245,14 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   },
   "marble-statues": { url: "/images/types/marble-statues.webp", alt: "Marble Statues — By Devyora" },
   "marble-cornices": { url: "/images/types/marble-cornices.webp", alt: "Marble Cornices — By Devyora" },
+  "marble-wall-art": { url: "/images/types/marble-wall-art.webp", alt: "Marble Wall Art — By Devyora" },
+  "marble-basins": { url: "/images/types/marble-basins.webp", alt: "Marble Basins — By Devyora" },
+  "marble-inlay-on-site": {
+    url: "/images/types/marble-inlay-on-site.webp",
+    alt: "Marble Inlay — On Site — By Devyora",
+  },
+  "marble-inlay-on-countertop": {
+    url: "/images/types/marble-inlay-on-countertop.webp",
+    alt: "Marble Inlay — On Countertop — By Devyora",
+  },
 };
