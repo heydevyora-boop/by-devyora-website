@@ -166,4 +166,21 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   },
   "frp-planters": { url: "/images/types/frp-planters.webp", alt: "FRP Planters — By Devyora" },
   "frp-jali": { url: "/images/types/frp-jali.webp", alt: "FRP Jali — By Devyora" },
+  "terracotta-cladding-bricks": {
+    url: "/images/types/terracotta-cladding-bricks.webp",
+    alt: "Terracotta Cladding Bricks — By Devyora",
+  },
+  "terracotta-bricks": {
+    url: "/images/types/terracotta-bricks.webp",
+    alt: "Terracotta Bricks — By Devyora",
+  },
+  "terracotta-flooring": {
+    url: "/images/types/terracotta-flooring.webp",
+    alt: "Terracotta Flooring — By Devyora",
+  },
+  "terracotta-jali": { url: "/images/types/terracotta-jali.webp", alt: "Terracotta Jali — By Devyora" },
+  "handmade-terracotta-murals": {
+    url: "/images/types/handmade-terracotta-murals.webp",
+    alt: "Handmade Terracotta Murals — By Devyora",
+  },
 };
