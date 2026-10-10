@@ -237,4 +237,12 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
     url: "/images/types/grg-pop-ceiling-elements.webp",
     alt: "GRG POP Ceiling Elements — By Devyora",
   },
+  "marble-capitals": { url: "/images/types/marble-capitals.webp", alt: "Marble Capitals — By Devyora" },
+  "marble-planters": { url: "/images/types/marble-planters.webp", alt: "Marble Planters — By Devyora" },
+  "marble-mandir-interior-marbles": {
+    url: "/images/types/marble-mandir-interior-marbles.webp",
+    alt: "Marble Mandir Interior Marbles — By Devyora",
+  },
+  "marble-statues": { url: "/images/types/marble-statues.webp", alt: "Marble Statues — By Devyora" },
+  "marble-cornices": { url: "/images/types/marble-cornices.webp", alt: "Marble Cornices — By Devyora" },
 };
