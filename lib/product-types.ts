@@ -217,6 +217,10 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
     alt: "Handmade Ceramic Murals — By Devyora",
   },
   "grg-pop-plus": { url: "/images/types/grg-pop-plus.webp", alt: "GRG POP Plus — By Devyora" },
+  "grg-pop-capitals": {
+    url: "/images/types/grg-pop-capitals.webp",
+    alt: "GRG POP Capitals — By Devyora",
+  },
   "grg-pop-brackets": {
     url: "/images/types/grg-pop-brackets.webp",
     alt: "GRG POP Brackets — By Devyora",
