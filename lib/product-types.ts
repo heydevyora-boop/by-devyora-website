@@ -193,4 +193,11 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
     alt: "WPC Deck Flooring — By Devyora",
   },
   "wpc-pergolas": { url: "/images/types/wpc-pergolas.webp", alt: "WPC Pergolas — By Devyora" },
+  "uhpc-capitals": { url: "/images/types/uhpc-capitals.webp", alt: "UHPC Capitals — By Devyora" },
+  "uhpc-brackets": { url: "/images/types/uhpc-brackets.webp", alt: "UHPC Brackets — By Devyora" },
+  "uhpc-pillars": { url: "/images/types/uhpc-pillars.webp", alt: "UHPC Pillars — By Devyora" },
+  "uhpc-wall-panels": {
+    url: "/images/types/uhpc-wall-panels.webp",
+    alt: "UHPC Wall Panels — By Devyora",
+  },
 };
