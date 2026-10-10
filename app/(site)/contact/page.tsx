@@ -8,7 +8,7 @@ import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
 export const metadata: Metadata = buildMetadata({
   title: "Contact",
-  description: "Get in touch with By Devyora — architects, dealers and general enquiries. Head office in Gurugram, showrooms in Mumbai and Dubai.",
+  description: "Get in touch with By Devyora — architects, dealers and general enquiries. Head office in Bhopal, showroom in Mumbai.",
   path: "/contact",
 });
 
@@ -25,13 +25,13 @@ export default async function ContactPage() {
         </h1>
       </section>
 
-      <ImagePlaceholder label="Google Map — Gurugram" aspectRatio="21/7" />
+      <ImagePlaceholder label="Google Map — Bhopal" aspectRatio="21/7" />
 
       <div style={{ padding: `clamp(48px, 7vw, 96px) ${pagePadX} clamp(64px, 10vw, 160px)` }}>
         <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "clamp(28px, 4vw, 56px)", paddingBottom: "clamp(48px, 7vw, 96px)", borderBottom: `1px solid ${theme.color.border}` }}>
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, marginBottom: 8 }}>Head Office</div>
-            <span style={{ fontSize: 15, lineHeight: 1.6, color: "#4A4844" }}>Industrial Area, Sector 82<br />Gurugram, Haryana 122004<br />India</span>
+            <span style={{ fontSize: 15, lineHeight: 1.6, color: "#4A4844" }}>Bhopal, Madhya Pradesh<br />India</span>
           </div>
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, marginBottom: 8 }}>Reach Us</div>

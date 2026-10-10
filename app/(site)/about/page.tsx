@@ -6,22 +6,22 @@ import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
 export const metadata: Metadata = buildMetadata({
   title: "About",
-  description: "Since 2008 — the By Devyora story. Architectural materials manufactured in Gurugram, delivered across India and the Middle East.",
+  description: "Since 2008 — the By Devyora story. Architectural materials manufactured in Bhopal, delivered across India.",
   path: "/about",
 });
 
 const LEADERS = [
   { name: "Rajesh Kumar", role: "Founder & Managing Director", bio: "Nearly two decades in architectural manufacturing. Established By Devyora's first GRC production line in 2008." },
   { name: "Anita Sharma", role: "Head of Design", bio: "Formerly with Studio Lotus. Leads the technical design team, translating architects' drawings into production-ready specifications." },
-  { name: "Vikram Singh", role: "Director of Operations", bio: "Oversees the integrated facility and supply chain, ensuring on-time delivery across domestic and international projects." },
+  { name: "Vikram Singh", role: "Director of Operations", bio: "Oversees the integrated facility and supply chain, ensuring on-time delivery to project sites across the country." },
 ];
 
 const TIMELINE = [
-  { year: "2008", event: "Founded in Gurugram with a single GRC production bay." },
-  { year: "2012", event: "Added FRP and terracotta lines. First project outside India — a villa complex in Dubai." },
+  { year: "2008", event: "Founded in Bhopal with a single GRC production bay." },
+  { year: "2012", event: "Added FRP and terracotta lines, expanding the manufacturing range beyond GRC." },
   { year: "2016", event: "Expanded to 50,000 sq ft. Introduced WPC and composite railing systems." },
   { year: "2019", event: "ISO 9001 and ISO 14001 certified. Crossed 300 projects delivered." },
-  { year: "2022", event: "Launched the architectural jali and screen division. Opened a Dubai liaison office." },
+  { year: "2022", event: "Launched the architectural jali and screen division." },
   { year: "2026", event: "500+ projects completed. Eleven material systems in production." },
 ];
 
@@ -32,11 +32,17 @@ const VALUES = [
   { title: "Integrity", desc: "Honest specifications, tested materials, certified results. No shortcuts." },
 ];
 
+// Every city named here is drawn from SERVICE_STATES (lib/data/service-cities.ts)
+// — the same canonical, India-only list the product and material pages use for
+// their own "by city" sections — so this never drifts into invented or foreign
+// cities of its own.
 const REGIONS = [
-  { region: "North India", cities: "Delhi, Gurugram, Noida, Jaipur, Chandigarh" },
-  { region: "West India", cities: "Mumbai, Pune, Ahmedabad, Surat" },
-  { region: "South India", cities: "Bengaluru, Hyderabad, Chennai" },
-  { region: "Middle East", cities: "Dubai, Abu Dhabi, Riyadh" },
+  { region: "North India", cities: "Chandigarh, Gurugram, Jaipur, Lucknow, Dehradun, Shimla" },
+  { region: "South India", cities: "Bengaluru, Chennai, Hyderabad, Kochi, Thiruvananthapuram, Visakhapatnam" },
+  { region: "West India", cities: "Mumbai, Pune, Ahmedabad, Gandhinagar, Panaji" },
+  { region: "East India", cities: "Kolkata, Bhubaneswar, Patna, Ranchi" },
+  { region: "Central India", cities: "Bhopal, Indore, Raipur" },
+  { region: "Northeast India", cities: "Guwahati, Shillong, Itanagar, Imphal, Agartala" },
 ];
 
 export default function AboutPage() {
@@ -52,7 +58,7 @@ export default function AboutPage() {
         </h1>
         <p style={{ maxWidth: "56ch", fontSize: "clamp(15px, 1.2vw, 18px)", lineHeight: 1.65, color: "#4A4844" }}>
           Since 2008, By Devyora has manufactured architectural materials — GRC, FRP, terracotta and
-          composite systems — for facades, thresholds and landscapes across India and the Middle East.
+          composite systems — for facades, thresholds and landscapes across India.
         </p>
       </section>
 

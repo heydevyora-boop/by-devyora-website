@@ -79,10 +79,8 @@ export function organizationJsonLd() {
     description: "Architectural building materials manufacturer — GRC, FRP, terracotta and composite systems, made to drawing.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Industrial Area, Sector 82",
-      addressLocality: "Gurugram",
-      addressRegion: "Haryana",
-      postalCode: "122004",
+      addressLocality: "Bhopal",
+      addressRegion: "Madhya Pradesh",
       addressCountry: "IN",
     },
     contactPoint: {
