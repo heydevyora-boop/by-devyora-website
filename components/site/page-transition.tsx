@@ -213,31 +213,35 @@ function PageTransitionOverlay({ phase, title }: { phase: Phase; title: string }
         }}
       >
         {/* Reference animation starts white, then paints black from left to right.
-            That left-to-right wipe is a width: 0%->100% clip on this span, measured
-            from the box's own left edge — exactly matching the single line of
-            nowrap text it was built for, which always fills that box edge to edge.
-            On phone widths this title wraps onto 2 centered lines instead (see the
-            media query in globals.css); a shorter second line starts further right
-            than the first, so the same box-relative width sweep uncovers each
-            line's glyphs at a different pace and the reveal visibly desyncs mid-
-            transition, title text momentarily unreadable/overlapping. The
-            data-wiped attribute lets that media query swap this span to a plain
-            opacity crossfade instead, which has no box-geometry to get out of sync
-            with — desktop's single-line wipe (where sync was never an issue) is
-            untouched. */}
-        <span style={{ color: "#FFFFFF" }}>{title}</span>
+            Previously this was two stacked copies of the title — a plain white
+            span, plus a black copy on top clipped by an animated width — so the
+            wipe was really two independently-rendered text layers lining up on
+            top of each other. They never quite matched: a composited (GPU)
+            layer promoted by the animating width rasterizes text with slightly
+            different sub-pixel positioning than the plain one beneath it, so a
+            hairline sliver of the white layer always peeked out past the black
+            one, worst on descenders (the "g" in Flooring, the "p" in Dimapur).
+            Rendering the title once and animating a background gradient through
+            it (clipped to the glyphs via background-clip: text) gets the same
+            left-to-right paint-wipe with only one glyph render, so there is
+            nothing for a second layer to drift out of alignment with. On phone
+            widths this title wraps onto 2 centered lines instead (see the media
+            query in globals.css); a shorter second line starts further right
+            than the first, so this same box-relative gradient sweep would
+            desync across lines exactly like the old width-wipe did — that
+            media query swaps it for a plain color crossfade there, which has no
+            box geometry to desync with. */}
         <span
-          aria-hidden="true"
-          className="curtain-title-reveal"
+          className="curtain-title-text"
           data-wiped={wiped}
           style={{
-            position: "absolute",
-            inset: 0,
-            overflow: "hidden",
-            color: theme.color.ink,
-            whiteSpace: "nowrap",
-            width: wiped ? "100%" : "0%",
-            transition: `width ${REVEAL_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
+            backgroundImage: `linear-gradient(to right, ${theme.color.ink} 50%, #FFFFFF 50%)`,
+            backgroundSize: "200% 100%",
+            backgroundPositionX: wiped ? "0%" : "100%",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+            transition: `background-position-x ${REVEAL_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
           }}
         >
           {title}
