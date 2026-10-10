@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BranchRepository } from "@/lib/repositories/branch.repository";
 import { theme, pagePadX } from "@/lib/theme";
-import { Eyebrow, ImagePlaceholder } from "@/components/site/ui";
+import { Eyebrow } from "@/components/site/ui";
 import { ContactForm } from "@/components/site/contact-form";
 import { buildMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
@@ -25,7 +25,15 @@ export default async function ContactPage() {
         </h1>
       </section>
 
-      <ImagePlaceholder label="Google Map — Bhopal" aspectRatio="21/7" />
+      <div style={{ aspectRatio: "21/7", border: `1px solid ${theme.color.border}` }}>
+        <iframe
+          src="https://www.google.com/maps?q=Bhopal,+Madhya+Pradesh,+India&output=embed"
+          title="By Devyora — Bhopal"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          style={{ width: "100%", height: "100%", border: 0, display: "block" }}
+        />
+      </div>
 
       <div style={{ padding: `clamp(48px, 7vw, 96px) ${pagePadX} clamp(64px, 10vw, 160px)` }}>
         <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "clamp(28px, 4vw, 56px)", paddingBottom: "clamp(48px, 7vw, 96px)", borderBottom: `1px solid ${theme.color.border}` }}>
