@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import slugify from "slugify";
 import { prisma } from "../lib/prisma";
 import { PRODUCT_TYPES } from "../lib/product-types";
+import { SERVICE_STATES } from "../lib/data/service-cities";
 
 // ---- Source data (mirrors what's already in the Products / Projects / Manufacturing pages) ----
 
@@ -51,32 +52,58 @@ const NEW_MATERIALS = [
   { name: "Designer Tiles", slug: "designer-tiles" },
 ] as const;
 
-const CITIES = [
-  { name: "Bhopal", state: "Madhya Pradesh", region: "Central India" },
-  { name: "Indore", state: "Madhya Pradesh", region: "Central India" },
-  { name: "Jabalpur", state: "Madhya Pradesh", region: "Central India" },
-  { name: "New Delhi", state: "Delhi", region: "North India" },
-  { name: "Gurugram", state: "Haryana", region: "North India" },
-  { name: "Noida", state: "Uttar Pradesh", region: "North India" },
-  { name: "Jaipur", state: "Rajasthan", region: "North India" },
-  { name: "Chandigarh", state: "Chandigarh", region: "North India" },
-  { name: "Lucknow", state: "Uttar Pradesh", region: "North India" },
-  { name: "Mumbai", state: "Maharashtra", region: "West India" },
-  { name: "Pune", state: "Maharashtra", region: "West India" },
-  { name: "Ahmedabad", state: "Gujarat", region: "West India" },
-  { name: "Surat", state: "Gujarat", region: "West India" },
-  { name: "Bengaluru", state: "Karnataka", region: "South India" },
-  { name: "Hyderabad", state: "Telangana", region: "South India" },
-  { name: "Chennai", state: "Tamil Nadu", region: "South India" },
-  { name: "Kochi", state: "Kerala", region: "South India" },
-  { name: "Kolkata", state: "West Bengal", region: "East India" },
-  { name: "Nagpur", state: "Maharashtra", region: "Central India" },
-  { name: "Dubai", state: "Dubai", region: "Middle East" },
-];
+// Standard Indian geographic regions, one per state in SERVICE_STATES — this and
+// the cities themselves come from that single shared list (also used by every
+// material/product page's own "by city" section), rather than being
+// independently hand-picked here. Keeps this always India-only and in sync;
+// no foreign state/city can ever sneak back in through this table.
+const STATE_REGION: Record<string, string> = {
+  "Andhra Pradesh": "South India",
+  "Arunachal Pradesh": "Northeast India",
+  Assam: "Northeast India",
+  Bihar: "East India",
+  Chhattisgarh: "Central India",
+  Goa: "West India",
+  Gujarat: "West India",
+  Haryana: "North India",
+  "Himachal Pradesh": "North India",
+  Jharkhand: "East India",
+  Karnataka: "South India",
+  Kerala: "South India",
+  "Madhya Pradesh": "Central India",
+  Maharashtra: "West India",
+  Manipur: "Northeast India",
+  Meghalaya: "Northeast India",
+  Mizoram: "Northeast India",
+  Nagaland: "Northeast India",
+  Odisha: "East India",
+  Punjab: "North India",
+  Rajasthan: "North India",
+  Sikkim: "Northeast India",
+  "Tamil Nadu": "South India",
+  Telangana: "South India",
+  Tripura: "Northeast India",
+  "Uttar Pradesh": "North India",
+  Uttarakhand: "North India",
+  "West Bengal": "East India",
+};
+
+const CITIES = (() => {
+  const seen = new Set<string>();
+  const out: { name: string; state: string; region: string }[] = [];
+  for (const { state, cities } of SERVICE_STATES) {
+    for (const name of cities) {
+      if (seen.has(name)) continue;
+      seen.add(name);
+      out.push({ name, state, region: STATE_REGION[state] });
+    }
+  }
+  return out;
+})();
 
 const PROJECTS = [
   { name: "The Residences at Marina Bay", location: "Mumbai", type: ProjectType.RESIDENTIAL, arch: "Studio Lotus", year: 2025, products: ["GRC", "Jali"], desc: "A 42-storey residential tower with a bespoke GRC facade of 2,400 panels, each acid-etched to reveal aggregate beneath." },
-  { name: "Oasis Convention Centre", location: "Dubai", type: ProjectType.COMMERCIAL, arch: "RSP Architects", year: 2024, products: ["FRP", "Cladding"], desc: "A sweeping convention hall clad in double-curved FRP panels, each formed from a single mould to eliminate visible joints." },
+  { name: "Oasis Convention Centre", location: "Hyderabad", type: ProjectType.COMMERCIAL, arch: "RSP Architects", year: 2024, products: ["FRP", "Cladding"], desc: "A sweeping convention hall clad in double-curved FRP panels, each formed from a single mould to eliminate visible joints." },
   { name: "Terracotta House", location: "New Delhi", type: ProjectType.RESIDENTIAL, arch: "Morphogenesis", year: 2024, products: ["Terracotta", "Screens"], desc: "A private residence wrapped in a continuous terracotta baguette screen that modulates daylight and cross-ventilation." },
   { name: "Heritage Walk Hotel", location: "Ahmedabad", type: ProjectType.HOSPITALITY, arch: "Sanjay Puri Architects", year: 2023, products: ["Jali", "Columns"], desc: "A boutique hotel in the old city with GRC jali screens inspired by Mughal geometry and hand-carved GRC columns." },
   { name: "Lakeside Promenade", location: "Udaipur", type: ProjectType.LANDSCAPE, arch: "LAUD Architects", year: 2023, products: ["WPC", "Planters", "Railings"], desc: "A 1.2 km lakefront promenade surfaced in WPC decking with integrated GRC planters and powder-coated railings." },
@@ -84,9 +111,8 @@ const PROJECTS = [
 ];
 
 const BRANCHES = [
-  { city: "Gurugram", address: "Industrial Area, Sector 82, Gurugram, Haryana 122004", phone: "+91 000 000 0000", isHeadOffice: true },
+  { city: "Bhopal", address: "Bhopal, Madhya Pradesh", phone: "+91 000 000 0000", isHeadOffice: true },
   { city: "Mumbai", address: "Parel Design Centre, 3rd Floor, Mumbai, Maharashtra 400012", phone: "+91 000 000 0002", isHeadOffice: false },
-  { city: "Dubai", address: "Business Bay, Tower B, Dubai, UAE", phone: "+971 00 000 0000", isHeadOffice: false },
 ];
 
 const MANUFACTURING_STEPS = [
