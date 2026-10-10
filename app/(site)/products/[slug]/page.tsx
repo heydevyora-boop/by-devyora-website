@@ -73,11 +73,12 @@ function formatBytes(bytes: number) {
 /**
  * A type's own photo (PRODUCT_TYPE_IMAGES), shown full-width directly above
  * the shared enquiry form — same placement and treatment as a material
- * page's hero image. Renders nothing when a type has no photo yet (most
- * don't): the type-sample products in prisma/seed.ts are deliberately
- * seeded without one, so this is the only place a type's photo can come
- * from, whether the product is a real database row or still the
- * code-only fallback above.
+ * page's hero image. Used only by the code-only fallback below (no database
+ * row yet), which has no product gallery of its own to show a photo in.
+ * Once a real row exists, its gallery shows the type photo directly as the
+ * normal top-of-page hero instead (see `galleryImages` further down) —
+ * rendering it a second time down here as well would just duplicate it.
+ * Renders nothing when a type has no photo yet (most don't).
  */
 function TypeHeroImage({ typeSlug }: { typeSlug: string | undefined }) {
   const image = typeSlug ? PRODUCT_TYPE_IMAGES[typeSlug] : undefined;
@@ -181,6 +182,29 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const related = await ProductRepository.findRelated(product, 4);
 
+  // Type-sample products are deliberately seeded with no images (see
+  // prisma/seed.ts), so product.images is normally empty here. Previously
+  // that left the gallery showing a blank placeholder box up top, with the
+  // type's real photo (PRODUCT_TYPE_IMAGES) only appearing in a separate
+  // strip near the bottom of the page — an inconsistent, oddly-placed
+  // result compared to every other product page, where the photo IS the
+  // top hero. Feed the type photo into the gallery itself when there's no
+  // real upload yet, so it renders in the normal top position instead.
+  const typeSlug = findProductTypeBySlug(product.slug)?.type.slug;
+  const typeImage = typeSlug ? PRODUCT_TYPE_IMAGES[typeSlug] : undefined;
+  const galleryImages =
+    product.images.length > 0
+      ? product.images.map((img) => ({
+          id: img.id,
+          url: img.url,
+          alt: img.alt,
+          variantId: img.variantId,
+          isPrimary: img.isPrimary,
+        }))
+      : typeImage
+        ? [{ id: "type-photo", url: typeImage.url, alt: typeImage.alt, variantId: null, isPrimary: true }]
+        : [];
+
   return (
     <main
       style={{
@@ -250,13 +274,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
       <ProductDetailInteractive
         productName={product.name}
-        images={product.images.map((img) => ({
-          id: img.id,
-          url: img.url,
-          alt: img.alt,
-          variantId: img.variantId,
-          isPrimary: img.isPrimary,
-        }))}
+        images={galleryImages}
         variants={product.variants.map((v) => ({
           id: v.id,
           sku: v.sku,
@@ -375,8 +393,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
           ))}
         </section>
       )}
-
-      <TypeHeroImage typeSlug={findProductTypeBySlug(product.slug)?.type.slug} />
 
       <RequirementForm
         eyebrow={`${product.name} By Devyora`}
