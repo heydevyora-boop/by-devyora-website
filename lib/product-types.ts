@@ -216,4 +216,21 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
     url: "/images/types/handmade-ceramic-murals.webp",
     alt: "Handmade Ceramic Murals — By Devyora",
   },
+  "grg-pop-plus": { url: "/images/types/grg-pop-plus.webp", alt: "GRG POP Plus — By Devyora" },
+  "grg-pop-brackets": {
+    url: "/images/types/grg-pop-brackets.webp",
+    alt: "GRG POP Brackets — By Devyora",
+  },
+  "grg-pop-cornices": {
+    url: "/images/types/grg-pop-cornices.webp",
+    alt: "GRG POP Cornices — By Devyora",
+  },
+  "grg-pop-wall-panels": {
+    url: "/images/types/grg-pop-wall-panels.webp",
+    alt: "GRG POP Wall Panels — By Devyora",
+  },
+  "grg-pop-ceiling-elements": {
+    url: "/images/types/grg-pop-ceiling-elements.webp",
+    alt: "GRG POP Ceiling Elements — By Devyora",
+  },
 };
