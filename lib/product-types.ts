@@ -187,4 +187,10 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
     url: "/images/types/handmade-terracotta-murals.webp",
     alt: "Handmade Terracotta Murals — By Devyora",
   },
+  "wpc-gazebos": { url: "/images/types/wpc-gazebos.webp", alt: "WPC Gazebos — By Devyora" },
+  "wpc-deck-flooring": {
+    url: "/images/types/wpc-deck-flooring.webp",
+    alt: "WPC Deck Flooring — By Devyora",
+  },
+  "wpc-pergolas": { url: "/images/types/wpc-pergolas.webp", alt: "WPC Pergolas — By Devyora" },
 };
