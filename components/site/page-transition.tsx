@@ -71,12 +71,36 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const [phase, setPhase] = useState<Phase>("idle");
   const [title, setTitle] = useState(BRAND_TITLE);
+  const [isMultiline, setIsMultiline] = useState(false);
   const pendingHref = useRef<string | null>(null);
   const revealDeadline = useRef(0);
+  const measureRef = useRef<HTMLSpanElement>(null);
+
+  // Whether a title will wrap onto 2 lines on a phone decides which reveal
+  // mechanism PageTransitionOverlay uses (see the comment down there), and
+  // that decision has to be correct from this title's very first render —
+  // if it were measured only after mounting with the new text (as it
+  // originally was), the data-multiline attribute would flip for titles
+  // that do wrap, and since a CSS transition is declared on the property
+  // that flip changes, the browser treats that as a real transition and
+  // visibly animates it, fading the "ghost" state in from transparent
+  // instead of it just being there instantly. Measuring into this hidden,
+  // permanently-mounted element — same classes as the real title, so it
+  // wraps under the exact same rules — lets this run synchronously, via a
+  // direct DOM write, before title/isMultiline state (and so the real
+  // title's first render) ever changes.
+  function measureMultiline(text: string): boolean {
+    const el = measureRef.current;
+    if (!el) return false;
+    el.textContent = text;
+    return el.getClientRects().length > 1;
+  }
 
   function begin(titleText: string, href?: string) {
     if (phase !== "idle") return;
-    setTitle(titleText || BRAND_TITLE);
+    const resolved = titleText || BRAND_TITLE;
+    setIsMultiline(measureMultiline(resolved));
+    setTitle(resolved);
     pendingHref.current = href ?? null;
     setPhase("entering");
 
@@ -90,7 +114,9 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
     if (phase !== "idle" || cleanPath(href) === pathname) return;
     const destination = new URL(href, window.location.origin);
     pendingHref.current = destination.pathname;
-    setTitle(label || BRAND_TITLE);
+    const resolved = label || BRAND_TITLE;
+    setIsMultiline(measureMultiline(resolved));
+    setTitle(resolved);
     setPhase("entering");
     router.push(href);
 
@@ -164,12 +190,56 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
   return (
     <TransitionContext.Provider value={{ start }}>
       {children}
-      <PageTransitionOverlay phase={phase} title={title} />
+      {/* getClientRects(), called on an element, reports one rect per line
+          THAT ELEMENT ITSELF fragments across in its container's line
+          layout — not how many lines its own content wraps to internally.
+          A plain display:inline span (like the real title's inner span
+          below) fragments across lines, so this works on it. An
+          inline-block is always exactly one atomic box to its container
+          and so always reports exactly 1 rect here, no matter how many
+          lines of text wrap inside it — querying it directly (an earlier
+          version of this measurer did, as a single combined element)
+          always measured "single line" regardless of actual text length.
+          Mirroring the real title's own two-level structure exactly — an
+          inline-block outer div that sets the width constraint, wrapping a
+          plain-inline inner span that's the one actually measured — avoids
+          that trap, the same way the real title wraps and reports
+          correctly. (Fixed/absolute positioning also "blockifies" per the
+          CSS Display spec, silently turning inline-block into block on the
+          element it's set on — keeping position on this outer wrapper,
+          itself naturally block-level already, sidesteps that too.) */}
+      <div aria-hidden="true" style={{ position: "fixed", left: -99999, top: 0, height: 0, overflow: "hidden" }}>
+        <div
+          className="curtain-title"
+          style={{
+            position: "relative",
+            display: "inline-block",
+            fontFamily: CURTAIN_FONT,
+            fontSize: "clamp(42px, 4.4vw, 86px)",
+            fontWeight: 300,
+            lineHeight: 1,
+            letterSpacing: "-0.035em",
+            whiteSpace: "nowrap",
+            textAlign: "center",
+          }}
+        >
+          <span ref={measureRef} className="curtain-title-text" />
+        </div>
+      </div>
+      <PageTransitionOverlay phase={phase} title={title} isMultiline={isMultiline} />
     </TransitionContext.Provider>
   );
 }
 
-function PageTransitionOverlay({ phase, title }: { phase: Phase; title: string }) {
+function PageTransitionOverlay({
+  phase,
+  title,
+  isMultiline,
+}: {
+  phase: Phase;
+  title: string;
+  isMultiline: boolean;
+}) {
   const visible = phase !== "idle";
   const translateY = phase === "idle" || phase === "exiting" ? "100%" : "0%";
   const wiped = phase === "revealing" || phase === "exiting";
@@ -225,24 +295,52 @@ function PageTransitionOverlay({ phase, title }: { phase: Phase; title: string }
             it (clipped to the glyphs via background-clip: text) gets the same
             left-to-right paint-wipe with only one glyph render, so there is
             nothing for a second layer to drift out of alignment with. On phone
-            widths this title wraps onto 2 centered lines instead (see the media
-            query in globals.css); a shorter second line starts further right
-            than the first, so this same box-relative gradient sweep would
-            desync across lines exactly like the old width-wipe did — that
-            media query swaps it for a plain color crossfade there, which has no
-            box geometry to desync with. */}
+            widths, a title long enough to actually wrap onto 2 centered lines
+            (isMultiline, measured in PageTransitionProvider) would desync this
+            same box-relative gradient sweep across lines exactly like the old
+            width-wipe did, since a shorter centered second line starts further
+            right than the first — isMultiline switches to a plain color
+            crossfade only for those, which has no box geometry to desync with.
+            Every other title (the large majority — anything short enough to
+            fit on one line even at the phone font size) keeps the exact same
+            moving wipe as desktop.
+
+            Both branches gate their transition on `wiped`, not just its
+            target value, which matters because this span is reused across
+            every transition in the session rather than remounted fresh each
+            time: without that gate, the first multiline title (or the first
+            transition after one) would have its "ghost" state visibly fade
+            in from whatever the previous transition's mode last left color/
+            background as, since nothing but the transition's own duration
+            told the browser not to animate into it. Forcing "none" while
+            !wiped makes every entering phase an instant snap to the ghost
+            state no matter what came before, and only "turns on" the
+            animation for the one change that should ever show it: wiped
+            flipping true at the start of the reveal. */}
         <span
           className="curtain-title-text"
           data-wiped={wiped}
-          style={{
-            backgroundImage: `linear-gradient(to right, ${theme.color.ink} 50%, #FFFFFF 50%)`,
-            backgroundSize: "200% 100%",
-            backgroundPositionX: wiped ? "0%" : "100%",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent",
-            transition: `background-position-x ${REVEAL_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
-          }}
+          data-multiline={isMultiline}
+          style={
+            isMultiline
+              ? {
+                  color: wiped ? theme.color.ink : "#FFFFFF",
+                  transition: wiped
+                    ? `color ${REVEAL_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`
+                    : "none",
+                }
+              : {
+                  backgroundImage: `linear-gradient(to right, ${theme.color.ink} 50%, #FFFFFF 50%)`,
+                  backgroundSize: "200% 100%",
+                  backgroundPositionX: wiped ? "0%" : "100%",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                  transition: wiped
+                    ? `background-position-x ${REVEAL_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`
+                    : "none",
+                }
+          }
         >
           {title}
         </span>
