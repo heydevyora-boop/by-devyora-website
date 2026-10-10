@@ -200,4 +200,20 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
     url: "/images/types/uhpc-wall-panels.webp",
     alt: "UHPC Wall Panels — By Devyora",
   },
+  "handmade-ceramic-planters": {
+    url: "/images/types/handmade-ceramic-planters.webp",
+    alt: "Handmade Ceramic Planters — By Devyora",
+  },
+  "handmade-ceramic-basins": {
+    url: "/images/types/handmade-ceramic-basins.webp",
+    alt: "Handmade Ceramic Basins — By Devyora",
+  },
+  "handmade-ceramic-tiles": {
+    url: "/images/types/handmade-ceramic-tiles.webp",
+    alt: "Handmade Ceramic Tiles — By Devyora",
+  },
+  "handmade-ceramic-murals": {
+    url: "/images/types/handmade-ceramic-murals.webp",
+    alt: "Handmade Ceramic Murals — By Devyora",
+  },
 };
