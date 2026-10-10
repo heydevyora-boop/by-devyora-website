@@ -112,6 +112,7 @@ const PROJECTS = [
 
 const BRANCHES = [
   { city: "Bhopal", address: "Bhopal, Madhya Pradesh", phone: "+91 000 000 0000", isHeadOffice: true },
+  { city: "Gurugram", address: "Gurugram, Haryana", phone: "+91 000 000 0001", isHeadOffice: false },
   { city: "Mumbai", address: "Parel Design Centre, 3rd Floor, Mumbai, Maharashtra 400012", phone: "+91 000 000 0002", isHeadOffice: false },
 ];
 
@@ -438,7 +439,11 @@ async function main() {
   }
 
   // --- Branches ---
+  // Unlike City's slug-based upsert, Branch has no unique key — guard against
+  // re-running the seed and duplicating every row by skipping cities already present.
   for (const [order, b] of BRANCHES.entries()) {
+    const existing = await prisma.branch.findFirst({ where: { city: b.city } });
+    if (existing) continue;
     await prisma.branch.create({ data: { ...b, order } });
   }
 
