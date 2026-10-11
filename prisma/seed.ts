@@ -50,6 +50,7 @@ const NEW_MATERIALS = [
   { name: "Handmade Ceramics", slug: "handmade-ceramics" },
   { name: "Terrazzo", slug: "terrazzo" },
   { name: "Designer Tiles", slug: "designer-tiles" },
+  { name: "Basins", slug: "basins" },
 ] as const;
 
 // Standard Indian geographic regions, one per state in SERVICE_STATES — this and
@@ -253,6 +254,7 @@ async function main() {
     "Handmade Ceramics": "/images/Handmade-Ceramics.webp",
     Terrazzo: "/images/Terrazzo.webp",
     "Designer Tiles": "/images/Designer-Tiles.webp",
+    Basins: "/images/Basins.webp",
   };
 
   const MATERIALS_NEEDING_SAMPLE_PRODUCT = [
