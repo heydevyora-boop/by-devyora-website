@@ -111,10 +111,14 @@ const PROJECTS = [
   { name: "Surat Diamond Bourse Annex", location: "Surat", type: ProjectType.COMMERCIAL, arch: "CnT Architects", year: 2022, products: ["GRC", "Cladding"], desc: "A 6-storey annex to India's largest diamond trading hub, with a unitised GRC cladding system spanning 14,000 sqm." },
 ];
 
+// India-only, drawn from SERVICE_STATES (lib/data/service-cities.ts) — same
+// source the product/material pages use for their own "by city" sections —
+// rather than inventing cities or fabricating specific street addresses.
 const BRANCHES = [
   { city: "Bhopal", address: "Bhopal, Madhya Pradesh", phone: "+91 000 000 0000", isHeadOffice: true },
-  { city: "Gurugram", address: "Gurugram, Haryana", phone: "+91 000 000 0001", isHeadOffice: false },
-  { city: "Mumbai", address: "Parel Design Centre, 3rd Floor, Mumbai, Maharashtra 400012", phone: "+91 000 000 0002", isHeadOffice: false },
+  { city: "Mumbai", address: "Mumbai, Maharashtra", phone: "+91 000 000 0002", isHeadOffice: false },
+  { city: "Bengaluru", address: "Bengaluru, Karnataka", phone: "+91 000 000 0003", isHeadOffice: false },
+  { city: "Kolkata", address: "Kolkata, West Bengal", phone: "+91 000 000 0004", isHeadOffice: false },
 ];
 
 const MANUFACTURING_STEPS = [

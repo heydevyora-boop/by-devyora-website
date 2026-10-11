@@ -43,7 +43,7 @@ export default async function ContactPage() {
           </div>
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, marginBottom: 8 }}>Reach Us</div>
-            <span style={{ fontSize: 15, lineHeight: 1.6, color: "#4A4844" }}>studio@bydevyora.com<br />+91 000 000 0000</span>
+            <span style={{ fontSize: 15, lineHeight: 1.6, color: "#4A4844" }}>info@devyora.com<br />+91 000 000 0000</span>
           </div>
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: theme.color.accent, marginBottom: 8 }}>Hours</div>
