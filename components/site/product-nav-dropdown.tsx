@@ -135,34 +135,52 @@ export function ProductNavDropdown({ products }: { products: ProductItem[] }) {
                     setOpenTypesFor((current) => (current === product.slug ? null : product.slug));
                   }}
                   style={{
+                    // Hit area is deliberately much bigger than the visible
+                    // circle below — covers over half the card, anchored to
+                    // its top-right corner — so a click anywhere in that
+                    // upper-right region lands here rather than falling
+                    // through to the card button underneath and navigating
+                    // instead of opening types.
                     position: "absolute",
-                    top: 8,
-                    right: 8,
-                    width: 26,
-                    height: 26,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    top: 0,
+                    right: 0,
+                    width: "60%",
+                    height: "60%",
                     appearance: "none",
                     border: 0,
-                    borderRadius: "50%",
-                    background: "rgba(18,17,16,0.55)",
+                    background: "transparent",
                     cursor: isClone ? "default" : "pointer",
                     pointerEvents: isClone ? "none" : "auto",
                   }}
                 >
-                  <svg
-                    width="11"
-                    height="7"
-                    viewBox="0 0 11 7"
-                    fill="none"
+                  <span
+                    aria-hidden="true"
                     style={{
-                      transform: typesOpen ? "rotate(180deg)" : "none",
-                      transition: "transform 200ms ease",
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      width: 26,
+                      height: 26,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%",
+                      background: "rgba(18,17,16,0.55)",
                     }}
                   >
-                    <path d="M1 1L5.5 5.5L10 1" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                    <svg
+                      width="11"
+                      height="7"
+                      viewBox="0 0 11 7"
+                      fill="none"
+                      style={{
+                        transform: typesOpen ? "rotate(180deg)" : "none",
+                        transition: "transform 200ms ease",
+                      }}
+                    >
+                      <path d="M1 1L5.5 5.5L10 1" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
                 </button>
               );
             }}
