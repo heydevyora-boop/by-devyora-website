@@ -281,6 +281,7 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   "basin-marble": { url: "/images/types/basin-marble.jpg", alt: "Marble Basins — By Devyora" },
   "basin-ceramic": { url: "/images/types/basin-ceramic.jpg", alt: "Ceramic Basins — By Devyora" },
   "basin-uhpc": { url: "/images/types/basin-uhpc.jpg", alt: "UHPC Basins — By Devyora" },
+  "basin-customizable": { url: "/images/types/basin-customizable.webp", alt: "Customizable Basins — By Devyora" },
   "uv-printed-wall-art": { url: "/images/types/uv-printed-wall-art.webp", alt: "UV Printed Wall Art — By Devyora" },
   "digitally-printed-wall-art": { url: "/images/types/digitally-printed-wall-art.webp", alt: "Digitally Printed Wall Art — By Devyora" },
   "marble-basins": { url: "/images/types/marble-basins.webp", alt: "Marble Basins — By Devyora" },
