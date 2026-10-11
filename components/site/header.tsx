@@ -87,6 +87,11 @@ export async function SiteHeader() {
       slug: byName.get("designer tiles")?.slug ?? "designer-tiles",
       image: "/images/nav-products/Designer-Tiles.webp",
     },
+    {
+      name: "Basins",
+      slug: byName.get("basins")?.slug ?? "basins",
+      image: "/images/nav-products/Basins.webp",
+    },
   ].map((item) => ({ ...item, types: PRODUCT_TYPES[item.slug] }));
 
   return (
