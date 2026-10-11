@@ -110,7 +110,6 @@ export const PRODUCT_TYPES: Record<string, ProductType[]> = {
     { name: "Marble Basins", slug: "basin-marble" },
     { name: "Ceramic Basins", slug: "basin-ceramic" },
     { name: "Customizable Basins", slug: "basin-customizable" },
-    { name: "Customizable Ceramic Basins", slug: "basin-customizable-ceramic" },
   ],
 };
 
@@ -278,6 +277,10 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   "terrazzo-inlay-tiles": { url: "/images/types/terrazzo-inlay-tiles.jpg", alt: "Terrazzo Inlay Tiles — By Devyora" },
   "terrazzo-casted-tiles": { url: "/images/types/terrazzo-casted-tiles.jpg", alt: "Terrazzo Casted Tiles — By Devyora" },
   "terrazzo-on-site-work": { url: "/images/types/terrazzo-on-site-work.jpg", alt: "Terrazzo — On-Site Work — By Devyora" },
+  "basin-terrazzo": { url: "/images/types/basin-terrazzo.jpg", alt: "Terrazzo Basins — By Devyora" },
+  "basin-marble": { url: "/images/types/basin-marble.jpg", alt: "Marble Basins — By Devyora" },
+  "basin-ceramic": { url: "/images/types/basin-ceramic.jpg", alt: "Ceramic Basins — By Devyora" },
+  "basin-uhpc": { url: "/images/types/basin-uhpc.jpg", alt: "UHPC Basins — By Devyora" },
   "uv-printed-wall-art": { url: "/images/types/uv-printed-wall-art.webp", alt: "UV Printed Wall Art — By Devyora" },
   "digitally-printed-wall-art": { url: "/images/types/digitally-printed-wall-art.webp", alt: "Digitally Printed Wall Art — By Devyora" },
   "marble-basins": { url: "/images/types/marble-basins.webp", alt: "Marble Basins — By Devyora" },
