@@ -91,6 +91,17 @@ export const PRODUCT_TYPES: Record<string, ProductType[]> = {
     { name: "Terracotta Flooring", slug: "terracotta-flooring" },
     { name: "Terracotta Bricks", slug: "terracotta-bricks" },
   ],
+  terrazzo: [
+    { name: "Terrazzo — On-Site Work", slug: "terrazzo-on-site-work" },
+    { name: "Terrazzo Casted Tiles", slug: "terrazzo-casted-tiles" },
+    { name: "Terrazzo Inlay Tiles", slug: "terrazzo-inlay-tiles" },
+    { name: "Customizable Terrazzo", slug: "customizable-terrazzo" },
+  ],
+  "designer-tiles": [
+    { name: "Designer Tile Highlighters", slug: "designer-tile-highlighters" },
+    { name: "Flooring Designer Tiles", slug: "flooring-designer-tiles" },
+    { name: "Wall Designer Tiles", slug: "wall-designer-tiles" },
+  ],
 };
 
 /** Every `/products/<slug>` this file implies should exist (one per type,
