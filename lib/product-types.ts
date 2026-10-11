@@ -111,6 +111,15 @@ export const PRODUCT_TYPES: Record<string, ProductType[]> = {
     { name: "Ceramic Basins", slug: "basin-ceramic" },
     { name: "Customizable Basins", slug: "basin-customizable" },
   ],
+  // Slugs are prefixed "planter-" since "frp-planters", "marble-planters" and
+  // "terracotta-planters" are already taken by those materials' own types.
+  planters: [
+    { name: "Ceramic Planters", slug: "planter-ceramic" },
+    { name: "Concrete Planters", slug: "planter-concrete" },
+    { name: "FRP Planters", slug: "planter-frp" },
+    { name: "Terracotta Planters", slug: "planter-terracotta" },
+    { name: "Marble Planters", slug: "planter-marble" },
+  ],
 };
 
 /** Every `/products/<slug>` this file implies should exist (one per type,
