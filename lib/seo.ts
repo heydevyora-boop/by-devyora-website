@@ -87,7 +87,7 @@ export function organizationJsonLd() {
       "@type": "ContactPoint",
       telephone: "+91-000-000-0000",
       contactType: "sales",
-      email: "studio@bydevyora.com",
+      email: "info@devyora.com",
     },
   };
 }

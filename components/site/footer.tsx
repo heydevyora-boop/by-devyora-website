@@ -27,7 +27,7 @@ export function SiteFooter() {
         made to drawing.
       </span>
       <span>
-        studio@bydevyora.com
+        info@devyora.com
         <br />
         +91 000 000 0000
       </span>
