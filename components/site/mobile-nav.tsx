@@ -11,15 +11,32 @@ type NavItem = {
   label: string;
 };
 
+type ProductType = { name: string; slug: string };
+
+type ProductItem = RailProduct & {
+  // Sub-types shown in the expandable panel under each card — same shape
+  // and source (lib/product-types.ts via header.tsx) as the desktop
+  // Products dropdown's types panel.
+  types?: ProductType[];
+};
+
 export function MobileNav({
   nav,
   products,
 }: {
   nav: NavItem[];
-  products: RailProduct[];
+  products: ProductItem[];
 }) {
   const [open, setOpen] = useState(false);
+  const [openTypesFor, setOpenTypesFor] = useState<string | null>(null);
   const { start } = usePageTransition();
+
+  // Don't carry a selection over to the next time the menu opens.
+  useEffect(() => {
+    if (!open) setOpenTypesFor(null);
+  }, [open]);
+
+  const selectedProduct = products.find((p) => p.slug === openTypesFor) ?? null;
 
   useEffect(() => {
     if (!open) return;
@@ -137,7 +154,120 @@ export function MobileNav({
               setOpen(false);
               start(`/materials/${product.slug}`, product.name);
             }}
+            renderCardExtra={(product, isClone, wasDrag) => {
+              const typesOpen = !isClone && openTypesFor === product.slug;
+              return (
+                // Reveals that material's types in the shared panel below the
+                // rail — a separate control from the card above so it never
+                // triggers navigation. Same enlarged hit area as the desktop
+                // dropdown's chevron, since the same imprecise-tap problem
+                // applies here too.
+                <button
+                  type="button"
+                  aria-label={`${product.name} types`}
+                  aria-expanded={typesOpen}
+                  tabIndex={isClone ? -1 : undefined}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    if (wasDrag()) return;
+                    setOpenTypesFor((current) => (current === product.slug ? null : product.slug));
+                  }}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: "60%",
+                    height: "60%",
+                    appearance: "none",
+                    border: 0,
+                    background: "transparent",
+                    cursor: isClone ? "default" : "pointer",
+                    pointerEvents: isClone ? "none" : "auto",
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      width: 26,
+                      height: 26,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%",
+                      background: "rgba(18,17,16,0.55)",
+                    }}
+                  >
+                    <svg
+                      width="11"
+                      height="7"
+                      viewBox="0 0 11 7"
+                      fill="none"
+                      style={{
+                        transform: typesOpen ? "rotate(180deg)" : "none",
+                        transition: "transform 200ms ease",
+                      }}
+                    >
+                      <path d="M1 1L5.5 5.5L10 1" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </button>
+              );
+            }}
           />
+
+          {/* TYPES PANEL — shared across all cards, same shape as the desktop
+              dropdown's. Sits outside .product-rail so it's never clipped by
+              the rail's overflow mask. */}
+          <div
+            style={{
+              padding: "0 clamp(20px, 5vw, 40px)",
+              maxHeight: selectedProduct ? 320 : 0,
+              overflow: "hidden",
+              transition: "max-height 280ms ease",
+            }}
+          >
+            {selectedProduct && (
+              <div style={{ borderTop: `1px solid ${theme.color.border}`, padding: "18px 0 4px" }}>
+                <div
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "#8C6A45",
+                    marginBottom: 14,
+                  }}
+                >
+                  {selectedProduct.name} — Types
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10, paddingBottom: 14 }}>
+                  {selectedProduct.types && selectedProduct.types.length > 0 ? (
+                    selectedProduct.types.map((t) => (
+                      <TransitionLink
+                        key={t.slug}
+                        href={`/products/${t.slug}-sample`}
+                        title={t.name}
+                        onClick={() => setOpen(false)}
+                        className="type-pill"
+                        style={{
+                          padding: "9px 16px",
+                          border: `1px solid ${theme.color.border}`,
+                          fontSize: 12,
+                          color: theme.color.ink,
+                        }}
+                      >
+                        {t.name}
+                      </TransitionLink>
+                    ))
+                  ) : (
+                    <span style={{ fontSize: 12, color: "#A6A29B" }}>Types coming soon.</span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <nav
