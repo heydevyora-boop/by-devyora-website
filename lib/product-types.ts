@@ -249,6 +249,7 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   "concrete-wall-art": { url: "/images/types/concrete-wall-art.webp", alt: "Concrete Wall Art — By Devyora" },
   "stone-wall-art": { url: "/images/types/stone-wall-art.webp", alt: "Stone Wall Art — By Devyora" },
   "frp-wall-art": { url: "/images/types/frp-wall-art.webp", alt: "FRP Wall Art — By Devyora" },
+  "brass-antiques": { url: "/images/types/brass-antiques.webp", alt: "Brass Antiques — By Devyora" },
   "uv-printed-wall-art": { url: "/images/types/uv-printed-wall-art.webp", alt: "UV Printed Wall Art — By Devyora" },
   "digitally-printed-wall-art": { url: "/images/types/digitally-printed-wall-art.webp", alt: "Digitally Printed Wall Art — By Devyora" },
   "marble-basins": { url: "/images/types/marble-basins.webp", alt: "Marble Basins — By Devyora" },
