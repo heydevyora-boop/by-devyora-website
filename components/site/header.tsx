@@ -5,6 +5,7 @@ import { TransitionLink } from "./transition-link";
 import { ProductNavDropdown } from "./product-nav-dropdown";
 import { MobileNav } from "./mobile-nav";
 import { PRODUCT_TYPES } from "@/lib/product-types";
+import { MATERIAL_NAV_ITEMS } from "@/lib/material-nav";
 
 const NAV = [
   { href: "/projects", label: "Projects" },
@@ -21,78 +22,12 @@ export async function SiteHeader() {
     materials.map((material) => [material.name.trim().toLowerCase(), material])
   );
 
-  const productMenu = [
-    {
-      name: "GRC",
-      slug: byName.get("grc")?.slug ?? "grc",
-      image: "/images/nav-products/GRC.webp",
-    },
-    {
-      name: "FRP",
-      slug: byName.get("frp")?.slug ?? "frp",
-      image: "/images/nav-products/FRP.webp",
-    },
-    {
-      name: "Terracotta",
-      slug: byName.get("terracotta")?.slug ?? "terracotta",
-      image: "/images/nav-products/Terracotta.webp",
-    },
-    {
-      name: "WPC",
-      slug: byName.get("wpc")?.slug ?? "wpc",
-      image: "/images/nav-products/WPC.webp",
-    },
-    {
-      name: "UHPC",
-      slug: byName.get("uhpc")?.slug ?? "uhpc",
-      image: "/images/nav-products/UHPC.webp",
-    },
-    {
-      name: "Marble",
-      slug: byName.get("marble")?.slug ?? "marble",
-      image: "/images/nav-products/Marble.webp",
-    },
-    {
-      name: "GRG POP",
-      slug: byName.get("grg pop")?.slug ?? "grg-pop",
-      image: "/images/nav-products/GRG-POP.webp",
-    },
-    {
-      name: "Planters",
-      slug: byName.get("planters")?.slug ?? "planters",
-      image: "/images/nav-products/Planters.webp",
-    },
-    {
-      name: "Wall Art",
-      slug: byName.get("wall art")?.slug ?? "wall-art",
-      image: "/images/nav-products/Wall-Art.webp",
-    },
-    {
-      name: "Brass",
-      slug: byName.get("brass")?.slug ?? "brass",
-      image: "/images/nav-products/Brass.webp",
-    },
-    {
-      name: "Handmade Ceramics",
-      slug: byName.get("handmade ceramics")?.slug ?? "handmade-ceramics",
-      image: "/images/nav-products/Handmade-Ceramics.webp",
-    },
-    {
-      name: "Terrazzo",
-      slug: byName.get("terrazzo")?.slug ?? "terrazzo",
-      image: "/images/nav-products/Terrazzo.webp",
-    },
-    {
-      name: "Designer Tiles",
-      slug: byName.get("designer tiles")?.slug ?? "designer-tiles",
-      image: "/images/nav-products/Designer-Tiles.webp",
-    },
-    {
-      name: "Basins",
-      slug: byName.get("basins")?.slug ?? "basins",
-      image: "/images/nav-products/Basins.webp",
-    },
-  ].map((item) => ({ ...item, types: PRODUCT_TYPES[item.slug] }));
+  const productMenu = MATERIAL_NAV_ITEMS.map((item) => ({
+    name: item.name,
+    slug: byName.get(item.name.toLowerCase())?.slug ?? item.slug,
+    image: item.image,
+    types: PRODUCT_TYPES[item.slug],
+  }));
 
   return (
     <header
