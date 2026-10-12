@@ -16,31 +16,30 @@ export const metadata: Metadata = buildMetadata({
 
 export const revalidate = 3600;
 
-// Prefer the same branded photo shown in the Products nav rail over
-// whatever the database's heroImage/images happen to hold — those are
-// often still the original scaffold's generic stock photos, and unlike
-// code, a production database row doesn't pick up a newer seed value once
-// it already exists. Falls back to the DB image only for materials outside
-// the rail's 14 (e.g. legacy category-style rows with no rail presence).
-function imageFor(material: {
-  slug: string;
-  heroImage: string | null;
-  images: { url: string }[];
-}) {
-  return MATERIAL_NAV_IMAGES[material.slug] || material.heroImage || material.images[0]?.url || null;
-}
-
 export default async function MaterialsPage() {
   const materials = await MaterialRepository.findAll({ publishedOnly: true });
+  const materialsBySlug = new Map(materials.map((m) => [m.slug, m]));
+  const materialsByName = new Map(materials.map((m) => [m.name.toLowerCase(), m]));
 
-  // Every material shown in the nav rail's "animation" belongs here too,
-  // in the same order, rather than a hand-picked subset of 5.
-  const featured = MATERIAL_NAV_ITEMS.map((item) => {
-    const material = materials.find(
-      (m) => m.slug === item.slug || m.name.toLowerCase() === item.name.toLowerCase()
-    );
-    return material ? { label: item.name, material } : null;
-  }).filter(Boolean) as Array<{ label: string; material: (typeof materials)[number] }>;
+  // Every card on this page — both the featured row and the full grid below
+  // — comes from MATERIAL_NAV_ITEMS (the same 14 materials the Products nav
+  // rail shows), not from an unfiltered database query. That deliberately
+  // excludes legacy rows left over from the original scaffold (Railings,
+  // Columns, Jali, Cladding, Screens, Architectural Elements) that were
+  // never part of the real catalogue and still carry generic stock photos.
+  // A matching database row (once one exists — see materialsBySlug/ByName)
+  // supplies the real tagline; until then a plain, non-fabricated one is
+  // used, same wording the seed itself would eventually write.
+  const cards = MATERIAL_NAV_ITEMS.map((item, index) => {
+    const material = materialsBySlug.get(item.slug) ?? materialsByName.get(item.name.toLowerCase()) ?? null;
+    return {
+      slug: material?.slug ?? item.slug,
+      name: item.name,
+      image: MATERIAL_NAV_IMAGES[item.slug],
+      tagline: material?.tagline ?? `${item.name} by Devyora.`,
+      num: index + 1,
+    };
+  });
 
   return (
     <main style={{ background: "#F7F6F3", color: theme.color.ink }}>
@@ -124,59 +123,52 @@ export default async function MaterialsPage() {
             overflowX: "auto",
           }}
         >
-          {featured.map(({ label, material }) => {
-            const image = imageFor(material);
-            return (
-              <TransitionLink
-                key={material.id}
-                href={`/materials/${material.slug}`}
-                title={material.name}
+          {cards.map((card) => (
+            <TransitionLink
+              key={card.slug}
+              href={`/materials/${card.slug}`}
+              title={card.name}
+              style={{
+                minWidth: 150,
+                color: theme.color.ink,
+                textDecoration: "none",
+              }}
+            >
+              <div
                 style={{
-                  minWidth: 150,
-                  color: theme.color.ink,
-                  textDecoration: "none",
+                  position: "relative",
+                  aspectRatio: "1.48 / 1",
+                  overflow: "hidden",
+                  background: "#E9E7E2",
                 }}
               >
-                <div
+                <Image
+                  src={card.image}
+                  alt={`${card.name} architectural collection`}
+                  fill
+                  sizes="(max-width: 800px) 42vw, 18vw"
                   style={{
-                    position: "relative",
-                    aspectRatio: "1.48 / 1",
-                    overflow: "hidden",
-                    background: "#E9E7E2",
+                    objectFit: "cover",
+                    transition: "transform 500ms cubic-bezier(.2,.65,.2,1)",
                   }}
-                >
-                  {image ? (
-                    <Image
-                      src={image}
-                      alt={`${material.name} architectural collection`}
-                      fill
-                      sizes="(max-width: 800px) 42vw, 18vw"
-                      style={{
-                        objectFit: "cover",
-                        transition: "transform 500ms cubic-bezier(.2,.65,.2,1)",
-                      }}
-                    />
-                  ) : (
-                    <div style={{ width: "100%", height: "100%", background: "#E9E7E2" }} />
-                  )}
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingTop: 13,
-                    fontFamily: theme.font.sans,
-                    fontSize: 12,
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  <span>{label}</span>
-                  <span style={{ color: theme.color.faint }}>↗</span>
-                </div>
-              </TransitionLink>
-            );
-          })}
+                />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingTop: 13,
+                  fontFamily: theme.font.sans,
+                  fontSize: 12,
+                  letterSpacing: "0.02em",
+                }}
+              >
+                <span>{card.name}</span>
+                <span style={{ color: theme.color.faint }}>↗</span>
+              </div>
+            </TransitionLink>
+          ))}
         </div>
       </section>
 
@@ -203,7 +195,7 @@ export default async function MaterialsPage() {
         >
           <span>All architectural systems</span>
           <span style={{ color: theme.color.muted }}>
-            {String(materials.length).padStart(2, "0")} collections
+            {String(cards.length).padStart(2, "0")} collections
           </span>
         </div>
 
@@ -216,14 +208,12 @@ export default async function MaterialsPage() {
             paddingTop: "clamp(28px, 4vw, 58px)",
           }}
         >
-          {materials.map((material) => {
-            const image = imageFor(material);
-
+          {cards.map((card) => {
             return (
               <TransitionLink
-                key={material.id}
-                href={`/materials/${material.slug}`}
-                title={material.name}
+                key={card.slug}
+                href={`/materials/${card.slug}`}
+                title={card.name}
                 style={{
                   display: "block",
                   color: theme.color.ink,
@@ -239,20 +229,16 @@ export default async function MaterialsPage() {
                       background: "#E5E3DE",
                     }}
                   >
-                    {image ? (
-                      <Image
-                        src={image}
-                        alt={`${material.name} — By Devyora`}
-                        fill
-                        sizes="(max-width: 800px) 92vw, 31vw"
-                        style={{
-                          objectFit: "cover",
-                          transition: "transform 600ms cubic-bezier(.2,.65,.2,1)",
-                        }}
-                      />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", background: "#E5E3DE" }} />
-                    )}
+                    <Image
+                      src={card.image}
+                      alt={`${card.name} — By Devyora`}
+                      fill
+                      sizes="(max-width: 800px) 92vw, 31vw"
+                      style={{
+                        objectFit: "cover",
+                        transition: "transform 600ms cubic-bezier(.2,.65,.2,1)",
+                      }}
+                    />
 
                     <span
                       style={{
@@ -266,7 +252,7 @@ export default async function MaterialsPage() {
                         letterSpacing: "0.18em",
                       }}
                     >
-                      {String(material.num).padStart(3, "0")}
+                      {String(card.num).padStart(3, "0")}
                     </span>
                   </div>
 
@@ -291,7 +277,7 @@ export default async function MaterialsPage() {
                           letterSpacing: "-0.035em",
                         }}
                       >
-                        {material.name}
+                        {card.name}
                       </h2>
                       <p
                         style={{
@@ -302,7 +288,7 @@ export default async function MaterialsPage() {
                           lineHeight: 1.5,
                         }}
                       >
-                        {material.tagline}
+                        {card.tagline}
                       </p>
                     </div>
                     <span
