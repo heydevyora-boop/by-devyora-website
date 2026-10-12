@@ -5,6 +5,7 @@ import { theme, pagePadX } from "@/lib/theme";
 import { TransitionLink } from "@/components/site/transition-link";
 import { buildMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
+import { MATERIAL_NAV_ITEMS, MATERIAL_NAV_IMAGES } from "@/lib/material-nav";
 
 export const metadata: Metadata = buildMetadata({
   title: "Products — Architectural Material Systems",
@@ -15,32 +16,31 @@ export const metadata: Metadata = buildMetadata({
 
 export const revalidate = 3600;
 
-const FEATURED_COLLECTIONS = [
-  { label: "GRC", match: "GRC" },
-  { label: "FRP", match: "FRP" },
-  { label: "Terracotta", match: "Terracotta" },
-  { label: "WPC", match: "WPC" },
-  { label: "Planters", match: "Planters" },
-];
-
+// Prefer the same branded photo shown in the Products nav rail over
+// whatever the database's heroImage/images happen to hold — those are
+// often still the original scaffold's generic stock photos, and unlike
+// code, a production database row doesn't pick up a newer seed value once
+// it already exists. Falls back to the DB image only for materials outside
+// the rail's 14 (e.g. legacy category-style rows with no rail presence).
 function imageFor(material: {
+  slug: string;
   heroImage: string | null;
   images: { url: string }[];
 }) {
-  return material.heroImage || material.images[0]?.url || null;
+  return MATERIAL_NAV_IMAGES[material.slug] || material.heroImage || material.images[0]?.url || null;
 }
 
 export default async function MaterialsPage() {
   const materials = await MaterialRepository.findAll({ publishedOnly: true });
 
-  const featured = FEATURED_COLLECTIONS.map((collection) => {
+  // Every material shown in the nav rail's "animation" belongs here too,
+  // in the same order, rather than a hand-picked subset of 5.
+  const featured = MATERIAL_NAV_ITEMS.map((item) => {
     const material = materials.find(
-      (item) => item.name.toLowerCase() === collection.match.toLowerCase()
+      (m) => m.slug === item.slug || m.name.toLowerCase() === item.name.toLowerCase()
     );
-    return material ? { ...collection, material } : null;
-  }).filter(Boolean) as Array<
-    (typeof FEATURED_COLLECTIONS)[number] & { material: (typeof materials)[number] }
-  >;
+    return material ? { label: item.name, material } : null;
+  }).filter(Boolean) as Array<{ label: string; material: (typeof materials)[number] }>;
 
   return (
     <main style={{ background: "#F7F6F3", color: theme.color.ink }}>
