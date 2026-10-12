@@ -75,6 +75,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   "handmade-ceramics": neutralContent("Handmade Ceramics", "/images/Handmade-Ceramics.webp"),
   terrazzo: neutralContent("Terrazzo", "/images/Terrazzo.webp"),
   "designer-tiles": neutralContent("Designer Tiles", "/images/Designer-Tiles.webp"),
+  basins: neutralContent("Basins", "/images/Basins.webp"),
 };
 
 // GRC, FRP and Terracotta's hero photo is hardcoded inline in
