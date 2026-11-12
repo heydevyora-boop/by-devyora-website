@@ -43,11 +43,7 @@ export type MaterialPageEntry = MaterialPageContent & {
 export function neutralMaterialContent(name: string): MaterialPageContent {
   return {
     eyebrow: `${name} — By Devyora`,
-<<<<<<< HEAD
     intro: `Premium ${name} by By Devyora — custom architectural elements made precisely to your drawings. Designed for durability, refined detailing and seamless installation across residential, commercial and restoration projects.`,
-=======
-    intro: `${name} by Devyora. Share your drawing, reference image or project requirement to discuss ${name} for your project.`,
->>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
     applicationsLabel: `${name} Applications`,
     applications: [],
     productsLabel: `${name} Products`,
