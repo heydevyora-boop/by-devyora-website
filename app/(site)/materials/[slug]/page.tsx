@@ -488,7 +488,6 @@ export default async function MaterialDetailPage({ params }: PageProps) {
         >
           {material.tagline}
         </p>
-<<<<<<< HEAD
 
         <p
           style={{
@@ -504,8 +503,6 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           detailing and seamless installation across residential, commercial
           and restoration projects.
         </p>
-=======
->>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
       </section>
 
       {/* =========================================================

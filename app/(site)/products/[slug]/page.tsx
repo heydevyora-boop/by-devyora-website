@@ -49,11 +49,7 @@ export async function generateMetadata({
       title: product.name,
       description:
         product.shortDescription ??
-<<<<<<< HEAD
         `Premium ${product.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
-=======
-        `${product.name} — a ${product.material.name} product from By Devyora, made to drawing.`,
->>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
       path: `/products/${product.slug}`,
       image: product.images[0]?.url ?? undefined,
       type: "product",
@@ -64,11 +60,7 @@ export async function generateMetadata({
   if (!fallback) return {};
   return buildMetadata({
     title: fallback.type.name,
-<<<<<<< HEAD
     description: `Premium ${fallback.type.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
-=======
-    description: `${fallback.type.name}, made to drawing by By Devyora.`,
->>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
     path: `/products/${slug}`,
     type: "product",
   });
@@ -164,7 +156,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
             color: theme.color.muted,
             maxWidth: "60ch",
             marginBottom: "clamp(32px, 5vw, 56px)",
-<<<<<<< HEAD
             lineHeight: 1.55,
           }}
         >
@@ -172,13 +163,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
           architectural elements made precisely to your drawings. Designed
           for durability, refined detailing and seamless installation across
           residential, commercial and restoration projects.
-=======
-          }}
-        >
-          {fallback.type.name}, made to drawing — full specifications
-          {PRODUCT_TYPE_IMAGES[fallback.type.slug] ? "" : " and photos"}{" "}
-          coming soon.
->>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
         </p>
 
         <TypeHeroImage typeSlug={fallback.type.slug} />
@@ -277,7 +261,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
       >
         {product.name}
       </h1>
-<<<<<<< HEAD
       <p
         style={{
           fontSize: 15,
@@ -290,20 +273,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
         {product.shortDescription ||
           `Premium ${product.name} crafted by By Devyora — custom architectural elements made precisely to your drawings. Designed for durability, refined detailing and seamless installation across residential, commercial and restoration projects.`}
       </p>
-=======
-      {product.shortDescription && (
-        <p
-          style={{
-            fontSize: 15,
-            color: theme.color.muted,
-            maxWidth: "60ch",
-            marginBottom: "clamp(32px, 5vw, 56px)",
-          }}
-        >
-          {product.shortDescription}
-        </p>
-      )}
->>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
 
       <ProductDetailInteractive
         productName={product.name}
