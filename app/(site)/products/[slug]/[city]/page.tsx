@@ -61,7 +61,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return buildMetadata({
     title: `${resolved.entityName} in ${resolved.city.name}`,
+<<<<<<< HEAD
+    description: `Premium ${resolved.entityName} in ${resolved.city.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects.`,
+=======
     description: `${resolved.entityName}, made to drawing by By Devyora, serving ${resolved.city.name}.`,
+>>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
     path: `/products/${slug}/${citySlug}`,
     type: "product",
   });
@@ -106,10 +110,20 @@ export default async function ProductCityPage({ params }: PageProps) {
           color: theme.color.muted,
           maxWidth: "60ch",
           marginBottom: "clamp(32px, 5vw, 56px)",
+<<<<<<< HEAD
+          lineHeight: 1.55,
+        }}
+      >
+        Looking for premium {entityName} in {city.name}? By Devyora crafts
+        custom architectural elements made precisely to your drawings —
+        combining refined detailing with durable performance for homes,
+        commercial spaces and restoration projects across {city.name}.
+=======
         }}
       >
         {entityName}, made to drawing by By Devyora, serving {city.name} —
         full specifications{heroImage ? "" : " and photos"} coming soon.
+>>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
       </p>
 
       {heroImage && (

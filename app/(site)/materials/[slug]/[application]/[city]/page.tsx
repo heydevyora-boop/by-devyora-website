@@ -59,7 +59,11 @@ export async function generateMetadata({
 
   return buildMetadata({
     title: `${resolved.entityName} in ${resolved.city.name}`,
+<<<<<<< HEAD
+    description: `Premium ${resolved.entityName} in ${resolved.city.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects.`,
+=======
     description: `${resolved.entityName} by By Devyora, available in ${resolved.city.name}.`,
+>>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
     path: `/materials/${slug}/${application}/${citySlug}`,
   });
 }
@@ -105,10 +109,20 @@ export default async function MaterialApplicationCityPage({
           color: theme.color.muted,
           maxWidth: "60ch",
           marginBottom: "clamp(32px, 5vw, 56px)",
+<<<<<<< HEAD
+          lineHeight: 1.55,
+        }}
+      >
+        Looking for premium {entityName} in {city.name}? By Devyora crafts
+        custom architectural elements made precisely to your drawings —
+        combining refined detailing with durable performance for homes,
+        commercial spaces and restoration projects across {city.name}.
+=======
         }}
       >
         {entityName}, made to drawing by By Devyora, serving {city.name} —
         full specifications{heroImage ? "" : " and photos"} coming soon.
+>>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
       </p>
 
       {heroImage && (

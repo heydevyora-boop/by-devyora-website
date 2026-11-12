@@ -488,6 +488,24 @@ export default async function MaterialDetailPage({ params }: PageProps) {
         >
           {material.tagline}
         </p>
+<<<<<<< HEAD
+
+        <p
+          style={{
+            maxWidth: "58ch",
+            margin: "clamp(20px, 3vw, 32px) 0 0",
+            fontSize: 15,
+            lineHeight: 1.55,
+            color: theme.color.muted,
+          }}
+        >
+          Premium {material.name} by By Devyora — custom architectural elements
+          made precisely to your drawings. Designed for durability, refined
+          detailing and seamless installation across residential, commercial
+          and restoration projects.
+        </p>
+=======
+>>>>>>> 4982c79c0093ccf3c3ef9ac81d72d8e78d97b204
       </section>
 
       {/* =========================================================
