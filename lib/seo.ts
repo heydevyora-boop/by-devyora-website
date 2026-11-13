@@ -76,7 +76,7 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}/logo.png`,
-    description: "Architectural building materials manufacturer — GRC, FRP, terracotta and composite systems, made to drawing.",
+    description: "Architectural building materials manufacturer — GRC facade installation, FRP cladding, terracotta rainscreen systems, UHPC panels and marble inlay, made to drawing.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Bhopal",

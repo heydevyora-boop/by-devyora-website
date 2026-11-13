@@ -18,6 +18,7 @@ import {
   withoutSampleSuffix,
   PRODUCT_TYPE_IMAGES,
 } from "@/lib/product-types";
+import { PRODUCT_TYPE_SEO } from "@/lib/seo-keywords";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -45,9 +46,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await ProductRepository.findBySlug(slug);
   if (product) {
+    // A type-sample product's shortDescription is itself only generic seed
+    // boilerplate ("<Name>, made to drawing."), never hand-authored copy —
+    // the keyword-targeted sentence below takes priority over it. A real,
+    // non-type catalogue product's shortDescription is left untouched.
+    const typeSeo = PRODUCT_TYPE_SEO[findProductTypeBySlug(product.slug)?.type.slug ?? ""];
     return buildMetadata({
       title: product.name,
       description:
+        typeSeo ??
         product.shortDescription ??
         `Premium ${product.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
       path: `/products/${product.slug}`,
@@ -60,7 +67,9 @@ export async function generateMetadata({
   if (!fallback) return {};
   return buildMetadata({
     title: fallback.type.name,
-    description: `Premium ${fallback.type.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
+    description:
+      PRODUCT_TYPE_SEO[fallback.type.slug] ??
+      `Premium ${fallback.type.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
     path: `/products/${slug}`,
     type: "product",
   });
@@ -159,10 +168,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
             lineHeight: 1.55,
           }}
         >
-          Premium {fallback.type.name} crafted by By Devyora — custom
-          architectural elements made precisely to your drawings. Designed
-          for durability, refined detailing and seamless installation across
-          residential, commercial and restoration projects.
+          {PRODUCT_TYPE_SEO[fallback.type.slug] ??
+            `Premium ${fallback.type.name} crafted by By Devyora — custom architectural elements made precisely to your drawings. Designed for durability, refined detailing and seamless installation across residential, commercial and restoration projects.`}
         </p>
 
         <TypeHeroImage typeSlug={fallback.type.slug} />
@@ -194,6 +201,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
   // real upload yet, so it renders in the normal top position instead.
   const typeSlug = findProductTypeBySlug(product.slug)?.type.slug;
   const typeImage = typeSlug ? PRODUCT_TYPE_IMAGES[typeSlug] : undefined;
+  // Same reasoning as generateMetadata above: a type-sample's shortDescription
+  // is only generic seed boilerplate, so the keyword-targeted sentence takes
+  // priority over it here too, for a real (non-type) product's authored text.
+  const typeSeo = typeSlug ? PRODUCT_TYPE_SEO[typeSlug] : undefined;
   const galleryImages =
     product.images.length > 0
       ? product.images.map((img) => ({
@@ -270,7 +281,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
           lineHeight: 1.55,
         }}
       >
-        {product.shortDescription ||
+        {typeSeo ||
+          product.shortDescription ||
           `Premium ${product.name} crafted by By Devyora — custom architectural elements made precisely to your drawings. Designed for durability, refined detailing and seamless installation across residential, commercial and restoration projects.`}
       </p>
 
