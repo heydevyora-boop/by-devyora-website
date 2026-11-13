@@ -99,10 +99,10 @@ export const MATERIAL_SEO_KEYWORDS: Record<string, MaterialSeoEntry> = {
  * made to drawing."), never hand-authored copy.
  */
 export const PRODUCT_TYPE_SEO: Record<string, string> = {
-  "grc-pillars": "GRC pillar installation methods for load-bearing and decorative GRC pillar fixing, made to drawing by By Devyora.",
+  "grc-pillars": "GRC pillar installation methods, load-bearing GRC pillars and decorative GRC pillar fixing, made to drawing by By Devyora.",
   "grc-capitals": "GRC capital attachment techniques for classical GRC capital detailing, made to drawing by By Devyora.",
   "grc-brackets": "GRC bracket support systems and structural GRC bracket installation, made to drawing by By Devyora.",
-  "grc-jali": "GRC jali screen fixing methods for perforated GRC jali installation and ventilation, made to drawing by By Devyora.",
+  "grc-jali": "GRC jali screen fixing methods, perforated GRC jali installation and GRC jali for ventilation, made to drawing by By Devyora.",
 
   "frp-pillars": "FRP pillar installation techniques for lightweight FRP column fixing, made to drawing by By Devyora.",
   "frp-capitals": "FRP capital mounting methods for refined architectural detailing, made to drawing by By Devyora.",
@@ -121,7 +121,8 @@ export const PRODUCT_TYPE_SEO: Record<string, string> = {
   "uhpc-capitals": "UHPC capital and bracket fixing methods for classical architectural detailing, made to drawing by By Devyora.",
   "uhpc-brackets": "UHPC capital and bracket fixing methods for structural and decorative support, made to drawing by By Devyora.",
 
-  "brass-antiques": "Brass antique installation and fixing methods with decorative brass element mounting techniques, made to drawing by By Devyora.",
+  "brass-antiques":
+    "Brass antique installation and fixing methods, decorative brass element mounting techniques, brass surface finishing and patina process, brass architectural hardware installation and brass artefact conservation methods, made to drawing by By Devyora.",
 
   "handmade-ceramic-tiles": "Handmade ceramic tile installation techniques with careful ceramic tile joint and grouting methods, made to drawing by By Devyora.",
   "handmade-ceramic-basins": "Handmade ceramic basin installation for bathrooms and wash areas, made to drawing by By Devyora.",
