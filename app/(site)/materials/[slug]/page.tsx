@@ -194,9 +194,14 @@ export default async function MaterialDetailPage({ params }: PageProps) {
     ? {
         eyebrow: "FRP — Architectural Applications",
         intro:
-          "FRP canopy installation techniques, cladding panel fixing methods and FRP moulding and gelcoat process for lightweight architectural elements across residential, commercial, hospitality and institutional projects.",
+          "FRP by Devyora covers FRP canopy installation techniques, FRP cladding panel fixing methods, FRP moulding and gelcoat process, lightweight FRP architectural elements, FRP surface finishing and texture options, FRP joint sealing and detailing, FRP repair and maintenance methods, FRP dome fabrication process, FRP for curved and complex shapes and FRP structural reinforcement techniques — for residential, commercial, hospitality and institutional projects.",
         applicationsLabel: "FRP Applications",
         applications: [
+          {
+            title: "FRP Canopies",
+            description:
+              "FRP entrance canopy installation, curved FRP canopy fixing methods and FRP car porch fabrication for weatherproof, lightweight structures.",
+          },
           {
             title: "FRP Jali & Screens",
             description:
@@ -269,7 +274,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
       ? {
           eyebrow: "Terracotta — Architectural Applications",
           intro:
-            "Terracotta rainscreen cladding systems, baguette installation methods and jali screen installation bring natural clay weathering and warmth to architectural, landscape and interior applications by By Devyora.",
+            "Terracotta by Devyora covers terracotta rainscreen cladding systems, terracotta baguette installation methods, terracotta facade fixing techniques, terracotta jali screen installation, natural clay terracotta weathering process, terracotta surface finishing and glazing, terracotta cladding for ventilation, terracotta repair and maintenance, terracotta flooring installation methods and terracotta sunshade and louvre systems for architectural, landscape and interior applications.",
           applicationsLabel: "Terracotta Products",
           applications: [
             {
@@ -338,7 +343,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
         ? {
           eyebrow: "GRC — Architectural Applications",
           intro:
-            "GRC facade installation techniques, GRC panel fixing methods and GRC mould making process for lightweight GRC cladding systems across residential, commercial, hospitality and institutional architecture.",
+            "GRC by Devyora covers GRC facade installation techniques, GRC panel fixing methods, GRC mould making process, lightweight GRC cladding systems, GRC surface finishing techniques, GRC reinforcement and fibre content, GRC joint design and detailing, GRC repair and patching methods, architectural GRC for curved facades and GRC column and pillar casting process — made to drawing for residential, commercial, hospitality and institutional architecture.",
           applicationsLabel: "GRC Products & Applications",
           applications: [
             {
