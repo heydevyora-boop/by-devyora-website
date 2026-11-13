@@ -91,7 +91,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   wpc: seoContent(
     "WPC",
     "/images/WPC.webp",
-    "WPC by Devyora — engineered for WPC decking installation techniques, WPC cladding board fixing methods and WPC pergola construction, with waterproof WPC decking systems built for durability and seamless installation.",
+    "WPC by Devyora covers WPC decking installation techniques, WPC cladding board fixing methods, WPC pergola construction process, WPC surface finishing and brushing, WPC expansion gap and joint detailing, WPC maintenance and cleaning methods, composite wood decking for outdoor use, WPC fencing installation techniques, WPC gazebo assembly methods and waterproof WPC decking systems.",
     [
       { title: "WPC Deck Flooring", description: "WPC deck flooring installation using composite deck board fixing methods, with careful expansion gap and joint detailing." },
       { title: "WPC Pergolas", description: "WPC pergola installation techniques for freestanding WPC pergola construction, built to withstand outdoor conditions." },
@@ -101,7 +101,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   uhpc: seoContent(
     "UHPC",
     "/images/UHPC.webp",
-    "UHPC by Devyora — ultra high performance concrete cladding systems using precise UHPC panel fixing and anchoring methods, with thin UHPC facade fabrication for high-strength UHPC casting.",
+    "UHPC by Devyora covers UHPC wall panel installation techniques, ultra high performance concrete cladding systems, UHPC panel fixing and anchoring methods, thin UHPC facade fabrication process, UHPC surface finishing techniques, UHPC joint design and sealing, UHPC for architectural elements, UHPC repair and maintenance methods, high-strength UHPC casting process and UHPC pillar and column installation.",
     [
       { title: "UHPC Wall Panels", description: "UHPC wall panel installation methods for large format UHPC cladding fixing on facades and interior walls." },
       { title: "UHPC Pillars", description: "UHPC pillar installation techniques for columns that combine high-strength casting with refined detailing." },
@@ -111,7 +111,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   marble: seoContent(
     "Marble",
     "/images/Marble.webp",
-    "Marble by Devyora — architectural marble carving, marble inlay installation techniques and marble wall cladding systems, finished with precise marble surface finishing and polishing for mandir and interior applications.",
+    "Marble by Devyora covers marble inlay installation techniques, marble capital and cornice fixing methods, marble wall cladding systems, marble surface finishing and polishing, marble statue installation and anchoring, marble basin installation methods, marble inlay on countertop process, marble repair and restoration techniques, architectural marble carving process and marble for mandir and interior applications.",
     [
       { title: "Marble Inlay (On Site / Countertop)", description: "Marble inlay work techniques and pietra dura installation methods, including the full marble inlay on countertop process." },
       { title: "Marble Capitals & Cornices", description: "Marble capital fixing and marble cornice installation for classical architectural detailing." },
@@ -123,7 +123,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   "grg-pop": seoContent(
     "GRG POP",
     "/images/GRG-POP.webp",
-    "GRG POP by Devyora — GRG POP ceiling installation techniques, GRG POP cornice fixing methods and GRG wall panel installation systems, moulded for lightweight, decorative GRG false ceilings.",
+    "GRG POP by Devyora covers GRG POP ceiling installation techniques, GRG POP cornice fixing methods, GRG wall panel installation systems, lightweight GRG moulding process, GRG POP joint finishing techniques, GRG ceiling element installation, GRG POP surface finishing methods, GRG repair and maintenance, decorative GRG for false ceilings and GRG POP bracket and capital fixing.",
     [
       { title: "GRG POP Cornices", description: "GRG POP cornice installation techniques with clean joint finishing for ceilings and walls." },
       { title: "GRG POP Wall Panels", description: "GRG wall panel fixing methods for decorative interior surfaces." },
@@ -134,7 +134,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   planters: seoContent(
     "Planters",
     "/images/Planters.webp",
-    "Planters by Devyora — large outdoor planter installation methods with careful drainage detailing for architectural planters, designed as commercial planter systems for landscape, terraces and podiums.",
+    "Planters by Devyora covers large outdoor planter installation methods, drainage detailing for architectural planters, lightweight planter placement techniques, commercial planter systems for landscape, planter fixing on terraces and podiums, planter maintenance and waterproofing and custom planter fabrication process.",
     [
       { title: "Ceramic Planters", description: "Ceramic planter placement techniques with reliable drainage detailing for architectural planters." },
       { title: "Concrete Planters", description: "Custom planter fabrication process using lightweight planter placement techniques for terraces and podiums." },
@@ -146,7 +146,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   "wall-art": seoContent(
     "Wall Art",
     "/images/Wall-Art.webp",
-    "Wall Art by Devyora — wall art installation techniques for interiors, including concrete wall art mounting methods, UV printed wall art fixing systems and large format wall art installation.",
+    "Wall Art by Devyora covers wall art installation techniques for interiors, concrete wall art mounting methods, UV printed wall art fixing systems, hand-painted wall art installation, 3D wall art anchoring techniques, large format wall art installation and outdoor wall art weatherproofing methods.",
     [
       { title: "Concrete Wall Art", description: "Concrete wall art mounting methods for durable, textured feature walls." },
       { title: "UV Printed Wall Art", description: "UV printed wall art fixing systems for crisp, long-lasting imagery on interior and exterior walls." },
@@ -157,7 +157,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   brass: seoContent(
     "Brass",
     "/images/Brass.webp",
-    "Brass by Devyora — brass antique installation and fixing methods, with decorative brass element mounting techniques and brass surface finishing and patina process for heritage-inspired interiors.",
+    "Brass by Devyora covers brass antique installation and fixing methods, decorative brass element mounting techniques, brass surface finishing and patina process, brass architectural hardware installation and brass artefact conservation methods.",
     [
       { title: "Brass Antiques", description: "Brass antique installation and fixing methods, including brass architectural hardware installation and brass artefact conservation methods." },
     ]
@@ -165,7 +165,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   "handmade-ceramics": seoContent(
     "Handmade Ceramics",
     "/images/Handmade-Ceramics.webp",
-    "Handmade Ceramics by Devyora — handmade ceramic tile installation techniques, ceramic mural fixing methods and handmade ceramic basin installation, finished with artisan ceramic surface finishing.",
+    "Handmade Ceramics by Devyora covers handmade ceramic tile installation techniques, ceramic mural fixing methods, handmade ceramic basin installation, ceramic planter placement techniques, artisan ceramic surface finishing and ceramic tile joint and grouting methods.",
     [
       { title: "Handmade Ceramic Tiles", description: "Handmade ceramic tile installation techniques with careful ceramic tile joint and grouting methods." },
       { title: "Handmade Ceramic Basins", description: "Handmade ceramic basin installation for bathrooms and wash areas." },
@@ -176,7 +176,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   terrazzo: seoContent(
     "Terrazzo",
     "/images/Terrazzo.webp",
-    "Terrazzo by Devyora — terrazzo flooring installation techniques, on-site terrazzo pouring and finishing process and terrazzo inlay installation methods, completed with precise terrazzo grinding and polishing.",
+    "Terrazzo by Devyora covers terrazzo flooring installation techniques, on-site terrazzo pouring and finishing process, terrazzo inlay installation methods, terrazzo tile laying techniques, terrazzo grinding and polishing process, terrazzo joint design and detailing, terrazzo repair and maintenance methods and custom terrazzo mix design process.",
     [
       { title: "Terrazzo — On-Site Work", description: "On-site terrazzo installation techniques for a seamless terrazzo flooring process poured and finished in place." },
       { title: "Terrazzo Casted Tiles", description: "Terrazzo tile installation methods for pre-cast terrazzo tile laying." },
@@ -187,7 +187,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   "designer-tiles": seoContent(
     "Designer Tiles",
     "/images/Designer-Tiles.webp",
-    "Designer Tiles by Devyora — designer wall tile installation techniques, designer floor tile installation and feature wall tile laying methods, finished with patterned tile joint detailing.",
+    "Designer Tiles by Devyora covers designer wall tile installation techniques, feature wall tile laying methods, designer floor tile installation, highlight tile placement techniques, patterned tile joint detailing and large format designer tile fixing methods.",
     [
       { title: "Designer Tile Highlighters", description: "Highlight tile placement techniques for accent walls and feature strips." },
       { title: "Flooring Designer Tiles", description: "Designer floor tile installation using large format designer tile fixing methods." },
@@ -197,7 +197,7 @@ export const MATERIAL_PAGE_CONTENT: Record<string, MaterialPageEntry> = {
   basins: seoContent(
     "Basins",
     "/images/Basins.webp",
-    "Basins by Devyora — designer wash basin installation methods, countertop basin fixing techniques and stone basin plumbing and sealing, covering marble, terrazzo, UHPC and ceramic basin installation.",
+    "Basins by Devyora covers designer wash basin installation methods, countertop basin fixing techniques, stone basin plumbing and sealing, marble, terrazzo, UHPC and ceramic basin installation, custom basin mounting systems and basin overflow and drainage detailing.",
     [
       { title: "Terrazzo Basins", description: "Terrazzo basin installation methods with countertop basin fixing techniques." },
       { title: "UHPC Basins", description: "UHPC basin installation methods built for durable, custom basin mounting systems." },
