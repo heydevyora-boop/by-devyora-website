@@ -17,6 +17,7 @@ import {
   resolveMaterialHeroImage,
   type MaterialPageContent,
 } from "@/lib/material-pages";
+import { MATERIAL_SEO_KEYWORDS } from "@/lib/seo-keywords";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -44,11 +45,13 @@ export async function generateMetadata({
   const { slug } = await params;
 
   const material = await MaterialRepository.findBySlug(slug);
+  const seo = MATERIAL_SEO_KEYWORDS[slug];
 
   if (material) {
     return buildMetadata({
-      title: `${material.name} — Architectural Material System`,
-      description: material.description ?? material.tagline,
+      title: `${material.name} — ${seo?.titleKeyword ?? "Architectural Material System"}`,
+      description: seo?.description ?? material.description ?? material.tagline,
+      keywords: seo?.keywords,
       path: `/materials/${material.slug}`,
       image: material.heroImage ?? undefined,
     });
@@ -57,8 +60,9 @@ export async function generateMetadata({
   const fallback = MATERIAL_PAGE_CONTENT[slug];
   if (!fallback) return {};
   return buildMetadata({
-    title: `${fallback.name} — Architectural Material System`,
-    description: fallback.intro,
+    title: `${fallback.name} — ${seo?.titleKeyword ?? "Architectural Material System"}`,
+    description: seo?.description ?? fallback.intro,
+    keywords: seo?.keywords,
     path: `/materials/${slug}`,
     image: fallback.heroImage,
   });
@@ -175,6 +179,7 @@ export default async function MaterialDetailPage({ params }: PageProps) {
    */
 
   const materialSlug = material.slug.toLowerCase();
+  const seo = MATERIAL_SEO_KEYWORDS[materialSlug];
   const isGRC = materialSlug === "grc";
   const isFRP = materialSlug === "frp";
   const isTerracotta =
@@ -191,17 +196,22 @@ export default async function MaterialDetailPage({ params }: PageProps) {
     ? {
         eyebrow: "FRP — Architectural Applications",
         intro:
-          "FRP can be used across residential, commercial, hospitality and institutional projects to create distinctive architectural forms and detailing.",
+          "FRP by Devyora covers FRP canopy installation techniques, FRP cladding panel fixing methods, FRP moulding and gelcoat process, lightweight FRP architectural elements, FRP surface finishing and texture options, FRP joint sealing and detailing, FRP repair and maintenance methods, FRP dome fabrication process, FRP for curved and complex shapes and FRP structural reinforcement techniques — for residential, commercial, hospitality and institutional projects.",
         applicationsLabel: "FRP Applications",
         applications: [
           {
+            title: "FRP Canopies",
+            description:
+              "FRP entrance canopy installation, curved FRP canopy fixing methods and FRP car porch fabrication for weatherproof, lightweight structures.",
+          },
+          {
             title: "FRP Jali & Screens",
             description:
-              "For facades, balconies, partitions and decorative applications.",
+              "FRP decorative screen installation and FRP jali fixing methods for facades, balconies and partitions.",
           },
           {
             title: "FRP Pillars & Columns",
-            description: "For entrances, facades and architectural spaces.",
+            description: "FRP pillar installation techniques for lightweight FRP column fixing at entrances and facades.",
           },
           {
             title: "FRP Arches",
@@ -214,12 +224,12 @@ export default async function MaterialDetailPage({ params }: PageProps) {
           },
           {
             title: "FRP Facade Elements",
-            description: "For contemporary and decorative building elevations.",
+            description: "FRP for curved and complex shapes, suited to contemporary and decorative building elevations.",
           },
           {
             title: "FRP Cornices & Mouldings",
             description:
-              "For rooflines, windows, doors and architectural transitions.",
+              "FRP dome fabrication process and joint sealing and detailing for rooflines, windows, doors and transitions.",
           },
           {
             title: "FRP Bases & Architectural Details",
@@ -266,23 +276,23 @@ export default async function MaterialDetailPage({ params }: PageProps) {
       ? {
           eyebrow: "Terracotta — Architectural Applications",
           intro:
-            "Add warmth, texture and natural character to your spaces with terracotta products By Devyora. From terracotta pots and planters to vases and larger decorative pieces, our collection is designed for architectural, landscape and interior applications.",
+            "Terracotta by Devyora covers terracotta rainscreen cladding systems, terracotta baguette installation methods, terracotta facade fixing techniques, terracotta jali screen installation, natural clay terracotta weathering process, terracotta surface finishing and glazing, terracotta cladding for ventilation, terracotta repair and maintenance, terracotta flooring installation methods and terracotta sunshade and louvre systems for architectural, landscape and interior applications.",
           applicationsLabel: "Terracotta Products",
           applications: [
             {
               title: "Terracotta Pots",
               description:
-                "Natural and versatile pots for gardens, entrances, balconies and indoor spaces.",
+                "Natural and versatile pots finished with terracotta surface finishing and glazing for gardens, entrances and balconies.",
             },
             {
               title: "Large Terracotta Pots",
               description:
-                "Statement pieces for landscapes, courtyards, entrances and hospitality spaces.",
+                "Statement pieces using terracotta repair and maintenance-friendly construction for landscapes, courtyards and hospitality spaces.",
             },
             {
               title: "Terracotta Planters",
               description:
-                "Earthy planters designed to complement residential, commercial and landscape settings.",
+                "Terracotta planter placement and drainage designed to complement residential, commercial and landscape settings.",
             },
             {
               title: "Terracotta Vases",
@@ -335,26 +345,26 @@ export default async function MaterialDetailPage({ params }: PageProps) {
         ? {
           eyebrow: "GRC — Architectural Applications",
           intro:
-            "GRC can be used across residential, commercial, hospitality and institutional architecture for creating distinctive architectural details and refined facades.",
+            "GRC by Devyora covers GRC facade installation techniques, GRC panel fixing methods, GRC mould making process, lightweight GRC cladding systems, GRC surface finishing techniques, GRC reinforcement and fibre content, GRC joint design and detailing, GRC repair and patching methods, architectural GRC for curved facades and GRC column and pillar casting process — made to drawing for residential, commercial, hospitality and institutional architecture.",
           applicationsLabel: "GRC Products & Applications",
           applications: [
             {
               title: "GRC Jali",
-              description: "For facades, screens, balconies and partitions.",
+              description: "GRC jali screen fixing methods for perforated GRC jali installation on facades, screens and partitions.",
             },
             {
               title: "GRC Pillars & Columns",
               description:
-                "For entrances, elevations and architectural spaces.",
+                "GRC column and pillar casting process and GRC pillar installation methods for entrances and architectural spaces.",
             },
             {
               title: "GRC Arches",
-              description: "For doors, windows and facade detailing.",
+              description: "Architectural GRC for curved facades, doors, windows and facade detailing.",
             },
             {
               title: "GRC Cornices & Mouldings",
               description:
-                "For rooflines, windows, doors and facade transitions.",
+                "GRC joint design and detailing for rooflines, windows, doors and facade transitions.",
             },
             {
               title: "GRC Facade Elements",
@@ -498,10 +508,8 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             color: theme.color.muted,
           }}
         >
-          Premium {material.name} by By Devyora — custom architectural elements
-          made precisely to your drawings. Designed for durability, refined
-          detailing and seamless installation across residential, commercial
-          and restoration projects.
+          {seo?.description ??
+            `Premium ${material.name} by By Devyora — custom architectural elements made precisely to your drawings. Designed for durability, refined detailing and seamless installation across residential, commercial and restoration projects.`}
         </p>
       </section>
 

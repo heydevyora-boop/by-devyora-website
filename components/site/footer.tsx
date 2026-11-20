@@ -29,7 +29,7 @@ export function SiteFooter() {
       <span>
         info@devyora.com
         <br />
-        +91 000 000 0000
+        +91 774 700 2279
       </span>
       <span style={{ fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase" }}>© 2026</span>
     </footer>

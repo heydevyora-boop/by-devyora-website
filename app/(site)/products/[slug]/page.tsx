@@ -18,6 +18,7 @@ import {
   withoutSampleSuffix,
   PRODUCT_TYPE_IMAGES,
 } from "@/lib/product-types";
+import { getProductSeo } from "@/lib/product-seo";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -45,11 +46,17 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await ProductRepository.findBySlug(slug);
   if (product) {
+    // Type-sample products use the curated product SEO entry. Real catalogue
+    // products keep their own admin-authored short description.
+    const typeSlug = findProductTypeBySlug(product.slug)?.type.slug;
+    const typeSeo = typeSlug ? getProductSeo(typeSlug, product.name) : undefined;
     return buildMetadata({
-      title: product.name,
+      title: typeSeo ? typeSeo.titleKeyword : product.name,
+      keywords: typeSeo?.keywords,
       description:
+        typeSeo?.description ??
         product.shortDescription ??
-        `Premium ${product.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
+        `Explore ${product.name} by By Devyora. Discuss custom designs, dimensions, finishes and project quantities for residential and commercial projects across India.`,
       path: `/products/${product.slug}`,
       image: product.images[0]?.url ?? undefined,
       type: "product",
@@ -59,8 +66,9 @@ export async function generateMetadata({
   const fallback = findProductTypeBySlug(slug);
   if (!fallback) return {};
   return buildMetadata({
-    title: fallback.type.name,
-    description: `Premium ${fallback.type.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
+    title: getProductSeo(fallback.type.slug).titleKeyword,
+    description: getProductSeo(fallback.type.slug, fallback.type.name).description,
+    keywords: getProductSeo(fallback.type.slug, fallback.type.name).keywords,
     path: `/products/${slug}`,
     type: "product",
   });
@@ -159,10 +167,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             lineHeight: 1.55,
           }}
         >
-          Premium {fallback.type.name} crafted by By Devyora — custom
-          architectural elements made precisely to your drawings. Designed
-          for durability, refined detailing and seamless installation across
-          residential, commercial and restoration projects.
+          {getProductSeo(fallback.type.slug, fallback.type.name).intro}
         </p>
 
         <TypeHeroImage typeSlug={fallback.type.slug} />
@@ -194,6 +199,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
   // real upload yet, so it renders in the normal top position instead.
   const typeSlug = findProductTypeBySlug(product.slug)?.type.slug;
   const typeImage = typeSlug ? PRODUCT_TYPE_IMAGES[typeSlug] : undefined;
+  // Same reasoning as generateMetadata above: a type-sample's shortDescription
+  // is only generic seed boilerplate, so the keyword-targeted sentence takes
+  // priority over it here too, for a real (non-type) product's authored text.
+  const typeSeo = typeSlug ? getProductSeo(typeSlug, product.name).intro : undefined;
   const galleryImages =
     product.images.length > 0
       ? product.images.map((img) => ({
@@ -270,7 +279,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
           lineHeight: 1.55,
         }}
       >
-        {product.shortDescription ||
+        {typeSeo ||
+          product.shortDescription ||
           `Premium ${product.name} crafted by By Devyora — custom architectural elements made precisely to your drawings. Designed for durability, refined detailing and seamless installation across residential, commercial and restoration projects.`}
       </p>
 

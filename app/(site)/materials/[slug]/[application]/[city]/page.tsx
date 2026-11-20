@@ -3,10 +3,11 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MaterialRepository } from "@/lib/repositories/material.repository";
 import { theme, pagePadX } from "@/lib/theme";
-import { buildMetadata } from "@/lib/seo";
+import { absoluteUrl, buildMetadata, SITE_NAME } from "@/lib/seo";
+import { JsonLd } from "@/components/site/json-ld";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { RequirementForm } from "@/components/site/requirement-form";
-import { SERVICE_CITIES } from "@/lib/data/service-cities";
+import { SERVICE_CITIES, SERVICE_STATES } from "@/lib/data/service-cities";
 import { resolveMaterialHeroImage } from "@/lib/material-pages";
 
 type PageProps = {
@@ -47,7 +48,8 @@ async function resolve(
   // never a different or newly invented one, per request.
   const heroImage = resolveMaterialHeroImage(materialSlug, material.name, material.heroImage);
 
-  return { material, application, entityName, city, heroImage };
+  const stateName = city.name === "Chandigarh" ? undefined : SERVICE_STATES.find((entry) => entry.cities.includes(city.name))?.state;
+  return { material, application, entityName, city, stateName, heroImage };
 }
 
 export async function generateMetadata({
@@ -57,9 +59,16 @@ export async function generateMetadata({
   const resolved = await resolve(slug, application, citySlug);
   if (!resolved) return {};
 
+  const region = resolved.stateName ? `${resolved.city.name}, ${resolved.stateName}` : resolved.city.name;
   return buildMetadata({
     title: `${resolved.entityName} in ${resolved.city.name}`,
-    description: `Premium ${resolved.entityName} in ${resolved.city.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects.`,
+    description: `Explore ${resolved.entityName.toLowerCase()} by By Devyora for projects in ${region}. Discuss custom designs, material options, dimensions and quantities for residential and commercial applications, with delivery across India.`,
+    keywords: [
+      `${resolved.entityName} in ${resolved.city.name}`,
+      `${resolved.material.name} products ${resolved.city.name}`,
+      `${resolved.entityName} supplier ${resolved.city.name}`,
+      `${resolved.entityName} manufacturer India`,
+    ],
     path: `/materials/${slug}/${application}/${citySlug}`,
   });
 }
@@ -71,7 +80,18 @@ export default async function MaterialApplicationCityPage({
   const resolved = await resolve(slug, application, citySlug);
   if (!resolved) notFound();
 
-  const { material, entityName, city, heroImage } = resolved;
+  const { material, entityName, city, stateName, heroImage } = resolved;
+  const region = stateName ? `${city.name}, ${stateName}` : city.name;
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `${entityName} for projects in ${city.name}`,
+    serviceType: entityName,
+    description: `By Devyora discusses custom ${entityName.toLowerCase()} requirements for residential and commercial projects in ${region}.`,
+    provider: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl("/") },
+    areaServed: { "@type": "City", name: city.name, containedInPlace: stateName ? { "@type": "State", name: stateName } : { "@type": "Country", name: "India" } },
+    url: absoluteUrl(`/materials/${slug}/${application}/${citySlug}`),
+  };
 
   return (
     <main
@@ -79,6 +99,7 @@ export default async function MaterialApplicationCityPage({
         padding: `clamp(48px, 8vw, 110px) ${pagePadX} clamp(64px, 10vw, 160px)`,
       }}
     >
+      <JsonLd data={serviceSchema} />
       <Breadcrumbs
         items={[
           { name: "Products", path: "/materials" },
@@ -108,10 +129,11 @@ export default async function MaterialApplicationCityPage({
           lineHeight: 1.55,
         }}
       >
-        Looking for premium {entityName} in {city.name}? By Devyora crafts
-        custom architectural elements made precisely to your drawings —
-        combining refined detailing with durable performance for homes,
-        commercial spaces and restoration projects across {city.name}.
+        Looking for {entityName.toLowerCase()} in {city.name}? By Devyora discusses custom architectural product requirements made to drawing for residential, commercial and hospitality projects in {region}. Share your reference, dimensions and quantity to request a project-specific consultation.
+      </p>
+
+      <p style={{ fontSize: 13, color: theme.color.muted, maxWidth: "60ch", lineHeight: 1.7, marginTop: -18, marginBottom: 36 }}>
+        By Devyora is based in Bhopal, Madhya Pradesh and handles enquiries for projects across India. This page provides product information for {region}; it does not represent a local branch or showroom in {city.name}.
       </p>
 
       {heroImage && (

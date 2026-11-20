@@ -7,7 +7,7 @@ import type { Metadata } from "next";
  */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bydevyora.com").replace(/\/$/, "");
 export const SITE_NAME = "By Devyora";
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.jpg`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/logo.png`;
 
 export function absoluteUrl(path: string) {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
@@ -29,6 +29,7 @@ type BuildMetadataInput = {
    * appended a second time. Every other page should leave this false.
    */
   absoluteTitle?: boolean;
+  keywords?: string[];
 };
 
 /**
@@ -37,13 +38,14 @@ type BuildMetadataInput = {
  * canonical tags — keeps title templates, image fallbacks, and robots
  * directives consistent site-wide.
  */
-export function buildMetadata({ title, description, path, image, type = "website", index = true, absoluteTitle = false }: BuildMetadataInput): Metadata {
+export function buildMetadata({ title, description, path, image, type = "website", index = true, absoluteTitle = false, keywords }: BuildMetadataInput): Metadata {
   const url = absoluteUrl(path);
   const ogImage = image ?? DEFAULT_OG_IMAGE;
 
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
+    ...(keywords?.length ? { keywords } : {}),
     alternates: { canonical: url },
     robots: index ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
@@ -75,19 +77,13 @@ export function organizationJsonLd() {
     "@id": `${SITE_URL}/#organization`,
     name: SITE_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
-    description: "Architectural building materials manufacturer — GRC, FRP, terracotta and composite systems, made to drawing.",
+    logo: `${SITE_URL}/images/logo.png`,
+    description: "By Devyora offers architectural and home décor products including GRC, FRP, terracotta, UHPC, marble, terrazzo, handmade ceramics, planters and custom architectural elements for projects across India.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Bhopal",
       addressRegion: "Madhya Pradesh",
       addressCountry: "IN",
-    },
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "+91-000-000-0000",
-      contactType: "sales",
-      email: "info@devyora.com",
     },
   };
 }
