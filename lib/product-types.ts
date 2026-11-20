@@ -181,6 +181,7 @@ export function withoutSampleSuffix(name: string): string {
  * nothing in that spot otherwise — not every type has one yet.
  */
 export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> = {
+<<<<<<< HEAD
   "grc-pillars": { url: "/images/types/grc-pillars.webp", alt: "GRC Pillars by By Devyora" },
   "grc-capitals": { url: "/images/types/grc-capitals.webp", alt: "GRC Capitals by By Devyora" },
   "grc-brackets": { url: "/images/types/grc-brackets.webp", alt: "GRC Brackets by By Devyora" },
@@ -279,6 +280,106 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   "stone-wall-art": { url: "/images/types/stone-wall-art.webp", alt: "Stone Wall Art by By Devyora" },
   "frp-wall-art": { url: "/images/types/frp-wall-art.webp", alt: "FRP Wall Art by By Devyora" },
   "brass-antiques": { url: "/images/types/brass-antiques.webp", alt: "Brass Antiques by By Devyora" },
+=======
+  "grc-pillars": { url: "/images/types/grc-pillars.webp", alt: "GRC Pillar Installation Methods — By Devyora" },
+  "grc-capitals": { url: "/images/types/grc-capitals.webp", alt: "GRC Capital Attachment Techniques — By Devyora" },
+  "grc-brackets": { url: "/images/types/grc-brackets.webp", alt: "GRC Bracket Support Systems — By Devyora" },
+  "grc-jali": { url: "/images/types/grc-jali.webp", alt: "GRC Jali Screen Fixing Methods — By Devyora" },
+  "frp-pillars": { url: "/images/types/frp-pillars.webp", alt: "FRP Pillar Installation Techniques — By Devyora" },
+  "frp-capitals": { url: "/images/types/frp-capitals.webp", alt: "FRP Capital Mounting Methods — By Devyora" },
+  "frp-brackets": { url: "/images/types/frp-brackets.webp", alt: "FRP Bracket Support Systems — By Devyora" },
+  "frp-props": { url: "/images/types/frp-props.webp", alt: "FRP Architectural Prop Fabrication — By Devyora" },
+  "frp-decorative-screens": {
+    url: "/images/types/frp-decorative-screens.webp",
+    alt: "FRP Decorative Screen Installation — By Devyora",
+  },
+  "frp-planters": { url: "/images/types/frp-planters.webp", alt: "Large FRP Planter Installation — By Devyora" },
+  "frp-jali": { url: "/images/types/frp-jali.webp", alt: "FRP Jali Fixing Methods — By Devyora" },
+  "terracotta-cladding-bricks": {
+    url: "/images/types/terracotta-cladding-bricks.webp",
+    alt: "Terracotta Cladding Installation Techniques — By Devyora",
+  },
+  "terracotta-bricks": {
+    url: "/images/types/terracotta-bricks.webp",
+    alt: "Exposed Terracotta Brick Construction Methods — By Devyora",
+  },
+  "terracotta-flooring": {
+    url: "/images/types/terracotta-flooring.webp",
+    alt: "Terracotta Floor Tile Laying Techniques — By Devyora",
+  },
+  "terracotta-jali": { url: "/images/types/terracotta-jali.webp", alt: "Terracotta Jali Installation Methods — By Devyora" },
+  "terracotta-planters": {
+    url: "/images/types/terracotta-planters.webp",
+    alt: "Terracotta Planter Placement and Drainage — By Devyora",
+  },
+  "handmade-terracotta-murals": {
+    url: "/images/types/handmade-terracotta-murals.webp",
+    alt: "Terracotta Mural Installation Techniques — By Devyora",
+  },
+  "wpc-gazebos": { url: "/images/types/wpc-gazebos.webp", alt: "WPC Gazebo Assembly and Fixing Methods — By Devyora" },
+  "wpc-deck-flooring": {
+    url: "/images/types/wpc-deck-flooring.webp",
+    alt: "WPC Deck Flooring Installation — By Devyora",
+  },
+  "wpc-pergolas": { url: "/images/types/wpc-pergolas.webp", alt: "WPC Pergola Installation Techniques — By Devyora" },
+  "uhpc-capitals": { url: "/images/types/uhpc-capitals.webp", alt: "UHPC Capital and Bracket Fixing Methods — By Devyora" },
+  "uhpc-brackets": { url: "/images/types/uhpc-brackets.webp", alt: "UHPC Capital and Bracket Fixing Methods — By Devyora" },
+  "uhpc-pillars": { url: "/images/types/uhpc-pillars.webp", alt: "UHPC Pillar Installation Techniques — By Devyora" },
+  "uhpc-wall-panels": {
+    url: "/images/types/uhpc-wall-panels.webp",
+    alt: "UHPC Wall Panel Installation Methods — By Devyora",
+  },
+  "handmade-ceramic-planters": {
+    url: "/images/types/handmade-ceramic-planters.webp",
+    alt: "Ceramic Planter Placement Techniques — By Devyora",
+  },
+  "handmade-ceramic-basins": {
+    url: "/images/types/handmade-ceramic-basins.webp",
+    alt: "Handmade Ceramic Basin Installation — By Devyora",
+  },
+  "handmade-ceramic-tiles": {
+    url: "/images/types/handmade-ceramic-tiles.webp",
+    alt: "Handmade Ceramic Tile Installation Techniques — By Devyora",
+  },
+  "handmade-ceramic-murals": {
+    url: "/images/types/handmade-ceramic-murals.webp",
+    alt: "Ceramic Mural Fixing Methods — By Devyora",
+  },
+  "grg-pop-plus": { url: "/images/types/grg-pop-plus.webp", alt: "Lightweight GRG Moulding Process — By Devyora" },
+  "grg-pop-capitals": {
+    url: "/images/types/grg-pop-capitals.webp",
+    alt: "GRG Capital and Bracket Mounting Methods — By Devyora",
+  },
+  "grg-pop-brackets": {
+    url: "/images/types/grg-pop-brackets.webp",
+    alt: "GRG Capital and Bracket Mounting Methods — By Devyora",
+  },
+  "grg-pop-cornices": {
+    url: "/images/types/grg-pop-cornices.webp",
+    alt: "GRG POP Cornice Installation Techniques — By Devyora",
+  },
+  "grg-pop-wall-panels": {
+    url: "/images/types/grg-pop-wall-panels.webp",
+    alt: "GRG Wall Panel Fixing Methods — By Devyora",
+  },
+  "grg-pop-ceiling-elements": {
+    url: "/images/types/grg-pop-ceiling-elements.webp",
+    alt: "GRG Ceiling Element Installation — By Devyora",
+  },
+  "marble-capitals": { url: "/images/types/marble-capitals.webp", alt: "Marble Capital Fixing — By Devyora" },
+  "marble-planters": { url: "/images/types/marble-planters.webp", alt: "Marble Planter Placement Techniques — By Devyora" },
+  "marble-mandir-interior-marbles": {
+    url: "/images/types/marble-mandir-interior-marbles.webp",
+    alt: "Marble Mandir Interior Installation — By Devyora",
+  },
+  "marble-statues": { url: "/images/types/marble-statues.webp", alt: "Marble Statue Installation and Foundation Methods — By Devyora" },
+  "marble-cornices": { url: "/images/types/marble-cornices.webp", alt: "Marble Cornice Installation — By Devyora" },
+  "marble-wall-art": { url: "/images/types/marble-wall-art.webp", alt: "Marble Wall Art Mounting Techniques — By Devyora" },
+  "concrete-wall-art": { url: "/images/types/concrete-wall-art.webp", alt: "Concrete Wall Art Mounting Methods — By Devyora" },
+  "stone-wall-art": { url: "/images/types/stone-wall-art.webp", alt: "3D Wall Art Anchoring Techniques — By Devyora" },
+  "frp-wall-art": { url: "/images/types/frp-wall-art.webp", alt: "FRP Wall Art Installation Techniques — By Devyora" },
+  "brass-antiques": { url: "/images/types/brass-antiques.webp", alt: "Brass Antique Installation and Fixing Methods — By Devyora" },
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
   "designer-tile-highlighters": { url: "/images/types/designer-tile-highlighters.jpg", alt: "Highlight Tile Placement Techniques — By Devyora" },
   "wall-designer-tiles": { url: "/images/types/wall-designer-tiles.jpg", alt: "Designer Wall Tile Installation Techniques — By Devyora" },
   "flooring-designer-tiles": { url: "/images/types/flooring-designer-tiles.jpg", alt: "Designer Floor Tile Installation — By Devyora" },
@@ -290,6 +391,7 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   "basin-marble": { url: "/images/types/basin-marble.jpg", alt: "Marble Basin Installation Methods — By Devyora" },
   "basin-ceramic": { url: "/images/types/basin-ceramic.jpg", alt: "Ceramic Basin Installation Methods — By Devyora" },
   "basin-uhpc": { url: "/images/types/basin-uhpc.jpg", alt: "UHPC Basin Installation Methods — By Devyora" },
+<<<<<<< HEAD
   "basin-customizable": { url: "/images/types/basin-customizable.webp", alt: "Customizable Basins by By Devyora" },
   "planter-ceramic": { url: "/images/types/planter-ceramic.webp", alt: "Ceramic Planters by By Devyora" },
   "planter-concrete": { url: "/images/types/planter-concrete.webp", alt: "Concrete Planters by By Devyora" },
@@ -306,5 +408,23 @@ export const PRODUCT_TYPE_IMAGES: Record<string, { url: string; alt: string }> =
   "marble-inlay-on-countertop": {
     url: "/images/types/marble-inlay-on-countertop.webp",
     alt: "Marble Inlay On Countertop by By Devyora",
+=======
+  "basin-customizable": { url: "/images/types/basin-customizable.webp", alt: "Custom Basin Mounting Systems — By Devyora" },
+  "planter-ceramic": { url: "/images/types/planter-ceramic.webp", alt: "Ceramic Planter Placement Techniques — By Devyora" },
+  "planter-concrete": { url: "/images/types/planter-concrete.webp", alt: "Custom Planter Fabrication Process — By Devyora" },
+  "planter-frp": { url: "/images/types/planter-frp.webp", alt: "Large FRP Planter Installation — By Devyora" },
+  "planter-terracotta": { url: "/images/types/planter-terracotta.webp", alt: "Terracotta Planter Placement and Drainage — By Devyora" },
+  "planter-marble": { url: "/images/types/planter-marble.webp", alt: "Marble Planter Placement Techniques — By Devyora" },
+  "uv-printed-wall-art": { url: "/images/types/uv-printed-wall-art.webp", alt: "UV Printed Wall Art Fixing Systems — By Devyora" },
+  "digitally-printed-wall-art": { url: "/images/types/digitally-printed-wall-art.webp", alt: "Large Format Wall Art Installation — By Devyora" },
+  "marble-basins": { url: "/images/types/marble-basins.webp", alt: "Marble Basin Installation Methods — By Devyora" },
+  "marble-inlay-on-site": {
+    url: "/images/types/marble-inlay-on-site.webp",
+    alt: "Marble Inlay Work Techniques — By Devyora",
+  },
+  "marble-inlay-on-countertop": {
+    url: "/images/types/marble-inlay-on-countertop.webp",
+    alt: "Marble Inlay on Countertop Process — By Devyora",
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
   },
 };

@@ -18,7 +18,11 @@ import {
   withoutSampleSuffix,
   PRODUCT_TYPE_IMAGES,
 } from "@/lib/product-types";
+<<<<<<< HEAD
 import { getProductSeo } from "@/lib/product-seo";
+=======
+import { PRODUCT_TYPE_SEO } from "@/lib/seo-keywords";
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -46,15 +50,27 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await ProductRepository.findBySlug(slug);
   if (product) {
+<<<<<<< HEAD
     // Type-sample products use the curated product SEO entry. Real catalogue
     // products keep their own admin-authored short description.
     const typeSlug = findProductTypeBySlug(product.slug)?.type.slug;
     const typeSeo = typeSlug ? getProductSeo(typeSlug, product.name) : undefined;
+=======
+    // A type-sample product's shortDescription is itself only generic seed
+    // boilerplate ("<Name>, made to drawing."), never hand-authored copy —
+    // the keyword-targeted sentence below takes priority over it. A real,
+    // non-type catalogue product's shortDescription is left untouched.
+    const typeSeo = PRODUCT_TYPE_SEO[findProductTypeBySlug(product.slug)?.type.slug ?? ""];
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
     return buildMetadata({
       title: typeSeo ? typeSeo.titleKeyword : product.name,
       keywords: typeSeo?.keywords,
       description:
+<<<<<<< HEAD
         typeSeo?.description ??
+=======
+        typeSeo ??
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
         product.shortDescription ??
         `Explore ${product.name} by By Devyora. Discuss custom designs, dimensions, finishes and project quantities for residential and commercial projects across India.`,
       path: `/products/${product.slug}`,
@@ -66,9 +82,16 @@ export async function generateMetadata({
   const fallback = findProductTypeBySlug(slug);
   if (!fallback) return {};
   return buildMetadata({
+<<<<<<< HEAD
     title: getProductSeo(fallback.type.slug).titleKeyword,
     description: getProductSeo(fallback.type.slug, fallback.type.name).description,
     keywords: getProductSeo(fallback.type.slug, fallback.type.name).keywords,
+=======
+    title: fallback.type.name,
+    description:
+      PRODUCT_TYPE_SEO[fallback.type.slug] ??
+      `Premium ${fallback.type.name} by By Devyora. Custom-made to your drawings with lasting quality for residential and commercial projects across India.`,
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
     path: `/products/${slug}`,
     type: "product",
   });
@@ -167,7 +190,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
             lineHeight: 1.55,
           }}
         >
+<<<<<<< HEAD
           {getProductSeo(fallback.type.slug, fallback.type.name).intro}
+=======
+          {PRODUCT_TYPE_SEO[fallback.type.slug] ??
+            `Premium ${fallback.type.name} crafted by By Devyora — custom architectural elements made precisely to your drawings. Designed for durability, refined detailing and seamless installation across residential, commercial and restoration projects.`}
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
         </p>
 
         <TypeHeroImage typeSlug={fallback.type.slug} />
@@ -202,7 +230,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
   // Same reasoning as generateMetadata above: a type-sample's shortDescription
   // is only generic seed boilerplate, so the keyword-targeted sentence takes
   // priority over it here too, for a real (non-type) product's authored text.
+<<<<<<< HEAD
   const typeSeo = typeSlug ? getProductSeo(typeSlug, product.name).intro : undefined;
+=======
+  const typeSeo = typeSlug ? PRODUCT_TYPE_SEO[typeSlug] : undefined;
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
   const galleryImages =
     product.images.length > 0
       ? product.images.map((img) => ({

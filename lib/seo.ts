@@ -77,8 +77,13 @@ export function organizationJsonLd() {
     "@id": `${SITE_URL}/#organization`,
     name: SITE_NAME,
     url: SITE_URL,
+<<<<<<< HEAD
     logo: `${SITE_URL}/images/logo.png`,
     description: "By Devyora offers architectural and home décor products including GRC, FRP, terracotta, UHPC, marble, terrazzo, handmade ceramics, planters and custom architectural elements for projects across India.",
+=======
+    logo: `${SITE_URL}/logo.png`,
+    description: "Architectural building materials manufacturer — GRC facade installation, FRP cladding, terracotta rainscreen systems, UHPC panels and marble inlay, made to drawing.",
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
     address: {
       "@type": "PostalAddress",
       addressLocality: "Bhopal",

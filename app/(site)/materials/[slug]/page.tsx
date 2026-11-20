@@ -51,7 +51,10 @@ export async function generateMetadata({
     return buildMetadata({
       title: `${material.name} — ${seo?.titleKeyword ?? "Architectural Material System"}`,
       description: seo?.description ?? material.description ?? material.tagline,
+<<<<<<< HEAD
       keywords: seo?.keywords,
+=======
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
       path: `/materials/${material.slug}`,
       image: material.heroImage ?? undefined,
     });
@@ -62,7 +65,10 @@ export async function generateMetadata({
   return buildMetadata({
     title: `${fallback.name} — ${seo?.titleKeyword ?? "Architectural Material System"}`,
     description: seo?.description ?? fallback.intro,
+<<<<<<< HEAD
     keywords: seo?.keywords,
+=======
+>>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
     path: `/materials/${slug}`,
     image: fallback.heroImage,
   });
