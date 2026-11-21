@@ -85,6 +85,7 @@ export function organizationJsonLd() {
     },
     contactPoint: {
       "@type": "ContactPoint",
+      telephone: "+91 6356 535 315",
       contactType: "sales",
       email: "info@devyora.com",
     },

@@ -115,10 +115,10 @@ const PROJECTS = [
 // source the product/material pages use for their own "by city" sections —
 // rather than inventing cities or fabricating specific street addresses.
 const BRANCHES = [
-  { city: "Bhopal", address: "Bhopal, Madhya Pradesh", phone: "+91 000 000 0000", isHeadOffice: true },
-  { city: "Mumbai", address: "Mumbai, Maharashtra", phone: "+91 000 000 0002", isHeadOffice: false },
-  { city: "Bengaluru", address: "Bengaluru, Karnataka", phone: "+91 000 000 0003", isHeadOffice: false },
-  { city: "Kolkata", address: "Kolkata, West Bengal", phone: "+91 000 000 0004", isHeadOffice: false },
+  { city: "Bhopal", address: "Bhopal, Madhya Pradesh", phone: "+91 6356 535 315", isHeadOffice: true },
+  { city: "Mumbai", address: "Mumbai, Maharashtra", phone: "+91 6356 535 315", isHeadOffice: false },
+  { city: "Bengaluru", address: "Bengaluru, Karnataka", phone: "+91 6356 535 315", isHeadOffice: false },
+  { city: "Kolkata", address: "Kolkata, West Bengal", phone: "+91 6356 535 315", isHeadOffice: false },
 ];
 
 const MANUFACTURING_STEPS = [
