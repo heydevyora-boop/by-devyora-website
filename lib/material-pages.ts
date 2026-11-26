@@ -220,6 +220,23 @@ const SPECIAL_HERO_IMAGES: Record<string, { url: string; alt: string }> = {
 };
 
 /**
+ * GRC, FRP and Terracotta are intentionally not in MATERIAL_PAGE_CONTENT
+ * above (their full content lives inline in the [slug] page instead), which
+ * means they used to have no fallback at all: if their database row was ever
+ * missing or unpublished, /materials/grc (etc.) hard-404'd instead of
+ * showing the same safe placeholder every other material gets. This map
+ * gives the [slug] page a name to render for them in that situation, so
+ * these three behave like every other material instead of being a special
+ * case that can 404.
+ */
+export const SPECIAL_MATERIAL_NAMES: Record<string, string> = {
+  grc: "GRC",
+  frp: "FRP",
+  terracotta: "Terracotta",
+  teracotta: "Terracotta",
+};
+
+/**
  * The same hero photo a material's own /materials/[slug] page shows,
  * resolved in the identical order that page uses (GRC/FRP/Terracotta's
  * hardcoded photo, then this file's MATERIAL_PAGE_CONTENT, then the

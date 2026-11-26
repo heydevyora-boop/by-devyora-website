@@ -17,7 +17,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@prisma/adapter-pg": "^7.9.1",
-    "@prisma/client": "^7.9.1",
+    "@prisma/client": "7.10.1",
     "@tiptap/extension-image": "^2.11.0",
     "@tiptap/extension-link": "^2.11.0",
     "@tiptap/pm": "^2.11.0",
@@ -28,7 +28,7 @@
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "git": "^0.1.5",
     "lucide-react": "^1.28.0",
     "next": "^15.5.0",
@@ -47,7 +47,7 @@
     "@types/pg": "^8.11.10",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "prisma": "^7.9.1",
+    "prisma": "7.10.1",
     "tsx": "^4.20.0",
     "typescript": "^5.7.0"
   }

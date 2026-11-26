@@ -13,6 +13,7 @@ import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { RequirementForm } from "@/components/site/requirement-form";
 import {
   MATERIAL_PAGE_CONTENT,
+  SPECIAL_MATERIAL_NAMES,
   neutralMaterialContent,
   resolveMaterialHeroImage,
   type MaterialPageContent,
@@ -32,7 +33,11 @@ export async function generateStaticParams() {
   });
 
   const dbSlugs = new Set(materials.map((m) => m.slug));
-  const allSlugs = new Set([...dbSlugs, ...Object.keys(MATERIAL_PAGE_CONTENT)]);
+  const allSlugs = new Set([
+    ...dbSlugs,
+    ...Object.keys(MATERIAL_PAGE_CONTENT),
+    ...Object.keys(SPECIAL_MATERIAL_NAMES),
+  ]);
   return Array.from(allSlugs).map((slug) => ({ slug }));
 }
 
@@ -57,12 +62,19 @@ export async function generateMetadata({
   }
 
   const fallback = MATERIAL_PAGE_CONTENT[slug];
-  if (!fallback) return {};
+  const specialName = SPECIAL_MATERIAL_NAMES[slug];
+  if (!fallback && !specialName) return {};
+
+  const name = fallback?.name ?? specialName!;
+  const hero = fallback
+    ? { url: fallback.heroImage, alt: fallback.heroAlt }
+    : resolveMaterialHeroImage(slug, name, null);
+
   return buildMetadata({
-    title: `${fallback.name} — ${seo?.titleKeyword ?? "Architectural Material System"}`,
-    description: seo?.description ?? fallback.intro,
+    title: `${name} — ${seo?.titleKeyword ?? "Architectural Material System"}`,
+    description: seo?.description ?? fallback?.intro ?? neutralMaterialContent(name).intro,
     path: `/materials/${slug}`,
-    image: fallback.heroImage,
+    image: hero?.url,
   });
 }
 
@@ -80,9 +92,14 @@ export default async function MaterialDetailPage({ params }: PageProps) {
     // shared enquiry form as every other page. Once the real row exists,
     // the full page above takes over automatically at this same URL.
     const fallback = MATERIAL_PAGE_CONTENT[slug];
-    if (!fallback) notFound();
+    const specialName = SPECIAL_MATERIAL_NAMES[slug];
+    if (!fallback && !specialName) notFound();
 
-    const name = fallback.name;
+    const name = fallback?.name ?? specialName!;
+    const content = fallback ?? neutralMaterialContent(name);
+    const hero = fallback
+      ? { url: fallback.heroImage, alt: fallback.heroAlt }
+      : resolveMaterialHeroImage(slug, name, null);
 
     return (
       <main
@@ -121,25 +138,27 @@ export default async function MaterialDetailPage({ params }: PageProps) {
             background: "#F6F4F1",
           }}
         >
-          <Image
-            src={fallback.heroImage}
-            alt={fallback.heroAlt}
-            fill
-            priority
-            sizes="100vw"
-            style={{ objectFit: "cover", objectPosition: "center" }}
-          />
+          {hero && (
+            <Image
+              src={hero.url}
+              alt={hero.alt}
+              fill
+              priority
+              sizes="100vw"
+              style={{ objectFit: "cover", objectPosition: "center" }}
+            />
+          )}
         </div>
 
         <div style={{ paddingTop: "clamp(40px, 6vw, 72px)" }}>
           <p style={{ maxWidth: "60ch", fontSize: 15, lineHeight: 1.75, color: "#4A4844" }}>
-            {fallback.intro}
+            {content.intro}
           </p>
         </div>
 
         <RequirementForm
-          eyebrow={fallback.ctaEyebrow}
-          description={fallback.ctaDescription}
+          eyebrow={content.ctaEyebrow}
+          description={content.ctaDescription}
           idPrefix={slug}
         />
       </main>
