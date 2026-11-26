@@ -78,10 +78,14 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     url: SITE_URL,
 <<<<<<< HEAD
+<<<<<<< HEAD
     logo: `${SITE_URL}/images/logo.png`,
     description: "By Devyora offers architectural and home décor products including GRC, FRP, terracotta, UHPC, marble, terrazzo, handmade ceramics, planters and custom architectural elements for projects across India.",
 =======
     logo: `${SITE_URL}/logo.png`,
+=======
+    logo: `${SITE_URL}/images/logo.png`,
+>>>>>>> da0ec699ee1ada8d831f8e64d59ff32da5516948
     description: "Architectural building materials manufacturer — GRC facade installation, FRP cladding, terracotta rainscreen systems, UHPC panels and marble inlay, made to drawing.",
 >>>>>>> 3d3d28aaaa6a7e05ce16ca166eda88d82609d24d
     address: {
@@ -90,6 +94,15 @@ export function organizationJsonLd() {
       addressRegion: "Madhya Pradesh",
       addressCountry: "IN",
     },
+<<<<<<< HEAD
+=======
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+91 6356 535 315",
+      contactType: "sales",
+      email: "info@devyora.com",
+    },
+>>>>>>> da0ec699ee1ada8d831f8e64d59ff32da5516948
   };
 }
 

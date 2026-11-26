@@ -29,7 +29,11 @@ export function SiteFooter() {
       <span>
         info@devyora.com
         <br />
+<<<<<<< HEAD
         +91 774 700 2279
+=======
+        +91 6356 535 315
+>>>>>>> da0ec699ee1ada8d831f8e64d59ff32da5516948
       </span>
       <span style={{ fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase" }}>© 2026</span>
     </footer>
