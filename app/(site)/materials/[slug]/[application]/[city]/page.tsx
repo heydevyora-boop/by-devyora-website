@@ -7,7 +7,7 @@ import { buildMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { RequirementForm } from "@/components/site/requirement-form";
 import { SERVICE_CITIES } from "@/lib/data/service-cities";
-import { resolveMaterialHeroImage } from "@/lib/material-pages";
+import { MATERIAL_PAGE_CONTENT, SPECIAL_MATERIAL_NAMES, resolveMaterialHeroImage } from "@/lib/material-pages";
 
 type PageProps = {
   params: Promise<{ slug: string; application: string; city: string }>;
@@ -28,6 +28,13 @@ export const revalidate = 3600;
  * segment at the same path level — this still renders, just without an
  * application in the heading, rather than 404ing. Only an unknown material
  * or city 404s.
+ *
+ * `materialSlug` falls back the same way /materials/[slug]/page.tsx does
+ * (MATERIAL_PAGE_CONTENT, then SPECIAL_MATERIAL_NAMES for GRC/FRP/
+ * Terracotta) when there's no database row — this route used to skip that
+ * fallback entirely and hard-404 for any material without one, which is why
+ * e.g. "GRC Pillars in Indore" 404'd even though /materials/grc itself
+ * didn't.
  */
 async function resolve(
   materialSlug: string,
@@ -38,16 +45,18 @@ async function resolve(
   if (!city) return null;
 
   const material = await MaterialRepository.findBySlug(materialSlug);
-  if (!material) return null;
+  const fallbackName = MATERIAL_PAGE_CONTENT[materialSlug]?.name ?? SPECIAL_MATERIAL_NAMES[materialSlug];
+  if (!material && !fallbackName) return null;
 
-  const application = material.applications.find((a) => a.slug === applicationSlug);
-  const entityName = application ? `${material.name} ${application.label}` : material.name;
+  const materialName = material?.name ?? fallbackName!;
+  const application = material?.applications.find((a) => a.slug === applicationSlug);
+  const entityName = application ? `${materialName} ${application.label}` : materialName;
 
   // The identical photo the material's own /materials/<slug> page shows —
   // never a different or newly invented one, per request.
-  const heroImage = resolveMaterialHeroImage(materialSlug, material.name, material.heroImage);
+  const heroImage = resolveMaterialHeroImage(materialSlug, materialName, material?.heroImage ?? null);
 
-  return { material, application, entityName, city, heroImage };
+  return { materialName, application, entityName, city, heroImage };
 }
 
 export async function generateMetadata({
@@ -71,7 +80,7 @@ export default async function MaterialApplicationCityPage({
   const resolved = await resolve(slug, application, citySlug);
   if (!resolved) notFound();
 
-  const { material, entityName, city, heroImage } = resolved;
+  const { materialName, entityName, city, heroImage } = resolved;
 
   return (
     <main
@@ -82,7 +91,7 @@ export default async function MaterialApplicationCityPage({
       <Breadcrumbs
         items={[
           { name: "Products", path: "/materials" },
-          { name: material.name, path: `/materials/${slug}` },
+          { name: materialName, path: `/materials/${slug}` },
           { name: city.name, path: `/materials/${slug}/${application}/${citySlug}` },
         ]}
       />
